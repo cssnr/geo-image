@@ -13,6 +13,7 @@
 [![GitHub Org Stars](https://img.shields.io/github/stars/cssnr?style=flat&logo=apachespark&logoColor=white&label=org%20stars)](https://cssnr.github.io/)
 [![Discord](https://img.shields.io/discord/899171661457293343?logo=discord&logoColor=white&label=discord&color=7289da)](https://discord.gg/wXy6m2X8wY)
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-72a5f2?logo=kofi&label=support)](https://ko-fi.com/cssnr)
+[![](https://repository-images.githubusercontent.com/1168258305/5ba2c6c6-347b-4242-a07f-d21abebf2d9d)](https://github.com/cssnr/geo-image?tab=readme-ov-file#readme)
 
 # GeoImage
 
