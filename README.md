@@ -1,5 +1,4 @@
 [![GitHub Release Version](https://img.shields.io/github/v/release/cssnr/geo-image?logo=github)](https://github.com/cssnr/geo-image/releases/latest)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=cssnr_geo-image&metric=alert_status&label=quality)](https://sonarcloud.io/summary/overall?id=cssnr_geo-image)
 [![Workflow Build](https://img.shields.io/github/actions/workflow/status/cssnr/geo-image/build.yaml?logo=norton&logoColor=white&label=build)](https://github.com/cssnr/geo-image/actions/workflows/build.yaml)
 [![Workflow Test](https://img.shields.io/github/actions/workflow/status/cssnr/geo-image/test.yaml?logo=norton&logoColor=white&label=test)](https://github.com/cssnr/geo-image/actions/workflows/test.yaml)
 [![Workflow Lint](https://img.shields.io/github/actions/workflow/status/cssnr/geo-image/lint.yaml?logo=norton&logoColor=white&label=lint)](https://github.com/cssnr/geo-image/actions/workflows/lint.yaml)
@@ -112,7 +111,7 @@ Other Web Extensions I have created and published:
 
 For a full list of current projects visit: [https://cssnr.github.io/](https://cssnr.github.io/)
 
-<a href="https://github.com/cssnr/geo-image?tab=readme-ov-file#readme">
+<a href="https://github.com/cssnr/geo-image/stargazers">
  <picture>
    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=cssnr/geo-image&type=date&legend=bottom-right&theme=dark" />
    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=cssnr/geo-image&type=date&legend=bottom-right" />
