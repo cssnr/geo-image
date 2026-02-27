@@ -1,0 +1,12 @@
+{
+  "addons": {
+    "geo-image@cssnr.com": {
+      "updates": [
+        {
+          "version": "0.0.1",
+          "update_link": "https://github.com/cssnr/geo-image/releases/download/0.0.1/geo_image-firefox.xpi"
+        }
+      ]
+    }
+  }
+}

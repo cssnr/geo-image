@@ -20,9 +20,10 @@
       "strict_min_version": "112.0",
       "data_collection_permissions": {
         "required": ["none"]
-      }
+      },
+      "update_url": "https://raw.githubusercontent.com/cssnr/geo-image/master/update.json"
     },
-    "gecko_android ": {
+    "gecko_android": {
       "strict_min_version": "120.0"
     }
   }

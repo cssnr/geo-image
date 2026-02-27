@@ -1,5 +1,4 @@
 [![GitHub Release Version](https://img.shields.io/github/v/release/cssnr/geo-image?logo=github)](https://github.com/cssnr/geo-image/releases/latest)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=cssnr_geo-image&metric=alert_status&label=quality)](https://sonarcloud.io/summary/overall?id=cssnr_geo-image)
 [![Workflow Build](https://img.shields.io/github/actions/workflow/status/cssnr/geo-image/build.yaml?logo=norton&logoColor=white&label=build)](https://github.com/cssnr/geo-image/actions/workflows/build.yaml)
 [![Workflow Test](https://img.shields.io/github/actions/workflow/status/cssnr/geo-image/test.yaml?logo=norton&logoColor=white&label=test)](https://github.com/cssnr/geo-image/actions/workflows/test.yaml)
 [![Workflow Lint](https://img.shields.io/github/actions/workflow/status/cssnr/geo-image/lint.yaml?logo=norton&logoColor=white&label=lint)](https://github.com/cssnr/geo-image/actions/workflows/lint.yaml)
@@ -18,8 +17,9 @@
 # GeoImage
 
 <a title="GeoImage" href="https://github.com/cssnr/geo-image?tab=readme-ov-file#readme" target="_blank">
-<img alt="GeoImage" align="right" width="128" height="auto" src="https://raw.githubusercontent.com/cssnr/geo-image/refs/heads/master/src/images/logo128.png"></a>
+<img alt="GeoImage" align="right" width="128" height="auto" src="https://raw.githubusercontent.com/cssnr/geo-image/master/src/images/logo128.png"></a>
 
+- [Install](#install)
 - [Features](#features)
 - [Configuration](#configuration)
 - [Support](#support)
@@ -30,6 +30,21 @@ GeoImage Web Extension for Chrome and Firefox.
 Use Gemini AI to determine the location of an image based on the image data (not metadata).
 
 Works with a Free Gemini API Key: https://aistudio.google.com/app/api-keys
+
+## Install
+
+[![Chrome](https://raw.githubusercontent.com/smashedr/logo-icons/master/browsers/chrome_48.png)](https://chromewebstore.google.com/detail/geoimage/ipliinigkdddaaeaoncoljmdaoabgjdo)
+[![Firefox](https://raw.githubusercontent.com/smashedr/logo-icons/master/browsers/firefox_48.png)](https://github.com/cssnr/geo-image/releases/latest/download/geo_image-firefox.xpi)
+[![Edge](https://raw.githubusercontent.com/smashedr/logo-icons/master/browsers/edge_48.png)](https://chromewebstore.google.com/detail/geoimage/ipliinigkdddaaeaoncoljmdaoabgjdo)
+[![Brave](https://raw.githubusercontent.com/smashedr/logo-icons/master/browsers/brave_48.png)](https://chromewebstore.google.com/detail/geoimage/ipliinigkdddaaeaoncoljmdaoabgjdo)
+[![Opera](https://raw.githubusercontent.com/smashedr/logo-icons/master/browsers/opera_48.png)](https://chromewebstore.google.com/detail/geoimage/ipliinigkdddaaeaoncoljmdaoabgjdo)
+[![Chromium](https://raw.githubusercontent.com/smashedr/logo-icons/master/browsers/chromium_48.png)](https://chromewebstore.google.com/detail/geoimage/ipliinigkdddaaeaoncoljmdaoabgjdo)
+
+All **Chromium** Based Browsers can install the extension from the
+[Chrome Web Store](https://chromewebstore.google.com/detail/geoimage/ipliinigkdddaaeaoncoljmdaoabgjdo).
+
+- Download a [Chrome Release](https://github.com/cssnr/geo-image/releases/latest/download/geo_image-chrome.crx) from GitHub
+- Download a [Firefox Release](https://github.com/cssnr/geo-image/releases/latest/download/geo_image-firefox.xpi) from GitHub
 
 ## Features
 
@@ -97,7 +112,7 @@ Other Web Extensions I have created and published:
 
 For a full list of current projects visit: [https://cssnr.github.io/](https://cssnr.github.io/)
 
-<a href="https://github.com/cssnr/geo-image?tab=readme-ov-file#readme">
+<a href="https://github.com/cssnr/geo-image/stargazers">
  <picture>
    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=cssnr/geo-image&type=date&legend=bottom-right&theme=dark" />
    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=cssnr/geo-image&type=date&legend=bottom-right" />
