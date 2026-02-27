@@ -19,6 +19,7 @@
 <a title="GeoImage" href="https://github.com/cssnr/geo-image?tab=readme-ov-file#readme" target="_blank">
 <img alt="GeoImage" align="right" width="128" height="auto" src="https://raw.githubusercontent.com/cssnr/geo-image/master/src/images/logo128.png"></a>
 
+- [Install](#install)
 - [Features](#features)
 - [Configuration](#configuration)
 - [Support](#support)
