@@ -496,13 +496,14 @@ export async function updateTable() {
     console.log('filtered:', filtered)
 
     const tbody = document.querySelector('table tbody')
-    for (const [url, data] of Object.entries(filtered)) {
-        console.log('url:', url)
+    tbody.innerHTML = ''
+    for (const [i, [url, data]] of Object.entries(filtered).reverse().entries()) {
+        console.log(`url ${i + 1}:`, url)
         console.log('data:', data)
         const tr = document.createElement('tr')
         const td = document.createElement('td')
         const a = document.createElement('a')
-        a.textContent = `${data.country}, ${data.state}, ${data.city}`
+        a.textContent = `${i + 1}. ${data.country}, ${data.state}, ${data.city}`
         a.title = url
         const srcUrl = encodeURIComponent(url)
         a.href = chrome.runtime.getURL(`/html/page.html?url=${srcUrl}`)
