@@ -18,7 +18,7 @@
 # GeoImage
 
 <a title="GeoImage" href="https://github.com/cssnr/geo-image?tab=readme-ov-file#readme" target="_blank">
-<img alt="GeoImage" align="right" width="128" height="auto" src="https://raw.githubusercontent.com/cssnr/geo-image/refs/heads/master/src/images/logo128.png"></a>
+<img alt="GeoImage" align="right" width="128" height="auto" src="https://raw.githubusercontent.com/cssnr/geo-image/master/src/images/logo128.png"></a>
 
 - [Features](#features)
 - [Configuration](#configuration)
@@ -30,6 +30,21 @@ GeoImage Web Extension for Chrome and Firefox.
 Use Gemini AI to determine the location of an image based on the image data (not metadata).
 
 Works with a Free Gemini API Key: https://aistudio.google.com/app/api-keys
+
+## Install
+
+[![Chrome](https://raw.githubusercontent.com/smashedr/logo-icons/master/browsers/chrome_48.png)](https://chromewebstore.google.com/detail/geoimage/ipliinigkdddaaeaoncoljmdaoabgjdo)
+[![Firefox](https://raw.githubusercontent.com/smashedr/logo-icons/master/browsers/firefox_48.png)](https://github.com/cssnr/geo-image/releases/latest/download/geo_image-firefox.xpi)
+[![Edge](https://raw.githubusercontent.com/smashedr/logo-icons/master/browsers/edge_48.png)](https://chromewebstore.google.com/detail/geoimage/ipliinigkdddaaeaoncoljmdaoabgjdo)
+[![Brave](https://raw.githubusercontent.com/smashedr/logo-icons/master/browsers/brave_48.png)](https://chromewebstore.google.com/detail/geoimage/ipliinigkdddaaeaoncoljmdaoabgjdo)
+[![Opera](https://raw.githubusercontent.com/smashedr/logo-icons/master/browsers/opera_48.png)](https://chromewebstore.google.com/detail/geoimage/ipliinigkdddaaeaoncoljmdaoabgjdo)
+[![Chromium](https://raw.githubusercontent.com/smashedr/logo-icons/master/browsers/chromium_48.png)](https://chromewebstore.google.com/detail/geoimage/ipliinigkdddaaeaoncoljmdaoabgjdo)
+
+All **Chromium** Based Browsers can install the extension from the
+[Chrome Web Store](https://chromewebstore.google.com/detail/geoimage/ipliinigkdddaaeaoncoljmdaoabgjdo).
+
+- Download a [Chrome Release](https://github.com/cssnr/geo-image/releases/latest/download/geo_image-chrome.crx) from GitHub
+- Download a [Firefox Release](https://github.com/cssnr/geo-image/releases/latest/download/geo_image-firefox.xpi) from GitHub
 
 ## Features
 
