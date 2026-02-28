@@ -47,6 +47,11 @@ All **Chromium** Based Browsers can install the extension from the
 - Download a [Chrome Release](https://github.com/cssnr/geo-image/releases/latest/download/geo_image-chrome.crx) from GitHub
 - Download a [Firefox Release](https://github.com/cssnr/geo-image/releases/latest/download/geo_image-firefox.xpi) from GitHub
 
+[![Android QR Code](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/geo-image/qr-code-android.png)](https://github.com/cssnr/geo-image/releases/latest/download/geo_image-firefox.xpi)
+
+_Note: To install self-hosted extensions on Android you must enable a hidden menu item:_  
+[_https://extensionworkshop.com/documentation/publish/install-self-distributed_](https://extensionworkshop.com/documentation/publish/install-self-distributed/#install-addon-from-file-android)
+
 ## Features
 
 - Uses Gemini API
@@ -60,15 +65,15 @@ All **Chromium** Based Browsers can install the extension from the
 
 ## Configuration
 
-Open the Options 1 of 3 ways:
+First, Open the Options by:
 
+- Extension Toolbar Icon
 - Right-Click Context Menu
 - Keyboard Shortcut (Alt+Shift+O)
-- Extension Toolbar Icon
 
-Next, add your Gemini API Key.
+Then, add your Gemini API Key. Done.
 
-Then, right-click on an image: `GeoImage` > `Analyze Image`
+To use, right-click on an image: `GeoImage` > `Analyze Image`
 
 ## Support
 

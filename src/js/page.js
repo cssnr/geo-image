@@ -45,9 +45,7 @@ async function domContentLoaded() {
 
     // Check Host Permissions
     checkPerms().then((hasPerms) => {
-        if (!hasPerms) {
-            return console.log('%cHost Permissions Not Granted', 'color: Red')
-        }
+        if (!hasPerms) console.log('%cHost Permissions Not Granted', 'color: Red')
     })
 
     // Get Options
@@ -185,7 +183,10 @@ export async function getData(mimeType, base64) {
 async function downloadImage(url) {
     console.log('downloadImage:', url)
     const response = await fetch(url)
-    if (response.status !== 200) throw new Error(`Download Error: ${response.statusText}`)
+    if (response.status !== 200) {
+        const error = `Download Error: ${response.status}: ${response.statusText}`
+        throw new Error(error)
+    }
     const buffer = await response.arrayBuffer()
     const bytes = new Uint8Array(buffer)
     const chunkSize = 0x8000 // 32KB
@@ -197,6 +198,8 @@ async function downloadImage(url) {
 
     const mimeType = response.headers.get('content-type')
     console.log('mimeType:', mimeType)
-    if (!mimeType) throw new Error('Unknown MIME Type!')
+    if (!mimeType?.toLowerCase()?.startsWith('image')) {
+        throw new Error(`Unknown/Unsupported MIME Type: ${mimeType}`)
+    }
     return { base64, mimeType }
 }

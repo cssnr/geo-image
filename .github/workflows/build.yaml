@@ -159,7 +159,7 @@ jobs:
       - name: "Mozilla Addon Update"
         uses: cssnr/mozilla-addon-update-action@v1
         with:
-          url: "https://github.com/cssnr/aviation-tools/releases/download/{version}/aviation_tools-firefox.xpi"
+          url: "https://github.com/${{ github.repository }}/releases/download/{version}/${{ env.PACKAGE_NAME }}-firefox.xpi"
           addon_id: ${{ env.MOZILLA_ID }}
           version: ${{ github.ref_name }}
 
@@ -191,7 +191,7 @@ jobs:
       #    app-id: 146360
       #    private-key: ${{ secrets.APP_PRIVATE_KEY }}
       #    owner: ${{ github.repository_owner }}
-      #
+
       - name: "Commit Action"
         id: commit
         uses: suzuki-shunsuke/commit-action@f28421acc277a6d6a9c1f94ea449076ad77dba67 # v0.1.0

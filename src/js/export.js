@@ -275,9 +275,7 @@ export async function checkPerms() {
 export async function grantPerms(event, close = false) {
     console.debug('grantPerms:', event)
     requestPerms().catch((e) => console.warn(e))
-    if (close) {
-        window.close()
-    }
+    if (close) window.close()
 }
 
 /**
@@ -402,9 +400,8 @@ export async function openSidePanel(event) {
             return
         }
     }
-    if (event) {
-        window.close()
-    }
+    if (event) window.close()
+
     // if (typeof window !== 'undefined') {
     //     window.close()
     // }
@@ -464,6 +461,41 @@ export function debounce(fn, timeout = 250) {
 }
 
 /**
+ * Open Page
+ * @param {string} srcUrl
+ * @return {Promise<chrome.tabs.Tab>}
+ */
+export async function openPage(srcUrl) {
+    const encoded = encodeURIComponent(srcUrl)
+    const url = chrome.runtime.getURL(`/html/page.html?url=${encoded}`)
+    // return chrome.tabs.create({ active: true, url })
+    return activateOrOpen(url)
+}
+
+/**
+ * Process Input Form
+ * @param {SubmitEvent|InputEvent} event
+ */
+export async function processForm(event) {
+    try {
+        console.debug('processForm:', event)
+        const target = event.currentTarget
+        event.preventDefault()
+        console.debug('target:', target)
+        const input = target.elements['image-input']
+        console.debug('input:', input)
+        const link = input.value.trim()
+        console.debug('link:', link)
+        const url = new URL(link)
+        console.debug('url:', url)
+        await openPage(url.href)
+        if (target.dataset.close !== undefined) window.close()
+    } catch (e) {
+        showToast(e.message, 'danger')
+    }
+}
+
+/**
  * On Changed Callback
  * @function onChanged
  * @param {Object} changes
@@ -471,12 +503,20 @@ export function debounce(fn, timeout = 250) {
  */
 export function onChanged(changes, namespace) {
     console.debug('onChanged:', changes, namespace)
+    if (namespace === 'sync') {
+        console.debug('onChanged:', changes, namespace)
+        for (const [key, { newValue }] of Object.entries(changes)) {
+            if (key === 'options') {
+                updateOptions(newValue)
+            }
+        }
+    }
     if (namespace === 'local') {
         console.debug('changes:', changes)
         for (const [key, { newValue }] of Object.entries(changes)) {
-            console.log('key:', key)
+            console.debug('key:', key)
             if (key.toLowerCase().startsWith('http')) {
-                console.log('newValue:', newValue)
+                console.debug('newValue:', newValue)
                 updateTable().catch((e) => showToast(e.message))
             }
         }
@@ -485,7 +525,7 @@ export function onChanged(changes, namespace) {
 
 export async function updateTable() {
     const items = await chrome.storage.local.get(null)
-    console.log('items:', items)
+    console.debug('items:', items)
 
     // const keys = Object.keys(items).filter((k) => k.startsWith('http'))
     // console.log('keys:', keys)
@@ -493,24 +533,52 @@ export async function updateTable() {
     const filtered = Object.fromEntries(
         Object.entries(items).filter(([k]) => k.startsWith('http')),
     )
-    console.log('filtered:', filtered)
+    console.debug('filtered:', filtered)
+
+    const faTrashCan = document.querySelector('#clone > .fa-trash-can')
 
     const tbody = document.querySelector('table tbody')
     tbody.innerHTML = ''
     for (const [i, [url, data]] of Object.entries(filtered).reverse().entries()) {
-        console.log(`url ${i + 1}:`, url)
-        console.log('data:', data)
-        const tr = document.createElement('tr')
-        const td = document.createElement('td')
-        const a = document.createElement('a')
-        a.textContent = `${i + 1}. ${data.country}, ${data.state}, ${data.city}`
-        a.title = url
-        const srcUrl = encodeURIComponent(url)
-        a.href = chrome.runtime.getURL(`/html/page.html?url=${srcUrl}`)
-        a.target = '_blank'
-        a.addEventListener('click', linkClick)
-        td.appendChild(a)
-        tr.appendChild(td)
-        tbody.appendChild(tr)
+        console.debug(`url ${i + 1}:`, url)
+        const row = tbody.insertRow()
+
+        const cell1 = row.insertCell()
+        cell1.classList.add('text-center')
+        cell1.appendChild(document.createTextNode(`${i + 1}`))
+
+        const cell2 = row.insertCell()
+        const hostLink = document.createElement('a')
+        hostLink.textContent = `${data.country}, ${data.state}, ${data.city}`
+        hostLink.title = url
+        hostLink.href = url
+        hostLink.target = '_blank'
+        cell2.classList.add('overflow-hidden', 'text-ellipsis')
+        cell2.appendChild(hostLink)
+
+        const cell3 = row.insertCell()
+        const deleteBtn = document.createElement('a')
+        deleteBtn.appendChild(faTrashCan.cloneNode(true))
+        deleteBtn.title = 'Delete'
+        deleteBtn.dataset.url = url
+        deleteBtn.classList.add('link-danger')
+        deleteBtn.setAttribute('role', 'button')
+        deleteBtn.addEventListener('click', deleteHost)
+        cell3.classList.add('text-center')
+        cell3.appendChild(deleteBtn)
     }
+}
+
+/**
+ * Delete Host Click Callback
+ * @function deleteHost
+ * @param {MouseEvent} event
+ */
+async function deleteHost(event) {
+    console.debug('deleteHost:', event)
+    event.preventDefault()
+    const url = event.currentTarget?.dataset?.url
+    console.info(`Delete URL: ${url}`)
+    await chrome.storage.local.remove(url)
+    showToast('Deleted Analysis', 'warning')
 }
