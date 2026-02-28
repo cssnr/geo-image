@@ -13,6 +13,7 @@ import {
     updateBrowser,
     updateOptions,
     updatePlatform,
+    onChanged,
 } from './export.js'
 
 chrome.storage.onChanged.addListener(onChanged)
@@ -67,21 +68,6 @@ async function initOptions() {
         // console.debug('options:', items.options)
         updateOptions(items.options)
     })
-}
-
-/**
- * On Changed Callback
- * @function onChanged
- * @param {Object} changes
- * @param {String} namespace
- */
-function onChanged(changes, namespace) {
-    console.debug('onChanged:', changes, namespace)
-    for (const [key, { newValue }] of Object.entries(changes)) {
-        if (namespace === 'sync' && key === 'options') {
-            updateOptions(newValue)
-        }
-    }
 }
 
 /**

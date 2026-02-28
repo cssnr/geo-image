@@ -4,6 +4,7 @@ import {
     linkClick,
     onChanged,
     openPopup,
+    processForm,
     showToast,
     updateManifest,
     updateTable,
@@ -21,6 +22,8 @@ document
 document
     .querySelectorAll('.close-panel')
     .forEach((el) => el.addEventListener('click', closePanel))
+
+document.getElementById('search-form').addEventListener('submit', processForm)
 
 /**
  * DOMContentLoaded

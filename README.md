@@ -1,3 +1,6 @@
+[![Chrome Web Store Users](https://img.shields.io/chrome-web-store/users/ipliinigkdddaaeaoncoljmdaoabgjdo?logo=google&logoColor=white&label=users)](https://chromewebstore.google.com/detail/geoimage/ipliinigkdddaaeaoncoljmdaoabgjdo)
+[![GitHub Downloads](https://img.shields.io/github/downloads/cssnr/geo-image/total?logo=github)](https://github.com/cssnr/geo-image/releases)
+[![Chrome Web Store Version](https://img.shields.io/chrome-web-store/v/ipliinigkdddaaeaoncoljmdaoabgjdo?label=chrome&logo=googlechrome&logoColor=white)](https://chromewebstore.google.com/detail/geo-image/ipliinigkdddaaeaoncoljmdaoabgjdo)
 [![GitHub Release Version](https://img.shields.io/github/v/release/cssnr/geo-image?logo=github)](https://github.com/cssnr/geo-image/releases/latest)
 [![Workflow Build](https://img.shields.io/github/actions/workflow/status/cssnr/geo-image/build.yaml?logo=norton&logoColor=white&label=build)](https://github.com/cssnr/geo-image/actions/workflows/build.yaml)
 [![Workflow Test](https://img.shields.io/github/actions/workflow/status/cssnr/geo-image/test.yaml?logo=norton&logoColor=white&label=test)](https://github.com/cssnr/geo-image/actions/workflows/test.yaml)
@@ -47,6 +50,11 @@ All **Chromium** Based Browsers can install the extension from the
 - Download a [Chrome Release](https://github.com/cssnr/geo-image/releases/latest/download/geo_image-chrome.crx) from GitHub
 - Download a [Firefox Release](https://github.com/cssnr/geo-image/releases/latest/download/geo_image-firefox.xpi) from GitHub
 
+[![Android QR Code](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/geo-image/qr-code-android.png)](https://github.com/cssnr/geo-image/releases/latest/download/geo_image-firefox.xpi)
+
+_Note: To install self-hosted extensions on Android you must enable a hidden menu item:_  
+[_https://extensionworkshop.com/documentation/publish/install-self-distributed_](https://extensionworkshop.com/documentation/publish/install-self-distributed/#install-addon-from-file-android)
+
 ## Features
 
 - Uses Gemini API
@@ -60,15 +68,17 @@ All **Chromium** Based Browsers can install the extension from the
 
 ## Configuration
 
-Open the Options 1 of 3 ways:
+First, Open the Options by:
 
+- Extension Toolbar Icon
 - Right-Click Context Menu
 - Keyboard Shortcut (Alt+Shift+O)
-- Extension Toolbar Icon
 
-Next, add your Gemini API Key.
+Then, add your Gemini API Key. Done.
 
-Then, right-click on an image: `GeoImage` > `Analyze Image`
+To use, right-click on an image: `GeoImage` > `Analyze Image`
+
+Additionally, you can paste an image link into the input and `Go`.
 
 ## Support
 

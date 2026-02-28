@@ -4,12 +4,16 @@ import {
     checkPerms,
     grantPerms,
     linkClick,
+    onChanged,
+    processForm,
     saveOptions,
     showToast,
     updateManifest,
     updatePlatform,
     updateTable,
 } from './export.js'
+
+chrome.storage.onChanged.addListener(onChanged)
 
 document.addEventListener('DOMContentLoaded', initPopup)
 document
@@ -28,6 +32,8 @@ document
     .querySelectorAll('[data-bs-toggle="tooltip"]')
     .forEach((el) => new bootstrap.Tooltip(el))
 
+document.getElementById('search-form').addEventListener('submit', processForm)
+
 /**
  * Initialize Popup
  * @function initPopup
@@ -39,10 +45,10 @@ async function initPopup() {
 
     // Check Host Permissions
     checkPerms().then((hasPerms) => {
-        if (!hasPerms) {
-            return console.log('%cHost Permissions Not Granted', 'color: Red')
-        }
+        if (!hasPerms) console.log('%cHost Permissions Not Granted', 'color: Red')
     })
+
+    document.getElementById('image-input').focus()
 
     updateTable().catch((e) => showToast(e.message))
 }

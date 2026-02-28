@@ -1,15 +1,17 @@
 // JS for panel.html
 
-import { debounce, onChanged, showToast, updateTable } from './export.js'
+import { debounce, onChanged, processForm, showToast, updateTable } from './export.js'
 
 chrome.storage.onChanged.addListener(onChanged)
+
+window.addEventListener('resize', debounce(windowResize))
 
 document.addEventListener('DOMContentLoaded', domContentLoaded)
 document
     .querySelectorAll('.close-panel')
     .forEach((el) => el.addEventListener('click', closePanel))
 
-window.addEventListener('resize', debounce(windowResize))
+document.getElementById('search-form').addEventListener('submit', processForm)
 
 /**
  * DOMContentLoaded
@@ -26,6 +28,8 @@ async function domContentLoaded() {
     // chrome.storage.sync.get(['options']).then((items) => {
     //     console.debug('options:', items.options)
     // })
+
+    document.getElementById('image-input').focus()
 
     updateTable().catch((e) => showToast(e.message))
 }

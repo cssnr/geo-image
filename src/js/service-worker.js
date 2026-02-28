@@ -7,6 +7,7 @@ import {
     openPopup,
     openSidePanel,
     githubURL,
+    openPage,
 } from './export.js'
 
 chrome.runtime.onInstalled.addListener(onInstalled)
@@ -120,9 +121,7 @@ async function onClicked(ctx, tab) {
     } else if (ctx.menuItemId === 'openSidePanel') {
         await openSidePanel()
     } else if (ctx.menuItemId === 'analyzeImage') {
-        const srcUrl = encodeURIComponent(ctx.srcUrl)
-        const url = chrome.runtime.getURL(`/html/page.html?url=${srcUrl}`)
-        await chrome.tabs.create({ active: true, url })
+        await openPage(ctx.srcUrl)
     } else {
         console.error(`Unknown ctx.menuItemId: ${ctx.menuItemId}`)
     }
@@ -207,7 +206,6 @@ function createContextMenus() {
         [['all'], 'openPopup', 'Open Popup'],
         [['all'], 'openSidePanel', 'Open Side Panel'],
         [['all'], 'openExtPanel', 'Open Extension Panel'],
-        // [['all'], 'openPage', 'Open Extension Page'],
         [['all'], 'separator'],
         [['all'], 'openOptions', 'Open Options'],
     ]
@@ -248,7 +246,6 @@ function addContext(context) {
  */
 async function setDefaultOptions(defaultOptions) {
     console.log('setDefaultOptions', defaultOptions)
-    // options
     let { options } = await chrome.storage.sync.get(['options'])
     options = options || {}
     let changed = false

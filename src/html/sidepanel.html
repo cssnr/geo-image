@@ -36,11 +36,15 @@
                     v<span class="version"></span></a>
             </div>
 
-            <div class="" data-mobile-add="d-none">
+            <div class="ms-1" data-mobile-add="d-none">
+                <a class="btn btn-sm btn-outline-info" href="../html/panel.html" title="Extension Panel">
+                    <i class="fa-regular fa-window-restore me-1"></i></a>
+            </div>
+            <div class="ms-1" data-mobile-add="d-none">
                 <a class="btn btn-sm btn-outline-info open-popup" role="button" title="Side Panel">
                     <i class="fa-solid fa-window-maximize"></i></a>
             </div>
-            <div class="ms-2">
+            <div class="ms-1">
                 <a class="btn btn-sm btn-outline-info" role="button" href="../html/options.html" title="Options">
                     <i class="fa-solid fa-gears"></i></a>
             </div>
@@ -53,10 +57,23 @@
 <main class="flex-grow-1">
     <div class="container-fluid">
 
-        <table class="table table-sm table-striped">
+        <div class="my-1">
+            <form id="search-form">
+                <label for="image-input" class="visually-hidden">Image Link</label>
+                <div class="input-group">
+                    <input id="image-input" type="text" class="form-control form-control-sm" placeholder="Link to an Image to Analyze"
+                           aria-label="Link to an Image to Analyze" aria-describedby="submit-image" required>
+                    <button class="btn btn-outline-success" type="submit" id="submit-image">Go</button>
+                </div>
+            </form>
+        </div>
+
+        <table class="table table-sm table-striped w-100" style="table-layout: fixed;">
             <thead>
             <tr>
+                <th class="text-center" style="width: 28px;"><i class="fa-solid fa-list-ol"></i></th>
                 <th>Location</th>
+                <th class="text-center" style="width: 28px;"><i class="fa-solid fa-trash-can"></i></th>
             </tr>
             </thead>
             <tbody></tbody>
@@ -86,6 +103,7 @@
             <div class="toast-body text-break small"></div>
         </div>
     </div>
+    <i class="fa-regular fa-trash-can"></i>
 </div> <!-- clone -->
 
 <script type="text/javascript" src="../dist/jquery/jquery.min.js"></script>
