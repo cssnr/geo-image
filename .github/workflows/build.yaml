@@ -93,7 +93,6 @@ jobs:
       - name: "Generate Release Notes"
         id: notes
         run: |
-          echo ralf broke
           notes="Full Release Notes: ${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ github.ref_name }}"
           echo "notes=$notes" >> "$GITHUB_OUTPUT"
 
@@ -128,10 +127,11 @@ jobs:
           file "${{ env.PACKAGE_NAME }}-firefox.xpi"
 
       - name: "Upload to Actions"
+        if: ${{ github.event_name == 'release' }}
         uses: actions/upload-artifact@v6
         with:
           name: signed
-          path: web-ext-artifacts/
+          path: web-ext-artifacts
 
       - name: "Upload to Release"
         if: ${{ github.event_name == 'release' }}
@@ -279,7 +279,7 @@ jobs:
 #        uses: actions/upload-artifact@v3
 #        with:
 #          name: signed
-#          path: web-ext-artifacts/
+#          path: web-ext-artifacts
 #
 #      - name: 'Upload to Release'
 #        uses: svenstaro/upload-release-action@v2
