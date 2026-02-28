@@ -505,7 +505,6 @@ export async function processForm(event) {
 export function onChanged(changes, namespace) {
     console.debug('onChanged:', changes, namespace)
     if (namespace === 'sync') {
-        console.debug('onChanged:', changes, namespace)
         for (const [key, { newValue }] of Object.entries(changes)) {
             if (key === 'options') {
                 updateOptions(newValue)
@@ -513,7 +512,6 @@ export function onChanged(changes, namespace) {
         }
     }
     if (namespace === 'local') {
-        console.debug('changes:', changes)
         for (const [key, { newValue }] of Object.entries(changes)) {
             console.debug('key:', key)
             if (key.toLowerCase().startsWith('http')) {
