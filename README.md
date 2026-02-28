@@ -2,7 +2,7 @@
 [![GitHub Downloads](https://img.shields.io/github/downloads/cssnr/geo-image/total?logo=github)](https://github.com/cssnr/geo-image/releases)
 [![Chrome Web Store Version](https://img.shields.io/chrome-web-store/v/ipliinigkdddaaeaoncoljmdaoabgjdo?label=chrome&logo=googlechrome&logoColor=white)](https://chromewebstore.google.com/detail/geo-image/ipliinigkdddaaeaoncoljmdaoabgjdo)
 [![GitHub Release Version](https://img.shields.io/github/v/release/cssnr/geo-image?logo=github)](https://github.com/cssnr/geo-image/releases/latest)
-[![Workflow Build](https://img.shields.io/github/actions/workflow/status/cssnr/geo-image/build.yaml?logo=norton&logoColor=white&label=build)](https://github.com/cssnr/geo-image/actions/workflows/build.yaml)
+[![Workflow Release](https://img.shields.io/github/actions/workflow/status/cssnr/geo-image/release.yaml?logo=norton&logoColor=white&label=release)](https://github.com/cssnr/geo-image/actions/workflows/release.yaml)
 [![Workflow Test](https://img.shields.io/github/actions/workflow/status/cssnr/geo-image/test.yaml?logo=norton&logoColor=white&label=test)](https://github.com/cssnr/geo-image/actions/workflows/test.yaml)
 [![Workflow Lint](https://img.shields.io/github/actions/workflow/status/cssnr/geo-image/lint.yaml?logo=norton&logoColor=white&label=lint)](https://github.com/cssnr/geo-image/actions/workflows/lint.yaml)
 [![GitHub Last Commit](https://img.shields.io/github/last-commit/cssnr/geo-image?logo=listenhub&label=updated)](https://github.com/cssnr/geo-image/pulse)
