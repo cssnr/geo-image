@@ -34,8 +34,6 @@ document
 
 document.getElementById('search-form').addEventListener('submit', processForm)
 
-const imageInput = document.getElementById('image-input')
-
 /**
  * Initialize Popup
  * @function initPopup
@@ -50,7 +48,7 @@ async function initPopup() {
         if (!hasPerms) console.log('%cHost Permissions Not Granted', 'color: Red')
     })
 
-    imageInput.focus()
+    document.getElementById('image-input').focus()
 
     updateTable().catch((e) => showToast(e.message))
 }

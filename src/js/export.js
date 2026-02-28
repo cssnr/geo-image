@@ -489,6 +489,7 @@ export async function processForm(event) {
         const url = new URL(link)
         console.debug('url:', url)
         await openPage(url.href)
+        target.reset()
         if (target.dataset.close !== undefined) window.close()
     } catch (e) {
         showToast(e.message, 'danger')
@@ -551,7 +552,8 @@ export async function updateTable() {
         const hostLink = document.createElement('a')
         hostLink.textContent = `${data.country}, ${data.state}, ${data.city}`
         hostLink.title = url
-        hostLink.href = url
+        const srcUrl = encodeURIComponent(url)
+        hostLink.href = chrome.runtime.getURL(`/html/page.html?url=${srcUrl}`)
         hostLink.target = '_blank'
         cell2.classList.add('overflow-hidden', 'text-ellipsis')
         cell2.appendChild(hostLink)

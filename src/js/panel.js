@@ -29,6 +29,8 @@ async function domContentLoaded() {
     //     console.debug('options:', items.options)
     // })
 
+    document.getElementById('image-input').focus()
+
     updateTable().catch((e) => showToast(e.message))
 }
 
