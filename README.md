@@ -78,6 +78,8 @@ Then, add your Gemini API Key. Done.
 
 To use, right-click on an image: `GeoImage` > `Analyze Image`
 
+Additionally, you can paste an image link into the input and `Go`.
+
 ## Support
 
 Logs can be found inspecting the page (Ctrl+Shift+I), clicking on the Console, and;
