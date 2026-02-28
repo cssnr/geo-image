@@ -32,6 +32,18 @@ jobs:
       contents: write
 
     steps:
+      - name: "Debug event.json"
+        continue-on-error: true
+        run: cat "${GITHUB_EVENT_PATH}"
+      - name: "Debug CTX github"
+        continue-on-error: true
+        env:
+          GITHUB_CTX: ${{ toJSON(github) }}
+        run: echo "$GITHUB_CTX"
+      - name: "Debug Environment"
+        continue-on-error: true
+        run: env
+
       - name: "Update Release Notes Action"
         continue-on-error: true
         uses: smashedr/update-release-notes-action@master
@@ -69,7 +81,7 @@ jobs:
           name: "amo-metadata.json"
           json: '{"version": {"release_notes": {"en-US": "${{ steps.notes.outputs.notes }}"}}}'
 
-      - name: "Debug"
+      - name: "Debug Metadata"
         continue-on-error: true
         run: |
           ls -lAh .

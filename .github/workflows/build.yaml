@@ -38,6 +38,11 @@ jobs:
         with:
           values: ${{ inputs.version }}
 
+      - name: "Debug Manifest"
+        continue-on-error: true
+        run: |
+          cat -n manifest.json
+
       - name: "Build"
         run: |
           npm run build
