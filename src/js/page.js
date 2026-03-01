@@ -87,6 +87,10 @@ async function processUrl() {
     // noinspection JSUnresolvedReference
     document.getElementById('explanation').textContent = data.explanation
 
+    document.getElementById('latitude').textContent = data.coordinates?.latitude || 'N/A'
+    document.getElementById('longitude').textContent =
+        data.coordinates?.longitude || 'N/A'
+
     loadingEl.classList.add('d-none')
     resultsEl.classList.remove('d-none')
 

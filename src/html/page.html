@@ -13,20 +13,65 @@
 <body>
 
 <div class="container-fluid p-3">
+
     <div id="alert" class="alert alert-danger d-none" role="alert"></div>
-    <div id="loading" class="fs-1">
+
+    <div id="loading" class="fs-1 text-center py-5">
         <p>Processing Image...</p>
         <p><i class="fa-solid fa-sync fa-spin fa-xl"></i></p>
     </div>
+
     <div id="results" class="d-none">
-        <h2><span id="country"></span>, <span id="city"></span>, <span id="state"></span></h2>
-        <h3 id="location"></h3>
-        <div><a id="geo" class="d-none" target="_blank" rel="noopener">Open in GeoHack - Maps, Earth, and more...</a></div>
-        <p class="lead" id="explanation"></p>
-        <p id="description"></p>
-    </div>
-    <hr>
-    <img id="image" class="img-thumbnail">
+        <div class="row g-4">
+
+            <!-- Left column: result details (renders first on mobile = top) -->
+            <div class="col-12 col-md-7 col-lg-8 d-flex flex-column gap-2">
+
+                <!-- Location heading -->
+                <div>
+                    <h2 class="mb-0">
+                        <span id="city"></span><span class="text-muted">,</span>
+                        <span id="state"></span>
+                    </h2>
+                    <h4 class="text-muted mb-0"><span id="country"></span></h4>
+                </div>
+
+                <!-- Address / place -->
+                <h5 id="location" class="mb-0"></h5>
+
+                <!-- Coordinates row -->
+                <div class="d-flex flex-wrap gap-3">
+                    <a id="geo" class="d-none btn btn-sm btn-outline-secondary" target="_blank" rel="noopener">
+                        <i class="fa-solid fa-map-pin me-1"></i>Open in GeoHack
+                    </a>
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-grip-lines text-secondary"></i>
+                        <span id="latitude" class="fw-semibold font-monospace small"></span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-grip-lines-vertical text-secondary"></i>
+                        <span id="longitude" class="fw-semibold font-monospace small"></span>
+                    </div>
+                </div>
+
+                <hr class="my-1">
+
+                <!-- Explanation -->
+                <p class="lead mb-1" id="explanation"></p>
+
+                <!-- Description -->
+                <p id="description" class="mb-0"></p>
+
+            </div><!-- /col -->
+
+            <!-- Right column: image (renders last on mobile = bottom) -->
+            <div class="col-12 col-md-5 col-lg-4">
+                <img id="image" class="img-thumbnail w-100 h-auto">
+            </div>
+
+        </div><!-- /row -->
+    </div><!-- /results -->
+
 </div> <!-- container -->
 
 <button type="button" class="btn btn-outline-primary" id="back-to-top">
