@@ -524,27 +524,26 @@ export function onChanged(changes, namespace) {
 
 export async function updateTable() {
     const items = await chrome.storage.local.get(null)
-    console.debug('items:', items)
-
-    // const keys = Object.keys(items).filter((k) => k.startsWith('http'))
-    // console.log('keys:', keys)
-
+    // console.debug('items:', items)
     const filtered = Object.fromEntries(
         Object.entries(items).filter(([k]) => k.startsWith('http')),
     )
-    console.debug('filtered:', filtered)
+    // console.debug('filtered:', filtered)
 
     const faTrashCan = document.querySelector('#clone > .fa-trash-can')
-
-    const tbody = document.querySelector('table tbody')
+    const tbody = document.querySelector('#history-table tbody')
+    if (!tbody) return console.debug('#history-table tbody not found')
     tbody.innerHTML = ''
-    for (const [i, [url, data]] of Object.entries(filtered).reverse().entries()) {
-        console.debug(`url ${i + 1}:`, url)
+    const entries = Object.entries(filtered).reverse()
+    console.debug('entries:', entries.length)
+    for (const [i, [url, data]] of entries.entries()) {
+        const num = entries.length - i
+        // console.debug(`url ${num}:`, url)
         const row = tbody.insertRow()
 
         const cell1 = row.insertCell()
         cell1.classList.add('text-center')
-        cell1.appendChild(document.createTextNode(`${i + 1}`))
+        cell1.appendChild(document.createTextNode(`${num}`))
 
         const cell2 = row.insertCell()
         const hostLink = document.createElement('a')
