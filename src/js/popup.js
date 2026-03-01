@@ -50,5 +50,14 @@ async function initPopup() {
 
     document.getElementById('image-input').focus()
 
-    updateTable().catch((e) => showToast(e.message))
+    updateTable()
+        .then(checkScrollHeight)
+        .catch((e) => showToast(e.message))
+}
+
+function checkScrollHeight() {
+    const el = document.documentElement
+    if (el.scrollHeight > el.clientHeight) {
+        document.body.style.paddingRight = window.innerWidth - el.clientWidth + 'px'
+    }
 }
