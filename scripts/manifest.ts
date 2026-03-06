@@ -14,7 +14,7 @@ const config =
 
 if (mode === 'chrome') {
   Object.assign(config, {
-    service_worker: {
+    background: {
       service_worker: 'service-worker-loader.js',
       type: 'module',
     },
