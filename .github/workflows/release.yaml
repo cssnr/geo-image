@@ -72,6 +72,10 @@ jobs:
         run: |
           unzip ./*firefox* -d src
 
+      - name: "Debug Manifest"
+        run: |
+          cat -n src/manifest.json
+
       - name: "Generate Release Notes"
         id: notes
         run: |

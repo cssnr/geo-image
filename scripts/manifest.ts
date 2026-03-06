@@ -12,5 +12,21 @@ const manifestFile = 'dist/manifest.json'
 const config =
   typeof manifest === 'function' ? await manifest({ mode, command: 'build' }) : manifest
 
+if (mode === 'chrome') {
+  Object.assign(config, {
+    service_worker: {
+      service_worker: 'service-worker-loader.js',
+      type: 'module',
+    },
+  })
+} else {
+  Object.assign(config, {
+    background: {
+      scripts: ['service-worker-loader.js'],
+      type: 'module',
+    },
+  })
+}
+
 fs.writeFileSync(manifestFile, JSON.stringify(config, null, 2))
 console.log(`Generated ${mode}: ${manifestFile}`)
