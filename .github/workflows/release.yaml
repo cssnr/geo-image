@@ -72,6 +72,14 @@ jobs:
         run: |
           unzip ./*firefox* -d src
 
+      - name: "Debug Artifact"
+        continue-on-error: true
+        run: |
+          ls -lAh src
+          echo "::group::cat src/manifest.json"
+          cat -n src/manifest.json
+          echo "::endgroup::"
+
       - name: "Generate Release Notes"
         id: notes
         run: |
@@ -90,7 +98,7 @@ jobs:
           curl -L "${{ github.event.release.tarball_url }}" -o source.tar.gz
           file source.tar.gz
 
-      - name: "Debug"
+      - name: "Debug Source"
         continue-on-error: true
         run: |
           ls -lAh .

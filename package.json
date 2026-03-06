@@ -8,6 +8,7 @@
     "dev": "vite",
     "dev:ff": "vite build --watch --mode firefox",
     "android": "web-ext run -t firefox-android -s dist --firefox-apk org.mozilla.firefox_beta --adb-device",
+    "lint:web-ext": "npm run manifest:firefox && npx web-ext lint --self-hosted --source-dir dist",
     "clean": "rm -rf dist",
     "build": "vue-tsc -b && vite build",
     "build:all": "npm run build:chrome && npm run manifest:firefox && npm run pkg:firefox",
