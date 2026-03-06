@@ -1,0 +1,48 @@
+{
+  "name": "geo-image",
+  "description": "GeoImage Web Extension to Locate Images using Gemini AI.",
+  "version": "0.0.1",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "dev:ff": "vite build --watch --mode firefox",
+    "android": "web-ext run -t firefox-android -s dist --firefox-apk org.mozilla.firefox_beta --adb-device",
+    "clean": "rm -rf dist",
+    "build": "vue-tsc -b && vite build",
+    "build:all": "npm run build:chrome && npm run manifest:firefox && npm run pkg:firefox",
+    "build:chrome": "npm run build && npm run pkg:chrome",
+    "build:firefox": "npm run build -- --mode firefox && npm run pkg:firefox",
+    "manifest:chrome": "tsx scripts/manifest.ts",
+    "manifest:firefox": "tsx scripts/manifest.ts firefox",
+    "pkg:chrome": "npx web-ext build -n {name}-chrome-{version}.zip -o -s dist",
+    "pkg:firefox": "npx web-ext build -n {name}-firefox-{version}.zip -o -s dist",
+    "prettier:check": "npx prettier --check .",
+    "prettier:write": "npx prettier --write .",
+    "yamllint": "yamllint -c .github/yamllint.yaml ."
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^7.2.0",
+    "bootstrap": "^5.3.8",
+    "bootswatch": "^5.3.8",
+    "vue": "^3.5.29"
+  },
+  "devDependencies": {
+    "@crxjs/vite-plugin": "^2.3.0",
+    "@types/bootstrap": "^5.2.10",
+    "@types/chrome": "^0.1.37",
+    "@types/firefox-webext-browser": "^143.0.0",
+    "@types/node": "^25.3.5",
+    "@vitejs/plugin-vue": "^6.0.4",
+    "@vue/tsconfig": "^0.9.0",
+    "idb": "^8.0.3",
+    "prettier": "^3.8.1",
+    "sass": "^1.97.3",
+    "tsx": "^4.21.0",
+    "typescript": "~5.9.3",
+    "vite": "^7.3.1",
+    "vite-plugin-zip-pack": "^1.2.4",
+    "vue-tsc": "^3.2.5",
+    "web-ext": "^9.4.0"
+  }
+}

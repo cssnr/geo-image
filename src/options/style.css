@@ -1,0 +1,49 @@
+html,
+body,
+#app {
+    height: 100%;
+}
+
+:root,
+[data-bs-theme='light'] {
+    --bs-emphasis-bg: var(--bs-white);
+    --bs-emphasis-bg-rgb: var(--bs-white-rgb);
+}
+
+[data-bs-theme='dark'] {
+    --bs-emphasis-bg: var(--bs-black);
+    --bs-emphasis-bg-rgb: var(--bs-black-rgb);
+}
+
+body {
+    min-width: 340px;
+    width: 100%;
+    max-width: 100vw;
+
+    overflow-y: scroll;
+    /*noinspection CssUnknownTarget*/
+    background: url('/images/banner.jpg') no-repeat center fixed;
+    background-size: cover;
+}
+
+#options-wrapper {
+    max-width: 767px;
+}
+
+.blur {
+    backdrop-filter: blur(6px);
+}
+
+.form-control,
+.glass-outline {
+    background-color: rgba(var(--bs-emphasis-bg-rgb), 50%);
+}
+
+[data-bs-theme='dark'] .glass-outline {
+    border: 1px solid rgba(var(--bs-white-rgb), 15%);
+    filter: drop-shadow(15px 15px 12px var(--bs-black));
+}
+
+[data-bs-theme='light'] .glass-outline {
+    border: 1px solid rgba(var(--bs-black-rgb), 17.5%);
+}
