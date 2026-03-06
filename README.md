@@ -21,7 +21,7 @@
 # GeoImage
 
 <a title="GeoImage" href="https://github.com/cssnr/geo-image?tab=readme-ov-file#readme" target="_blank">
-<img alt="GeoImage" align="right" width="128" height="auto" src="https://raw.githubusercontent.com/cssnr/geo-image/master/src/images/logo128.png"></a>
+<img alt="GeoImage" align="right" width="128" height="auto" src="https://raw.githubusercontent.com/cssnr/geo-image/master/public/images/logo128.png"></a>
 
 - [Install](#install)
 - [Features](#features)
@@ -34,6 +34,9 @@ GeoImage Web Extension for Chrome and Firefox.
 Use Gemini AI to determine the location of an image based on the image data (not metadata).
 
 Works with a Free Gemini API Key: https://aistudio.google.com/app/api-keys
+
+> Note: This is the new TS Extension.
+> For the VanillaJS Extension see: https://github.com/cssnr/geo-image-js
 
 ## Install
 
