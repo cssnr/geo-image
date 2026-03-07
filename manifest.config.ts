@@ -60,7 +60,7 @@ export default defineManifest(({ mode }) => {
       },
       sidebar_action: {
         default_panel: 'src/sidepanel/index.html',
-        default_title: 'GeoImage',
+        default_title: config.name,
         open_at_install: false,
         default_icon: icons,
       },

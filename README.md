@@ -3,7 +3,6 @@
 [![Chrome Web Store Version](https://img.shields.io/chrome-web-store/v/ipliinigkdddaaeaoncoljmdaoabgjdo?label=chrome&logo=googlechrome&logoColor=white)](https://chromewebstore.google.com/detail/geo-image/ipliinigkdddaaeaoncoljmdaoabgjdo)
 [![GitHub Release Version](https://img.shields.io/github/v/release/cssnr/geo-image?logo=github)](https://github.com/cssnr/geo-image/releases/latest)
 [![Workflow Release](https://img.shields.io/github/actions/workflow/status/cssnr/geo-image/release.yaml?logo=norton&logoColor=white&label=release)](https://github.com/cssnr/geo-image/actions/workflows/release.yaml)
-[![Workflow Test](https://img.shields.io/github/actions/workflow/status/cssnr/geo-image/test.yaml?logo=norton&logoColor=white&label=test)](https://github.com/cssnr/geo-image/actions/workflows/test.yaml)
 [![Workflow Lint](https://img.shields.io/github/actions/workflow/status/cssnr/geo-image/lint.yaml?logo=norton&logoColor=white&label=lint)](https://github.com/cssnr/geo-image/actions/workflows/lint.yaml)
 [![GitHub Last Commit](https://img.shields.io/github/last-commit/cssnr/geo-image?logo=listenhub&label=updated)](https://github.com/cssnr/geo-image/pulse)
 [![GitHub Repo Size](https://img.shields.io/github/repo-size/cssnr/geo-image?logo=buffer&label=repo%20size)](https://github.com/cssnr/geo-image?tab=readme-ov-file#readme)
@@ -16,7 +15,7 @@
 [![GitHub Org Stars](https://img.shields.io/github/stars/cssnr?style=flat&logo=apachespark&logoColor=white&label=org%20stars)](https://cssnr.github.io/)
 [![Discord](https://img.shields.io/discord/899171661457293343?logo=discord&logoColor=white&label=discord&color=7289da)](https://discord.gg/wXy6m2X8wY)
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-72a5f2?logo=kofi&label=support)](https://ko-fi.com/cssnr)
-[![](https://repository-images.githubusercontent.com/1168258305/5ba2c6c6-347b-4242-a07f-d21abebf2d9d)](https://github.com/cssnr/geo-image?tab=readme-ov-file#readme)
+[![](https://repository-images.githubusercontent.com/1174170464/563da1d5-f128-4fb0-b0d4-2eeb60a8cd1f)](https://github.com/cssnr/geo-image?tab=readme-ov-file#readme)
 
 # GeoImage
 
