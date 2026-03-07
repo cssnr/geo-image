@@ -17,6 +17,10 @@
         {
           "version": "0.1.0",
           "update_link": "https://github.com/cssnr/geo-image/releases/download/0.1.0/geoimage-firefox.xpi"
+        },
+        {
+          "version": "0.1.1",
+          "update_link": "https://github.com/cssnr/geo-image/releases/download/0.1.1/geoimage-firefox.xpi"
         }
       ]
     }
