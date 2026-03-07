@@ -26,6 +26,7 @@
 - [Features](#features)
 - [Configuration](#configuration)
 - [Support](#support)
+- [Development](#development)
 - [Contributing](#contributing)
 
 GeoImage Web Extension for Chrome and Firefox.
@@ -64,6 +65,12 @@ _Note: To install self-hosted extensions on Android you must enable a hidden men
 - Provides a GeoHack Link
 - Has Panel, Popup, and Side Panel.
 
+### Upcoming
+
+- Customize Prompts
+- Do More than Geolocate?
+- Tell Us what AI Should Do for You...
+
 > [!TIP]  
 > **Don't see your feature?**
 > Submit a [Feature Request](https://github.com/cssnr/geo-image/issues/new?template=1-feature.yaml).
@@ -99,6 +106,10 @@ If you run into any issues or need help getting started, please do one of the fo
 [![Discussions](https://img.shields.io/badge/discussions-blue?style=for-the-badge&logo=livechat&logoColor=white)](https://github.com/cssnr/geo-image/discussions)
 [![Discord](https://img.shields.io/badge/discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/wXy6m2X8wY)
 
+## Development
+
+See the [CONTRIBUTING.md](#contributing-ov-file) for more details.
+
 ## Contributing
 
 Please consider making a donation to support the development of this project
@@ -132,9 +143,3 @@ For a full list of current projects visit: [https://cssnr.github.io/](https://cs
    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=cssnr/geo-image&type=date&legend=bottom-right" />
  </picture>
 </a>
-
-## Development
-
-See the [CONTRIBUTING.md](#contributing-ov-file).
-
-The guide is not complete, but vue+vite just works...
