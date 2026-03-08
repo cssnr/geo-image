@@ -1,4 +1,3 @@
-// composables/useLocationsDB.ts
 import { openDB } from 'idb'
 import { LocationData } from '@/utils/api.ts'
 

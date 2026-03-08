@@ -52,6 +52,12 @@ onMounted(() => {
 <template>
   <form>
     <div v-if="!props.compact" class="mb-2">
+      <div class="form-text float-end" id="authTokenHelp">
+        <a class="text-decoration-none" href="https://aistudio.google.com/app/api-keys" target="_blank" rel="noopener">
+          Get your API Key <i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i
+        ></a>
+      </div>
+
       <label for="authToken" class="form-label"><i class="fa-solid fa-key me-2"></i> Gemini API Key</label>
       <div class="input-group col-12">
         <input
@@ -66,6 +72,7 @@ onMounted(() => {
         <button
           class="btn btn-outline-primary"
           type="button"
+          v-bs
           data-bs-toggle="tooltip"
           data-bs-placement="bottom"
           data-bs-trigger="hover"
@@ -78,6 +85,7 @@ onMounted(() => {
           id="authTokenCopy"
           class="btn btn-outline-success"
           type="button"
+          v-bs
           data-bs-toggle="tooltip"
           data-bs-placement="bottom"
           data-bs-trigger="hover"
@@ -88,9 +96,7 @@ onMounted(() => {
         </button>
       </div>
       <div class="form-text mb-3" id="authTokenHelp">
-        <a class="text-decoration-none" href="https://aistudio.google.com/app/api-keys" target="_blank" rel="noopener">
-          Get your API Key <i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i
-        ></a>
+        The API key and images you analyze are sent to the related service for processing.
       </div>
     </div>
 
@@ -99,6 +105,7 @@ onMounted(() => {
       <label class="form-check-label" for="contextMenu">Enable Right Click Menu</label>
       <i
         class="fa-solid fa-circle-info p-1"
+        v-bs
         data-bs-toggle="tooltip"
         data-bs-title="Show Context Menu on Right Click."
       ></i>
@@ -108,6 +115,7 @@ onMounted(() => {
       <label class="form-check-label" for="showUpdate">Show Release Notes on Update</label>
       <i
         class="fa-solid fa-circle-info p-1"
+        v-bs
         data-bs-toggle="tooltip"
         data-bs-title="Show Release Notes on Version Update."
       ></i>
