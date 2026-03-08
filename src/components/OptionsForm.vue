@@ -96,10 +96,7 @@ onMounted(() => {
         </button>
       </div>
       <div class="form-text mb-3" id="authTokenHelp">
-        The API key and images you analyze are sent to
-        <a href="https://gemini.google.com/" class="link-secondary text-decoration-none" target="_blank" rel="noopener"
-          >Gemini <i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i></a
-        >.
+        The API key and images you analyze are sent to the related service for processing.
       </div>
     </div>
 
