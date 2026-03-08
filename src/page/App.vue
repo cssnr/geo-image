@@ -34,6 +34,14 @@ onMounted(() => {
   const url = params.get('url')
   console.debug('url:', url)
 
+  // NOTE: Implement processing data urls...
+  // if (!url) {
+  //   chrome.runtime.sendMessage('hello').then((response) => {
+  //     console.log('response:', response)
+  //   })
+  //   return
+  // }
+
   srcUrl.value = url
 
   processUrl(url)
