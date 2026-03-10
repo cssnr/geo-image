@@ -17,7 +17,7 @@ jobs:
     uses: ./.github/workflows/build.yaml
     secrets: inherit
     with:
-      version: ${{ github.ref_name }}
+      version: ${{ github.event.release.tag_name }} # github.ref_name can be empty
     permissions:
       contents: write
 

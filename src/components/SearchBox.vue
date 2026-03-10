@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { activateOrOpen } from '@/utils/extension.ts'
+import { openPageUrl } from '@/utils/extension.ts'
 import { showToast } from '@/composables/useToast.ts'
 
 const props = withDefaults(
@@ -28,9 +28,10 @@ async function processForm(event: Event) {
     // await openPage(url.href)
 
     target.reset()
-    const encoded = encodeURIComponent(url.href)
-    const page = chrome.runtime.getURL(`/src/page/index.html?url=${encoded}`)
-    await activateOrOpen(page)
+    // const encoded = encodeURIComponent(url.href)
+    // const page = chrome.runtime.getURL(`/src/page/index.html?url=${encoded}`)
+    // await activateOrOpen(page)
+    await openPageUrl(url.href)
     if (props.closeWindow) window.close()
   } catch (e) {
     if (e instanceof Error) showToast(e.message, 'danger')

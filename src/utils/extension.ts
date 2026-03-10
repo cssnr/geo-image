@@ -46,7 +46,7 @@ export async function openPopup() {
 export async function openExtPanel(close = false) {
   console.debug('openExtPanel:', close)
 
-  const panelPath = 'src/popout/index.html'
+  const panelPath = 'popout.html'
   const [defaultWidth, defaultHeight] = [390, 600]
   const type = chrome.windows.CreateType.POPUP
 
@@ -122,3 +122,20 @@ export async function activateOrOpen(url: string, open = true) {
 //     origins: manifest.host_permissions,
 //   })
 // }
+
+export function openPage(event: Event) {
+  // const url = chrome.runtime.getURL(path)
+  console.log('openPage', event)
+  console.log('target', event.target)
+  console.log('currentTarget', event.currentTarget)
+  const target = event.currentTarget as HTMLAnchorElement
+  console.log('target.href', target.href)
+  const url = chrome.runtime.getURL(target.href)
+  return activateOrOpen(url)
+}
+
+export function openPageUrl(srcUrl: string) {
+  const encoded = encodeURIComponent(srcUrl)
+  const url = chrome.runtime.getURL(`page.html?url=${encoded}`)
+  return activateOrOpen(url)
+}

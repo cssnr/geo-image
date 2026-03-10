@@ -34,12 +34,12 @@ document.title = `${manifest.name} Panel`
 <template>
   <header class="flex-shrink-0">
     <PanelHeader :panel-button="false" :side-button="false" :popup-button="false" />
+    <SearchBox class="mt-2" />
   </header>
 
   <main class="flex-grow-1 overflow-auto p-1">
     <div class="d-grid gap-2">
       <PermsCheck />
-      <SearchBox />
       <ResultsTable />
     </div>
   </main>

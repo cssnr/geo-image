@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useToast } from '@/composables/useToast.ts'
+import { openPage } from '@/utils/extension.ts'
+import { isFirefox } from '@/utils/system.ts'
 
 const { showToast } = useToast()
 
@@ -57,7 +59,7 @@ async function revokePerms(event: Event) {
 
 async function requestPerms() {
   return await chrome.permissions.request({
-    origins: ['*://*/*'],
+    origins: manifest.host_permissions,
   })
 }
 
@@ -88,7 +90,7 @@ onUnmounted(() => {
         <i class="fa-solid fa-check-double me-1"></i> Grant Host Permissions
       </button>
       <p v-if="showInfo" class="text-center mb-0">
-        <a href="/src/permissions/index.html">More Information on Permissions</a>
+        <a href="permissions.html" @click.prevent="openPage">More Information on Permissions</a>
       </p>
     </div>
 
@@ -96,7 +98,7 @@ onUnmounted(() => {
       Permissions Granted.
     </div>
 
-    <div v-if="hasPerms && props.showRemove">
+    <div v-if="hasPerms && props.showRemove && isFirefox">
       <button
         class="btn btn-link link-danger revoke-permissions"
         type="button"

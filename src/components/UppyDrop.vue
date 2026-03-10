@@ -15,15 +15,17 @@ let uppy: Uppy
 
 function analyzeImage() {
   modal.hide()
-  // console.log('Data to Process:', imageSrc.value)
-  const url = chrome.runtime.getURL('/src/page/index.html')
+  console.log('Data to Process:', imageSrc.value)
+  const url = chrome.runtime.getURL('page.html') + '?url=message'
+  console.log('url:', url)
   chrome.tabs
     .create({ active: true, url })
     .then(() => {
       chrome.runtime.onMessage.addListener((message: any, _sender, sendResponse) => {
         console.log('onMessage:', message)
-        console.log('sendResponse:', imageSrc.value)
-        sendResponse({ imageData: imageSrc.value })
+        const response = { imageData: imageSrc.value }
+        console.log('response:', response)
+        sendResponse(response)
       })
     })
     .finally(() => {
@@ -36,7 +38,7 @@ onMounted(() => {
   modal = new Modal(imageModal.value!)
 
   imageModal.value!.addEventListener('hidden.bs.modal', () => {
-    imageSrc.value = null
+    // imageSrc.value = null
     uppy.clear()
   })
 

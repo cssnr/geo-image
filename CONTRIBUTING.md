@@ -2,7 +2,7 @@
 
 - [Development](#development)
 - [Building](#building)
-- [References](#references)
+- [WXT](#wxt)
 
 > [!WARNING]  
 > This guide is not complete and just the bare minimum.
@@ -22,9 +22,7 @@ npm run dev
 ```
 
 Open Chrome and navigate to `chrome://extensions/`, enable "Developer mode",
-and load the unpacked extension from the `dist` directory.
-
-This uses HMR including extension reloads.
+and load the unpacked extension from the `.output` directory.
 
 ### Firefox
 
@@ -33,21 +31,19 @@ npm run dev:ff
 ```
 
 Open Firefox and navigate to `about:debugging#/runtime/this-firefox`, then click "Load Temporary Add-on..."
-and load the unpacked extension from the `dist` directory.
-
-This requires refreshing the page and reloading the extension when required.
+and load the unpacked extension from the `.output` directory.
 
 ### Android
 
 This requires the [Android Debug Bridge (adb)](https://developer.android.com/tools/adb).
 
-In another terminal (or without the watcher run `npm build:firefox`).
+In another terminal (or without the watcher run `npm build:ff`).
 
 ```shell
-npm run dev:ff
+npm run watch:ff
 ```
 
-Enable USB or Wireless Debugging and get your device `name`.
+Enable USB or Wireless Debugging, connect, and get your device `name`.
 
 ```shell
 adb devices
@@ -59,50 +55,60 @@ Then run using your device `name`.
 npm run android -- name
 ```
 
-Or run directly w/o the --firefox-apk flag from the script.
+# Building
+
+## Package All
+
+This type checks the project, builds and zips to the `.output` directory.
 
 ```shell
-web-ext run -t firefox-android -s dist --adb-device name
-```
-
-## Building
-
-To create all archives in the `web-ext-artifacts` directory.
-
-```shell
-npm run build:all
+npm run package
 ```
 
 ### Chrome
 
-To build the `dist` directory.
+To build the `.output` directory.
 
 ```shell
 npm run build
 ```
 
-To build and create an archive in the `web-ext-artifacts` directory.
+To build and create an archive in the `.output` directory.
 
 ```shell
-npm run build:chrome
+npm run zip:chrome
 ```
 
 ### Firefox
 
-To build the `dist` directory.
+To build the `.output` directory.
 
 ```shell
-npm run build -- --mode firefox
+npm build:ff
 ```
 
-To build and create an archive in the `web-ext-artifacts` directory.
+To build and create an archive in the `.output` directory.
 
 ```shell
-npm run build:firefox
+npm run zip:ff
 ```
 
-## References
+## WXT
 
-- [Vue 3 Documentation](https://vuejs.org/)
-- [Vite Documentation](https://vitejs.dev/)
-- [CRXJS Documentation](https://crxjs.dev/vite-plugin)
+This project uses the WXT framework.
+
+- <https://wxt.dev/>
+
+To customize the config for development add a `web-ext.config.ts` to the project root.
+
+```ts
+// web-ext.config.ts
+import { defineWebExtConfig } from 'wxt'
+
+export default defineWebExtConfig({
+  binaries: {
+    firefox: 'C:/Program Files/Firefox Developer Edition/firefox.exe',
+  },
+  disabled: false,
+})
+```

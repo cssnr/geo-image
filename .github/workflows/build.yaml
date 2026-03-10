@@ -45,16 +45,17 @@ jobs:
           cat -n package.json
 
       - name: "Build"
-        run: npm run build:all
+        run: npm run package
 
       - name: "Upload to Actions"
         uses: actions/upload-artifact@v6
         with:
           name: artifacts
-          path: web-ext-artifacts
+          path: .output
+          include-hidden-files: true
 
       - name: "Upload to Release"
         if: ${{ github.event_name == 'release' }}
         uses: cssnr/upload-release-action@v1
         with:
-          globs: web-ext-artifacts/*
+          globs: .output/*.zip
