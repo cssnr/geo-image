@@ -68,18 +68,6 @@ jobs:
         with:
           name: artifacts
 
-      - name: "Unzip Artifact"
-        run: |
-          unzip ./*firefox* -d src
-
-      - name: "Debug Artifact"
-        continue-on-error: true
-        run: |
-          ls -lAh src
-          echo "::group::cat src/manifest.json"
-          cat -n src/manifest.json
-          echo "::endgroup::"
-
       - name: "Generate Release Notes"
         id: notes
         run: |
@@ -92,18 +80,17 @@ jobs:
           name: "amo-metadata.json"
           json: '{"version": {"release_notes": {"en-US": "${{ steps.notes.outputs.notes }}"}}}'
 
-      - name: "Download Source"
-        run: |
-          echo "${{ github.event.release.tarball_url }}"
-          curl -L "${{ github.event.release.tarball_url }}" -o source.tar.gz
-          file source.tar.gz
-
-      - name: "Debug Source"
+      - name: "Debug"
         continue-on-error: true
         run: |
           ls -lAh .
-          echo "::group::ls src"
-          ls -lAh src
+          file "${{ env.PACKAGE_NAME }}-${{ github.event.release.tag_name }}-firefox.zip"
+          yq -e '.version | test("${{ github.event.release.tag_name }}")' firefox-mv3/manifest.json
+          echo "::group::ls firefox-mv3"
+          ls -lAh firefox-mv3
+          echo "::endgroup::"
+          echo "::group::cat firefox-mv3/manifest.json"
+          cat -n firefox-mv3/manifest.json
           echo "::endgroup::"
           echo "::group::cat amo-metadata.json"
           cat -n amo-metadata.json
@@ -115,9 +102,9 @@ jobs:
             --api-key="${{ secrets.FIREFOX_API_KEY }}" \
             --api-secret="${{ secrets.FIREFOX_API_SECRET }}" \
             --channel="${{ env.MOZILLA_CHANNEL }}" \
-            --source-dir="src" \
+            --source-dir="firefox-mv3" \
             --amo-metadata="amo-metadata.json" \
-            --upload-source-code="source.tar.gz"
+            --upload-source-code="${{ env.PACKAGE_NAME }}-${{ github.event.release.tag_name }}-firefox.zip"
 
       - name: "Rename Signed Artifact"
         working-directory: web-ext-artifacts
