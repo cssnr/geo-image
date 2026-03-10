@@ -55,9 +55,9 @@ Then run using your device `name`.
 npm run android -- name
 ```
 
-# Building
+## Building
 
-## Package All
+### Package All
 
 This type checks the project, builds and zips to the `.output` directory.
 
