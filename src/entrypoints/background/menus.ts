@@ -1,9 +1,4 @@
-import {
-  activateOrOpen,
-  openExtPanel,
-  openPopup,
-  openSidePanel,
-} from '@/utils/extension.ts'
+import { openExtPanel, openPageUrl, openSidePanel } from '@/utils/extension.ts'
 
 const contexts: chrome.contextMenus.CreateProperties[] = [
   { contexts: ['image'], id: 'analyzeImage', title: 'Analyze Image' },
@@ -41,9 +36,10 @@ export async function onClicked(
   } else if (ctx.menuItemId === 'openSidePanel') {
     openSidePanel()
   } else if (ctx.menuItemId === 'analyzeImage') {
-    const encoded = encodeURIComponent(ctx.srcUrl ?? '')
-    const url = chrome.runtime.getURL(`/src/page/index.html?url=${encoded}`)
-    return activateOrOpen(url)
+    // const encoded = encodeURIComponent(ctx.srcUrl ?? '')
+    // const url = chrome.runtime.getURL(`/src/page/index.html?url=${encoded}`)
+    // return activateOrOpen(url)
+    return openPageUrl(ctx.srcUrl ?? '')
   } else {
     console.error(`Unknown ctx.menuItemId: ${ctx.menuItemId}`)
   }

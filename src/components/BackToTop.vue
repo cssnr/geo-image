@@ -54,7 +54,7 @@ const topClick = () => {
 <style scoped>
 #back-to-top {
   position: fixed;
-  bottom: 50px;
+  bottom: 64px;
   right: 10px;
   display: none;
   z-index: 3;

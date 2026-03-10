@@ -29,22 +29,24 @@ function setErrorIcon() {
   })
 }
 
-onMounted(() => {
+async function process(): Promise<LocationData> {
   const params = new URLSearchParams(window.location.search)
   const url = params.get('url')
   console.debug('url:', url)
+  if (url === 'message') {
+    const response = await chrome.runtime.sendMessage('hello')
+    console.log('response:', response)
+    if (!response.imageData) throw new Error('No Image Data')
+    srcUrl.value = response.imageData
+    throw new Error('Local Analysis Not Yet Supported!')
+  } else {
+    srcUrl.value = url
+    return await processUrl(url)
+  }
+}
 
-  // NOTE: Implement processing data urls...
-  // if (!url) {
-  //   chrome.runtime.sendMessage('hello').then((response) => {
-  //     console.log('response:', response)
-  //   })
-  //   return
-  // }
-
-  srcUrl.value = url
-
-  processUrl(url)
+onMounted(() => {
+  process()
     .then((result) => {
       console.debug('result:', result)
       data.value = result
@@ -87,7 +89,7 @@ onMounted(() => {
         <div class="alert alert-danger my-3" role="alert">{{ errorMessage }}</div>
         <p class="fst-italic">Tip: once the error is resolved you can refresh this page...</p>
         <div class="d-flex gap-2">
-          <button type="button" class="btn btn-primary" @click="openOptions()">
+          <button type="button" class="btn btn-outline-primary" @click="openOptions()">
             <i class="fa-solid fa-cog me-1"></i> Options Page
           </button>
         </div>

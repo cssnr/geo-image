@@ -40,7 +40,7 @@ async function updateTable() {
     hostLink.textContent = `${data.country}, ${data.state}, ${data.city}`
     hostLink.title = data.url
     const srcUrl = encodeURIComponent(data.url)
-    hostLink.href = chrome.runtime.getURL(`/src/page/index.html?url=${srcUrl}`)
+    hostLink.href = chrome.runtime.getURL(`page.html?url=${srcUrl}`)
     hostLink.target = '_blank'
     hostLink.addEventListener('click', (e) => {
       e.preventDefault()

@@ -1,15 +1,17 @@
-// src/background/index.ts
-
-import { createContextMenus, onClicked } from '@/background/menus.ts'
 import { openExtPanel, openSidePanel } from '@/utils/extension.ts'
 import { defaultOptions, getOptions } from '@/utils/options.ts'
 import { isFirefox } from '@/utils/system.ts'
+import { createContextMenus, onClicked } from '@/entrypoints/background/menus.ts'
 
-chrome.runtime.onInstalled.addListener(onInstalled)
-chrome.runtime.onStartup.addListener(onStartup)
-chrome.contextMenus?.onClicked.addListener(onClicked)
-chrome.commands?.onCommand.addListener(onCommand)
-chrome.storage.onChanged.addListener(onChanged)
+export default defineBackground(() => {
+  console.log('Hello background!', { id: browser.runtime.id })
+
+  chrome.runtime.onInstalled.addListener(onInstalled)
+  chrome.runtime.onStartup.addListener(onStartup)
+  chrome.contextMenus?.onClicked.addListener(onClicked)
+  chrome.commands?.onCommand.addListener(onCommand)
+  chrome.storage.onChanged.addListener(onChanged)
+})
 
 async function onInstalled(details: chrome.runtime.InstalledDetails) {
   console.log('onInstalled:', details)

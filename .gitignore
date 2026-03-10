@@ -1,3 +1,4 @@
+# Generic
 .idea/
 *.iml
 .vscode/
@@ -6,3 +7,9 @@ build/
 node_modules/
 web-ext-artifacts/
 *.tsbuildinfo
+# WXT
+.output
+stats.html
+stats-*.json
+.wxt
+web-ext.config.ts
