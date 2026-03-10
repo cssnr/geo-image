@@ -81,10 +81,9 @@ jobs:
           json: '{"version": {"release_notes": {"en-US": "${{ steps.notes.outputs.notes }}"}}}'
 
       - name: "Debug"
-        continue-on-error: true
         run: |
           ls -lAh .
-          file "${{ env.PACKAGE_NAME }}-${{ github.event.release.tag_name }}-firefox.zip"
+          file "${{ env.PACKAGE_NAME }}-${{ github.event.release.tag_name }}-source.zip"
           yq -e '.version | test("${{ github.event.release.tag_name }}")' firefox-mv3/manifest.json
           echo "::group::ls firefox-mv3"
           ls -lAh firefox-mv3
@@ -104,7 +103,7 @@ jobs:
             --channel="${{ env.MOZILLA_CHANNEL }}" \
             --source-dir="firefox-mv3" \
             --amo-metadata="amo-metadata.json" \
-            --upload-source-code="${{ env.PACKAGE_NAME }}-${{ github.event.release.tag_name }}-firefox.zip"
+            --upload-source-code="${{ env.PACKAGE_NAME }}-${{ github.event.release.tag_name }}-source.zip"
 
       - name: "Rename Signed Artifact"
         working-directory: web-ext-artifacts
