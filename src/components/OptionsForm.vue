@@ -70,7 +70,7 @@ onMounted(() => {
           @change="saveOptions"
         />
         <button
-          class="btn btn-outline-primary"
+          class="btn btn-outline-warning"
           type="button"
           v-bs
           data-bs-toggle="tooltip"

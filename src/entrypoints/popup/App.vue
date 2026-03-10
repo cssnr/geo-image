@@ -4,7 +4,6 @@ import { isFirefox, isMobile } from '@/utils/system.ts'
 
 import ResultsTable from '@/components/ResultsTable.vue'
 import ToastAlerts from '@/components/ToastAlerts.vue'
-import BackToTop from '@/components/BackToTop.vue'
 import PanelHeader from '@/components/PanelHeader.vue'
 import SearchBox from '@/components/SearchBox.vue'
 import PermsCheck from '@/components/PermsCheck.vue'
@@ -25,7 +24,6 @@ console.log('width:', width.value)
     </div>
 
     <ToastAlerts />
-    <BackToTop />
   </div>
 </template>
 

@@ -5,7 +5,7 @@ const closeWindow = () => window.close()
 </script>
 
 <template>
-  <div class="p-1">
+  <div class="p-1 pt-0">
     <div class="d-flex flex-row justify-content-end gap-2">
       <button title="Options" class="btn btn-sm btn-outline-info hvr-grow-sm" @click="openOptions()">
         <i class="fa-solid fa-gears"></i> Options

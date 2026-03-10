@@ -120,7 +120,7 @@ onMounted(() => {
                 <i class="fa-solid fa-grip-lines-vertical text-secondary"></i>
                 <span class="fw-semibold font-monospace small">{{ data.longitude || 'N/A' }}</span>
               </div>
-              <a v-if="geoHref" :href="geoHref" class="btn btn-sm btn-secondary" target="_blank" rel="noopener">
+              <a v-if="geoHref" :href="geoHref" class="btn btn-sm btn-outline-success" target="_blank" rel="noopener">
                 <i class="fa-solid fa-map me-1"></i>GeoHack
               </a>
             </div>
