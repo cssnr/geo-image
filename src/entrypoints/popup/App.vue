@@ -18,7 +18,7 @@ console.log('width:', width.value)
     <PanelHeader :close-window="true" :popup-button="false" />
 
     <div class="d-grid gap-2 p-1">
-      <PermsCheck />
+      <PermsCheck :close-window="true" />
       <SearchBox :close-window="true" />
       <ResultsTable :close-window="true" />
     </div>
