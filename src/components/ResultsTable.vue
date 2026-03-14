@@ -4,6 +4,7 @@ import { Modal } from 'bootstrap'
 import { showToast } from '@/composables/useToast.ts'
 import { useLocationsDB } from '@/composables/useLocationsDB'
 import { activateOrOpen } from '@/utils/extension.ts'
+import { getConfidenceClass } from '@/utils'
 
 const { getAllLocations, deleteLocation, locationDBChannel } = useLocationsDB()
 
@@ -71,12 +72,6 @@ async function updateTable() {
     cell4.classList.add('text-center')
     cell4.appendChild(deleteBtn)
   }
-}
-
-function getConfidenceClass(confidence: number): string {
-  if (confidence >= 90) return 'text-success'
-  if (confidence >= 70) return 'text-warning'
-  return 'text-danger'
 }
 
 function showDeleteModal(hostId: string) {
