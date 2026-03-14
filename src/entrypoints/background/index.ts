@@ -4,7 +4,7 @@ import { isFirefox } from '@/utils/system.ts'
 import { createContextMenus, onClicked } from '@/entrypoints/background/menus.ts'
 
 export default defineBackground(() => {
-  console.log('Hello background!', { id: browser.runtime.id })
+  console.log(`Loaded: ${chrome.runtime.id}`)
 
   chrome.runtime.onInstalled.addListener(onInstalled)
   chrome.runtime.onStartup.addListener(onStartup)
@@ -36,7 +36,7 @@ async function onInstalled(details: chrome.runtime.InstalledDetails) {
     if (hasPerms) {
       await chrome.runtime.openOptionsPage()
     } else {
-      const url = chrome.runtime.getURL('/src/permissions/index.html')
+      const url = chrome.runtime.getURL('permissions.html')
       await chrome.tabs.create({ active: true, url })
     }
   } else if (details.reason === chrome.runtime.OnInstalledReason.UPDATE) {

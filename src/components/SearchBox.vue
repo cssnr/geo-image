@@ -29,7 +29,7 @@ async function processForm(event: Event) {
 
     target.reset()
     // const encoded = encodeURIComponent(url.href)
-    // const page = chrome.runtime.getURL(`/src/page/index.html?url=${encoded}`)
+    // const page = chrome.runtime.getURL(`page.html?url=${encoded}`)
     // await activateOrOpen(page)
     await openPageUrl(url.href)
     if (props.closeWindow) window.close()

@@ -37,7 +37,7 @@ export async function onClicked(
     openSidePanel()
   } else if (ctx.menuItemId === 'analyzeImage') {
     // const encoded = encodeURIComponent(ctx.srcUrl ?? '')
-    // const url = chrome.runtime.getURL(`/src/page/index.html?url=${encoded}`)
+    // const url = chrome.runtime.getURL(`page.html?url=${encoded}`)
     // return activateOrOpen(url)
     return openPageUrl(ctx.srcUrl ?? '')
   } else {
