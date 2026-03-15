@@ -3,7 +3,6 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import Uppy from '@uppy/core'
 import DropTarget from '@uppy/drop-target'
 import { Modal } from 'bootstrap'
-
 import '@uppy/core/css/style.css'
 import '@uppy/drop-target/css/style.css'
 

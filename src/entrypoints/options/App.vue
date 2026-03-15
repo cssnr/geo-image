@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { copySupport } from '@/utils/options.ts'
 import { isFirefox, isMobile } from '@/utils/system.ts'
-
 import BackToTop from '@/components/BackToTop.vue'
 import PermsCheck from '@/components/PermsCheck.vue'
 import ToastAlerts from '@/components/ToastAlerts.vue'
