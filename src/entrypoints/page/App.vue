@@ -3,7 +3,7 @@ import { onMounted, ref } from 'vue'
 import { getGeoUrl, processUrl, LocationData } from '@/utils/api.ts'
 import { showToast } from '@/composables/useToast.ts'
 import { openOptions } from '@/utils/extension.ts'
-
+import { getConfidenceClass } from '@/utils'
 import ToastAlerts from '@/components/ToastAlerts.vue'
 import BackToTop from '@/components/BackToTop.vue'
 import PanelHeader from '@/components/PanelHeader.vue'
@@ -119,6 +119,12 @@ onMounted(() => {
               <div class="d-flex align-items-center gap-2">
                 <i class="fa-solid fa-grip-lines-vertical text-secondary"></i>
                 <span class="fw-semibold font-monospace small">{{ data.longitude || 'N/A' }}</span>
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <i class="fa-solid fa-percent text-secondary"></i>
+                <span class="fw-semibold font-monospace small" :class="getConfidenceClass(data.confidence)">{{
+                  data.confidence || 'N/A'
+                }}</span>
               </div>
               <a v-if="geoHref" :href="geoHref" class="btn btn-sm btn-outline-success" target="_blank" rel="noopener">
                 <i class="fa-solid fa-map me-1"></i>GeoHack
