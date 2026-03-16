@@ -123,15 +123,17 @@ export async function activateOrOpen(url: string, open = true) {
 //   })
 // }
 
-export function openPage(event: Event) {
-  // const url = chrome.runtime.getURL(path)
-  console.log('openPage', event)
-  console.log('target', event.target)
-  console.log('currentTarget', event.currentTarget)
-  const target = event.currentTarget as HTMLAnchorElement
-  console.log('target.href', target.href)
-  const url = chrome.runtime.getURL(target.href)
-  return activateOrOpen(url)
+export function clickOpen(e: Event, close = false) {
+  const target = e.currentTarget as HTMLAnchorElement
+  let url = target.href
+  console.log('clickOpen:', close, url)
+  if (!url || url === '#') return
+  if (url.startsWith('/')) {
+    url = chrome.runtime.getURL(url)
+  }
+  activateOrOpen(url).then(() => {
+    if (close || target.dataset.close === 'true') window.close()
+  })
 }
 
 export function openPageUrl(srcUrl: string) {

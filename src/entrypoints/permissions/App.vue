@@ -35,7 +35,7 @@ document.title = `${manifest.name} Permissions`
           <PermsCheck :show-alert="true" class="my-2" />
 
           <p>To download an image on Chrome for upload to the API, host permissions are required.</p>
-          <a class="btn btn-lg btn-outline-info w-100 mb-3" href="options.html" @click.prevent="openOptions()">
+          <a class="btn btn-lg btn-outline-info w-100 mb-3" href="/options.html" @click.prevent="openOptions()">
             <i class="fa-solid fa-sliders me-1"></i> Open Options</a
           >
 

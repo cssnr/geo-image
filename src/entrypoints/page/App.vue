@@ -22,7 +22,7 @@ const title = `${manifest.name} Processing...`
 if (document.title === '') document.title = title
 
 function setErrorIcon() {
-  const href = chrome.runtime.getURL('images/error128.png')
+  const href = chrome.runtime.getURL('/images/error128.png')
   document.querySelectorAll<HTMLLinkElement>('link[rel*="icon"]').forEach((link) => {
     link.href = href
     console.debug('link.href:', link.href)

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useToast } from '@/composables/useToast.ts'
-import { openPage } from '@/utils/extension.ts'
+import { clickOpen } from '@/utils/extension.ts'
 import { isFirefox } from '@/utils/system.ts'
 
 const { showToast } = useToast()
@@ -90,7 +90,9 @@ onUnmounted(() => {
         <i class="fa-solid fa-check-double me-1"></i> Grant Host Permissions
       </button>
       <p v-if="showInfo" class="text-center mb-0">
-        <a href="permissions.html" @click.prevent="openPage">More Information on Permissions</a>
+        <a href="/permissions.html" target="_blank" @click.prevent="clickOpen($event, props.closeWindow)"
+          >More Information on Permissions</a
+        >
       </p>
     </div>
 
