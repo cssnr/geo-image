@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { isFirefox, isMobile } from '@/utils/system.ts'
-
 import ResultsTable from '@/components/ResultsTable.vue'
 import ToastAlerts from '@/components/ToastAlerts.vue'
 import PanelHeader from '@/components/PanelHeader.vue'

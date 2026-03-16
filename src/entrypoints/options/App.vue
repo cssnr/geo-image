@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { copySupport } from '@/utils/options.ts'
+import { clickOpen } from '@/utils/extension.ts'
 import { isFirefox, isMobile } from '@/utils/system.ts'
 import BackToTop from '@/components/BackToTop.vue'
 import PermsCheck from '@/components/PermsCheck.vue'
@@ -35,6 +36,7 @@ document.title = `${manifest.name} Options`
               :href="manifest.homepage_url"
               target="_blank"
               rel="nofollow"
+              @click.prevent="clickOpen"
             >
               {{ manifest.name }}</a
             >
@@ -44,6 +46,7 @@ document.title = `${manifest.name} Options`
               :href="`${manifest.homepage_url}/releases/tag/${manifest.version}`"
               target="_blank"
               rel="nofollow"
+              @click.prevent="clickOpen"
             >
               v<span class="version">{{ manifest.version }}</span></a
             >
@@ -71,7 +74,8 @@ document.title = `${manifest.name} Options`
         <PermsCheck :show-info="true" :show-remove="isFirefox" class="my-3" />
 
         <p class="fst-italic small mt-3">
-          <a id="copy-support" href="#" @click.prevent="copySupport">Copy Support Information</a> for issue reporting.
+          <a href="#" @click.prevent="copySupport">Copy Support Information</a>
+          for issue reporting.
         </p>
 
         <hr class="mt-0" />
