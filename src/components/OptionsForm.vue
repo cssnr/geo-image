@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { saveOptions, updateOptions } from '@/utils/options.ts'
-import { isMobile } from '@/utils/system.ts'
 import { showToast } from '@/composables/useToast.ts'
+import { isMobile } from '@/utils/system.ts'
 
 const props = withDefaults(
   defineProps<{

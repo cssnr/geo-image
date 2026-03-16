@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { openOptions } from '@/utils/extension.ts'
 import BackToTop from '@/components/BackToTop.vue'
 import PermsCheck from '@/components/PermsCheck.vue'
 import ToastAlerts from '@/components/ToastAlerts.vue'
 import PageFooter from '@/components/PageFooter.vue'
-import { openOptions } from '@/utils/extension.ts'
 
 console.debug('%c options/App.vue', 'color: Lime')
 

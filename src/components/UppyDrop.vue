@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
+import { Modal } from 'bootstrap'
 import Uppy from '@uppy/core'
 import DropTarget from '@uppy/drop-target'
-import { Modal } from 'bootstrap'
 import '@uppy/core/css/style.css'
 import '@uppy/drop-target/css/style.css'
 
