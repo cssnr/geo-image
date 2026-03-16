@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { clickOpen } from '@/utils/extension.ts'
+
 const props = withDefaults(
   defineProps<{
     homePage?: boolean
@@ -21,9 +23,10 @@ console.debug('manifest:', manifest)
     <a
       v-if="props.homePage"
       class="link-body-emphasis text-decoration-none d-inline-block"
-      target="_blank"
       rel="noopener"
       :href="manifest.homepage_url"
+      target="_blank"
+      @click.prevent="clickOpen"
       >Home Page</a
     >
     <span class="mx-1">&bull;</span>
@@ -33,6 +36,7 @@ console.debug('manifest:', manifest)
       rel="noopener"
       :href="`${manifest.homepage_url}/issues/new?template=1-feature.yaml`"
       target="_blank"
+      @click.prevent="clickOpen"
       >Request Feature</a
     >
     <span class="mx-1">&bull;</span>
@@ -42,6 +46,7 @@ console.debug('manifest:', manifest)
       rel="noopener"
       :href="`${manifest.homepage_url}/issues`"
       target="_blank"
+      @click.prevent="clickOpen"
       >Open Issue</a
     >
   </div>

@@ -74,7 +74,8 @@ document.title = `${manifest.name} Options`
         <PermsCheck :show-info="true" :show-remove="isFirefox" class="my-3" />
 
         <p class="fst-italic small mt-3">
-          <a href="#" @click.prevent="copySupport">Copy Support Information</a> for issue reporting.
+          <a href="#" @click.prevent="copySupport">Copy Support Information</a>
+          for issue reporting.
         </p>
 
         <hr class="mt-0" />
