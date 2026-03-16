@@ -1,4 +1,5 @@
 import { showToast } from '@/composables/useToast.ts'
+import { isFirefox, isMobile } from '@/utils/system.ts'
 
 export const defaultOptions = {
   authToken: '',
@@ -109,10 +110,10 @@ export async function copySupport(event: Event) {
   event.preventDefault()
   const manifest = chrome.runtime.getManifest()
   const permissions = await chrome.permissions.getAll()
-  const { options } = await getOptions()
-  // delete options.authToken
-
+  const options = await getOptions()
   const local = await chrome.storage.local.get()
+
+  options.authToken = options.authToken ? 'Set' : 'NOT SET'
 
   const result = [
     `${manifest.name} - ${manifest.version}`,
@@ -120,6 +121,8 @@ export async function copySupport(event: Event) {
     `permissions.origins: ${JSON.stringify(permissions.origins)}`,
     `options: ${JSON.stringify(options)}`,
     `local: ${JSON.stringify(local)}`,
+    `isFirefox: ${isFirefox}`,
+    `isMobile: ${isMobile}`,
   ]
   const commands = await chrome.commands?.getAll()
   if (commands) {
