@@ -30,18 +30,18 @@ console.debug('manifest:', manifest)
     <a
       v-if="props.requestFeature"
       class="link-body-emphasis text-decoration-none d-inline-block"
-      target="_blank"
       rel="noopener"
       :href="`${manifest.homepage_url}/issues/new?template=1-feature.yaml`"
+      target="_blank"
       >Request Feature</a
     >
     <span class="mx-1">&bull;</span>
     <a
       v-if="props.openIssue"
       class="link-body-emphasis text-decoration-none d-inline-block"
-      target="_blank"
       rel="noopener"
       :href="`${manifest.homepage_url}/issues`"
+      target="_blank"
       >Open Issue</a
     >
   </div>
