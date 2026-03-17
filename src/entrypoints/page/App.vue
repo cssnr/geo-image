@@ -7,6 +7,7 @@ import { getConfidenceClass } from '@/utils'
 import ToastAlerts from '@/components/ToastAlerts.vue'
 import PanelHeader from '@/components/PanelHeader.vue'
 import ResultsTable from '@/components/ResultsTable.vue'
+import { isMobile } from '@/utils/system.ts'
 
 const srcUrl = ref<string | null>(null)
 const errorMessage = ref('')
@@ -115,7 +116,7 @@ onMounted(() => {
 
               <h5 class="mb-0">{{ data.location }}</h5>
 
-              <div class="d-flex flex-wrap gap-3">
+              <div :class="['d-flex', 'flex-wrap', isMobile ? 'gap-1' : 'gap-3']">
                 <div class="d-flex align-items-center gap-2">
                   <i class="fa-solid fa-grip-lines text-secondary"></i>
                   <span class="fw-semibold font-monospace small">{{ data.latitude || 'N/A' }}</span>
@@ -150,7 +151,7 @@ onMounted(() => {
           </div>
         </div>
       </template>
-      <ResultsTable v-if="historyShown" :new-tab="false" />
+      <ResultsTable v-else :new-tab="false" />
     </div>
   </main>
 
