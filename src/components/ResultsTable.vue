@@ -10,9 +10,11 @@ const { getAllLocations, deleteLocation, locationDBChannel } = useLocationsDB()
 
 const props = withDefaults(
   defineProps<{
+    newTab?: boolean
     closeWindow?: boolean
   }>(),
   {
+    newTab: true,
     closeWindow: false,
   },
 )
@@ -42,13 +44,15 @@ async function updateTable() {
     hostLink.title = data.url
     const srcUrl = encodeURIComponent(data.url)
     hostLink.href = chrome.runtime.getURL(`page.html?url=${srcUrl}`)
-    hostLink.target = '_blank'
-    hostLink.addEventListener('click', (e) => {
-      e.preventDefault()
-      activateOrOpen(hostLink.href).then(() => {
-        if (props.closeWindow) window.close()
+    hostLink.target = props.newTab ? '_blank' : ''
+    if (props.newTab) {
+      hostLink.addEventListener('click', (e) => {
+        e.preventDefault()
+        activateOrOpen(hostLink.href).then(() => {
+          if (props.closeWindow) window.close()
+        })
       })
-    })
+    }
     cell2.classList.add('text-truncate')
     cell2.appendChild(hostLink)
 

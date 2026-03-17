@@ -5,13 +5,16 @@ import { showToast } from '@/composables/useToast.ts'
 import { openOptions } from '@/utils/extension.ts'
 import { getConfidenceClass } from '@/utils'
 import ToastAlerts from '@/components/ToastAlerts.vue'
-import BackToTop from '@/components/BackToTop.vue'
 import PanelHeader from '@/components/PanelHeader.vue'
+import ResultsTable from '@/components/ResultsTable.vue'
 
 const srcUrl = ref<string | null>(null)
 const errorMessage = ref('')
 const hasError = ref(false)
 const isProcessing = ref(true)
+const historyShown = ref(false)
+
+const toggleHistory = () => (historyShown.value = !historyShown.value)
 
 const geoHref = ref('')
 const data = ref<LocationData | null>(null)
@@ -73,85 +76,97 @@ onMounted(() => {
   </header>
 
   <main class="flex-grow-1">
-    <div class="container-fluid p-3 h-100">
-      <div
-        v-if="isProcessing"
-        id="processing"
-        class="fs-1 text-center py-5 h-100 img-thumbnail"
-        :style="{ backgroundImage: 'url(' + srcUrl + ')' }"
-      >
-        <p>Processing Image...</p>
-        <p><i class="fa-solid fa-sync fa-spin fa-xl"></i></p>
-      </div>
-
-      <div v-if="hasError">
-        <h1>GeoImage Analysis Error</h1>
-        <div class="alert alert-danger my-3" role="alert">{{ errorMessage }}</div>
-        <p class="fst-italic">Tip: once the error is resolved you can refresh this page...</p>
-        <div class="d-flex gap-2">
-          <button type="button" class="btn btn-outline-primary" @click="openOptions()">
-            <i class="fa-solid fa-cog me-1"></i> Options Page
-          </button>
+    <div class="container-fluid p-3 h-100 mb-4">
+      <template v-if="!historyShown">
+        <div
+          v-if="isProcessing"
+          id="processing"
+          class="fs-1 text-center py-5 h-100 img-thumbnail"
+          :style="{ backgroundImage: 'url(' + srcUrl + ')' }"
+        >
+          <p>Processing Image...</p>
+          <p><i class="fa-solid fa-sync fa-spin fa-xl"></i></p>
         </div>
-        <hr />
-        <img v-if="srcUrl" :src="srcUrl" alt="Image" class="img-thumbnail" />
-      </div>
 
-      <div v-if="data">
-        <div class="row g-4">
-          <div class="col-12 col-md-7 col-lg-8 d-flex flex-column gap-2">
-            <div>
-              <h2 class="mb-0">
-                <span>{{ data.city }}</span
-                ><span class="text-muted">,</span>
-                <span>{{ data.state }}</span>
-              </h2>
-              <h4 class="text-muted mb-0">{{ data.country }}</h4>
+        <div v-if="hasError">
+          <h1>GeoImage Analysis Error</h1>
+          <div class="alert alert-danger my-3" role="alert">{{ errorMessage }}</div>
+          <p class="fst-italic">Tip: once the error is resolved you can refresh this page...</p>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-outline-primary" @click="openOptions()">
+              <i class="fa-solid fa-cog me-1"></i> Options Page
+            </button>
+          </div>
+          <hr />
+          <img v-if="srcUrl" :src="srcUrl" alt="Image" class="img-thumbnail" />
+        </div>
+
+        <div v-if="data">
+          <div class="row g-4">
+            <div class="col-12 col-md-7 col-lg-8 d-flex flex-column gap-2">
+              <div>
+                <h2 class="mb-0">
+                  <span>{{ data.city }}</span
+                  ><span class="text-muted">,</span>
+                  <span>{{ data.state }}</span>
+                </h2>
+                <h4 class="text-muted mb-0">{{ data.country }}</h4>
+              </div>
+
+              <h5 class="mb-0">{{ data.location }}</h5>
+
+              <div class="d-flex flex-wrap gap-3">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="fa-solid fa-grip-lines text-secondary"></i>
+                  <span class="fw-semibold font-monospace small">{{ data.latitude || 'N/A' }}</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <i class="fa-solid fa-grip-lines-vertical text-secondary"></i>
+                  <span class="fw-semibold font-monospace small">{{ data.longitude || 'N/A' }}</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <i class="fa-solid fa-percent text-secondary"></i>
+                  <span class="fw-semibold font-monospace small" :class="getConfidenceClass(data.confidence)">{{
+                    data.confidence || 'N/A'
+                  }}</span>
+                </div>
+                <a v-if="geoHref" :href="geoHref" class="btn btn-sm btn-outline-success" target="_blank" rel="noopener">
+                  <i class="fa-solid fa-map me-1"></i>GeoHack
+                </a>
+              </div>
+
+              <hr class="my-1" />
+
+              <p class="lead mb-1">{{ data.description }}</p>
+              <p class="mb-0">{{ data.explanation }}</p>
             </div>
+            <!-- data -->
 
-            <h5 class="mb-0">{{ data.location }}</h5>
-
-            <div class="d-flex flex-wrap gap-3">
-              <div class="d-flex align-items-center gap-2">
-                <i class="fa-solid fa-grip-lines text-secondary"></i>
-                <span class="fw-semibold font-monospace small">{{ data.latitude || 'N/A' }}</span>
-              </div>
-              <div class="d-flex align-items-center gap-2">
-                <i class="fa-solid fa-grip-lines-vertical text-secondary"></i>
-                <span class="fw-semibold font-monospace small">{{ data.longitude || 'N/A' }}</span>
-              </div>
-              <div class="d-flex align-items-center gap-2">
-                <i class="fa-solid fa-percent text-secondary"></i>
-                <span class="fw-semibold font-monospace small" :class="getConfidenceClass(data.confidence)">{{
-                  data.confidence || 'N/A'
-                }}</span>
-              </div>
-              <a v-if="geoHref" :href="geoHref" class="btn btn-sm btn-outline-success" target="_blank" rel="noopener">
-                <i class="fa-solid fa-map me-1"></i>GeoHack
+            <div class="col-12 col-md-5 col-lg-4">
+              <a v-if="srcUrl" :href="srcUrl" target="_blank" rel="noopener">
+                <img v-if="srcUrl" :src="srcUrl" alt="Image" class="img-thumbnail w-100 h-auto" />
               </a>
             </div>
-
-            <hr class="my-1" />
-
-            <p class="lead mb-1">{{ data.description }}</p>
-            <p class="mb-0">{{ data.explanation }}</p>
-          </div>
-          <!-- data -->
-
-          <div class="col-12 col-md-5 col-lg-4">
-            <a v-if="srcUrl" :href="srcUrl" target="_blank" rel="noopener">
-              <img v-if="srcUrl" :src="srcUrl" alt="Image" class="img-thumbnail w-100 h-auto" />
-            </a>
           </div>
         </div>
-      </div>
+      </template>
+      <ResultsTable v-if="historyShown" :new-tab="false" />
     </div>
   </main>
 
   <!--<footer class="flex-shrink-0"></footer>-->
 
+  <button
+    id="toggle-history"
+    type="button"
+    :class="['btn', historyShown ? 'btn-primary' : 'btn-link']"
+    @click="toggleHistory"
+  >
+    <i class="fa-solid fa-table-list"></i>
+  </button>
+
   <ToastAlerts />
-  <BackToTop />
+  <!--<BackToTop />-->
 </template>
 
 <style scoped>
@@ -176,5 +191,12 @@ onMounted(() => {
     0 0 30px rgba(0, 0, 0, 0.6);
   position: relative;
   z-index: 1;
+}
+
+#toggle-history {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  z-index: 3;
 }
 </style>

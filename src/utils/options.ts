@@ -36,10 +36,12 @@ export async function saveOptions(event: Event) /* NOSONAR */ {
     value = target.checked
   } else if (target.type === 'number') {
     const number = Number.parseFloat(target.value)
+    const toBound = (val: string, fallback: number): number =>
+      val != null && val !== '' ? Number.parseFloat(val) : fallback
     if (
       !Number.isNaN(number) &&
-      number >= Number.parseFloat(target.min) &&
-      number <= Number.parseFloat(target.max)
+      number >= toBound(target.min, -Infinity) &&
+      number <= toBound(target.max, Infinity)
     ) {
       // Valid number
       target.value = number.toString()
@@ -105,6 +107,7 @@ export async function updateOptions() {
 //   }
 // }
 
+// NOTE: showToast and copySupport should NOT be in this file...
 export async function copySupport(event: Event) {
   console.debug('copySupport:', event)
   event.preventDefault()
