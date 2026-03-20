@@ -117,7 +117,7 @@ export async function copySupport(event: Event) {
   const options = await getOptions()
   const local = await chrome.storage.local.get()
 
-  options.authToken = options.authToken ? 'Set' : 'NOT SET'
+  options.authToken = options.authToken ? 'SET' : 'NOT SET'
 
   const result = [
     `${manifest.name} - ${manifest.version}`,
