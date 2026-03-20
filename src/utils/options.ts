@@ -65,36 +65,37 @@ export async function saveOptions(event: Event) /* NOSONAR */ {
   }
 }
 
-export async function updateOptions() {
-  const options = await getOptions()
-  console.debug('updateOptions:', options)
-  for (let [key, value] of Object.entries(options)) {
-    if (value === undefined) {
-      console.warn('Value undefined for key:', key)
-      continue
-    }
-    // Option Key should be `radioXXX` and values should be the option IDs
-    if (key.startsWith('radio')) {
-      key = String(value) //NOSONAR
-      value = true //NOSONAR
-    }
-    // console.debug(`${key}: ${value}`)
-    const el = document.getElementById(key) as HTMLInputElement
-    if (!el) {
-      continue
-    }
-    if (el.tagName !== 'INPUT') {
-      el.textContent = String(value)
-    } else if (typeof value === 'boolean') {
-      el.checked = value
-    } else {
-      el.value = String(value)
-    }
-    // if (el.dataset.related) {
-    //   hideShowElement(`#${el.dataset.related}`, value)
-    // }
-  }
-}
+// // NOTE: This has been replaced by composables/useOptions.ts
+// export async function updateOptions() {
+//   const options = await getOptions()
+//   console.debug('updateOptions:', options)
+//   for (let [key, value] of Object.entries(options)) {
+//     if (value === undefined) {
+//       console.warn('Value undefined for key:', key)
+//       continue
+//     }
+//     // Option Key should be `radioXXX` and values should be the option IDs
+//     if (key.startsWith('radio')) {
+//       key = String(value) //NOSONAR
+//       value = true //NOSONAR
+//     }
+//     // console.debug(`${key}: ${value}`)
+//     const el = document.getElementById(key) as HTMLInputElement
+//     if (!el) {
+//       continue
+//     }
+//     if (el.tagName !== 'INPUT') {
+//       el.textContent = String(value)
+//     } else if (typeof value === 'boolean') {
+//       el.checked = value
+//     } else {
+//       el.value = String(value)
+//     }
+//     // if (el.dataset.related) {
+//     //   hideShowElement(`#${el.dataset.related}`, value)
+//     // }
+//   }
+// }
 
 // function hideShowElement(selector: string, show: boolean, speed = 'fast') {
 //   const element = $(`${selector}`)

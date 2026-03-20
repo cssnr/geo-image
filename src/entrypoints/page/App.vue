@@ -8,6 +8,7 @@ import ToastAlerts from '@/components/ToastAlerts.vue'
 import PanelHeader from '@/components/PanelHeader.vue'
 import ResultsTable from '@/components/ResultsTable.vue'
 import { isMobile } from '@/utils/system.ts'
+import OptionsOffscreen from '@/components/OptionsOffscreen.vue'
 
 const srcUrl = ref<string | null>(null)
 const errorMessage = ref('')
@@ -166,6 +167,8 @@ onMounted(() => {
     <i class="fa-solid fa-table-list"></i>
   </button>
 
+  <OptionsOffscreen />
+
   <ToastAlerts />
   <!--<BackToTop />-->
 </template>
@@ -196,8 +199,8 @@ onMounted(() => {
 
 #toggle-history {
   position: fixed;
-  bottom: 10px;
-  right: 10px;
+  bottom: 60px;
+  right: -8px;
   z-index: 3;
 }
 </style>
