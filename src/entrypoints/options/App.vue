@@ -73,6 +73,8 @@ document.title = `${manifest.name} Options`
 
         <PermsCheck :show-info="true" :show-remove="isFirefox" class="my-3" />
 
+        <p><i class="fa-solid fa-skull-crossbones"></i> Made for Pirates</p>
+
         <p class="fst-italic small mt-3">
           <a href="#" @click.prevent="copySupport">Copy Support Information</a>
           for issue reporting.
