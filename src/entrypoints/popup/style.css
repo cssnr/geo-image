@@ -1,2 +1,12 @@
-/*#app {*/
-/*}*/
+html,
+body {
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+@supports (scrollbar-gutter: stable both-edges) {
+    body.modal-open {
+        padding-right: 0 !important;
+    }
+}

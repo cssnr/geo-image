@@ -3,7 +3,7 @@ import { clickOpen, openExtPanel, openOptions, openPopup, openSidePanel } from '
 import { isMobile } from '@/utils/system.ts'
 import ThemeSwitch from '@/components/ThemeSwitch.vue'
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     panelButton?: boolean
     sideButton?: boolean
@@ -34,7 +34,7 @@ const manifest = chrome.runtime.getManifest()
           class="link-body-emphasis text-decoration-none fs-4"
           :href="manifest.homepage_url"
           target="_blank"
-          @click.prevent="clickOpen($event, props.closeWindow)"
+          @click.prevent="clickOpen($event, closeWindow)"
         >
           <img src="/images/logo32.png" alt="L" class="mb-1" style="height: 1.1em" />
           {{ manifest.name }}</a
@@ -44,45 +44,35 @@ const manifest = chrome.runtime.getManifest()
           class="link-body-emphasis text-decoration-none small ms-1"
           :href="`${manifest.homepage_url}/releases/tag/${manifest.version}`"
           target="_blank"
-          @click.prevent="clickOpen($event, props.closeWindow)"
+          @click.prevent="clickOpen($event, closeWindow)"
         >
           v<span class="version">{{ manifest.version }}</span></a
         >
       </div>
 
-      <div v-if="!isMobile && props.panelButton" class="ms-1">
-        <a
-          title="Extension Panel"
-          class="btn btn-sm btn-outline-info"
-          role="button"
-          @click="openExtPanel(props.closeWindow)"
-        >
+      <div v-if="!isMobile && panelButton" class="ms-1">
+        <a title="Extension Panel" class="btn btn-sm btn-outline-info" role="button" @click="openExtPanel(closeWindow)">
           <i class="fa-regular fa-window-restore me-1"></i
         ></a>
       </div>
-      <div v-if="!isMobile && props.sideButton" class="ms-1">
-        <a
-          title="Side Panel"
-          class="btn btn-sm btn-outline-info"
-          role="button"
-          @click="openSidePanel(props.closeWindow)"
-        >
+      <div v-if="!isMobile && sideButton" class="ms-1">
+        <a title="Side Panel" class="btn btn-sm btn-outline-info" role="button" @click="openSidePanel(closeWindow)">
           <i class="fa-solid fa-table-columns"></i
         ></a>
       </div>
-      <div v-if="!isMobile && props.popupButton" class="ms-1">
+      <div v-if="!isMobile && popupButton" class="ms-1">
         <a title="Open Popup" class="btn btn-sm btn-outline-info" role="button" @click="openPopup()">
           <i class="fa-solid fa-window-maximize"></i
         ></a>
       </div>
-      <div v-if="props.optionsButton" class="ms-1">
+      <div v-if="optionsButton" class="ms-1">
         <a
           title="Options"
           class="btn btn-sm btn-outline-info"
           role="button"
           href="/options.html"
           target="_blank"
-          @click.prevent="openOptions(props.closeWindow)"
+          @click.prevent="openOptions(closeWindow)"
         >
           <i class="fa-solid fa-gears"></i
         ></a>

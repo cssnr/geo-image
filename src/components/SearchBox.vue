@@ -11,7 +11,7 @@ const props = withDefaults(
   },
 )
 
-console.debug('closeWindow:', props.closeWindow)
+// console.debug('SearchBox.vue:', props)
 
 async function processForm(event: Event) {
   console.debug('processForm:', event)

@@ -1,8 +1,11 @@
 // utils
 
-export function debounce(fn: Function, timeout = 250) {
+export function debounce<T extends (...args: unknown[]) => unknown>(
+  fn: T,
+  timeout = 250,
+): (...args: Parameters<T>) => void {
   let timeoutID: ReturnType<typeof setTimeout>
-  return (...args: unknown[]) => {
+  return (...args: Parameters<T>) => {
     clearTimeout(timeoutID)
     timeoutID = setTimeout(() => fn(...args), timeout)
   }

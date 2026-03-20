@@ -3,8 +3,9 @@ import { onMounted, ref } from 'vue'
 import { Modal } from 'bootstrap'
 import { showToast } from '@/composables/useToast.ts'
 import { useLocationsDB } from '@/composables/useLocationsDB'
-import { activateOrOpen } from '@/utils/extension.ts'
+import { openPageUrl } from '@/utils/extension.ts'
 import { getConfidenceClass } from '@/utils'
+import { LocationData } from '@/utils/api.ts'
 
 const { getAllLocations, deleteLocation, locationDBChannel } = useLocationsDB()
 
@@ -19,63 +20,27 @@ const props = withDefaults(
   },
 )
 
+console.debug('ResultsTable.vue: props.newTab:', props.newTab)
+
+const locations = ref<LocationData[]>([])
+
 const hostToDelete = ref<string>('')
 const deleteModalEl = ref<HTMLElement | null>(null)
 
-async function updateTable() {
-  const tbody = document.querySelector('#history-table tbody') as HTMLTableElement
-  if (!tbody) return console.debug('#history-table tbody not found')
-  tbody.innerHTML = ''
+function getPageUrl(srcUrl: string) {
+  return chrome.runtime.getURL(`page.html?url=${encodeURIComponent(srcUrl)}`)
+}
 
-  const entries = await getAllLocations()
-  console.debug('updateTable: entries:', entries.length)
-
-  for (const data of entries.reverse()) {
-    const num = data.id
-    const row = tbody.insertRow()
-
-    const cell1 = row.insertCell()
-    cell1.classList.add('text-center')
-    cell1.appendChild(document.createTextNode(`${num}`))
-
-    const cell2 = row.insertCell()
-    const hostLink = document.createElement('a')
-    hostLink.textContent = `${data.country}, ${data.state}, ${data.city}`
-    hostLink.title = data.url
-    const srcUrl = encodeURIComponent(data.url)
-    hostLink.href = chrome.runtime.getURL(`page.html?url=${srcUrl}`)
-    hostLink.target = props.newTab ? '_blank' : ''
-    if (props.newTab) {
-      hostLink.addEventListener('click', (e) => {
-        e.preventDefault()
-        activateOrOpen(hostLink.href).then(() => {
-          if (props.closeWindow) window.close()
-        })
-      })
-    }
-    cell2.classList.add('text-truncate')
-    cell2.appendChild(hostLink)
-
-    const cell3 = row.insertCell()
-    cell3.classList.add('text-center', getConfidenceClass(data.confidence))
-    cell3.appendChild(document.createTextNode(data.confidence.toString()))
-
-    const cell4 = row.insertCell()
-    const deleteBtn = document.createElement('a')
-    const icon = document.createElement('i')
-    icon.className = 'fa-regular fa-trash-can'
-    deleteBtn.appendChild(icon)
-    deleteBtn.title = 'Delete'
-    deleteBtn.dataset.id = data.id?.toString()
-    deleteBtn.dataset.url = data.url
-    deleteBtn.classList.add('link-danger')
-    deleteBtn.setAttribute('role', 'button')
-    deleteBtn.addEventListener('click', () => {
-      showDeleteModal(data.id?.toString() ?? '')
-    })
-    cell4.classList.add('text-center')
-    cell4.appendChild(deleteBtn)
+function urlClick(e: Event, srcUrl: string) {
+  console.log('urlClick:', srcUrl)
+  if (!props.newTab) {
+    console.debug('props.newTab:', props.newTab)
+    return
   }
+  e.preventDefault()
+  openPageUrl(srcUrl).then(() => {
+    if (props.closeWindow) window.close()
+  })
 }
 
 function showDeleteModal(hostId: string) {
@@ -88,15 +53,19 @@ async function confirmDelete() {
   console.log('confirmDelete - hostToDelete:', hostToDelete.value)
 
   await deleteLocation(Number(hostToDelete.value)) // NOTE: can silently delete nothing
-  await updateTable()
+  updateLocations()
   showToast(`Deleted Analysis ID: ${hostToDelete.value}`, 'warning')
 
   Modal.getOrCreateInstance(deleteModalEl.value!).hide()
 }
 
+function updateLocations() {
+  getAllLocations().then((results) => (locations.value = results.reverse()))
+}
+
 onMounted(() => {
-  updateTable()
-  locationDBChannel.onmessage = updateTable
+  updateLocations()
+  locationDBChannel.onmessage = updateLocations
 })
 </script>
 
@@ -111,7 +80,32 @@ onMounted(() => {
           <th class="text-center" style="width: 28px"><i class="fa-solid fa-trash-can"></i></th>
         </tr>
       </thead>
-      <tbody></tbody>
+      <tbody>
+        <tr v-for="loc of locations" :key="loc.id">
+          <td class="text-center">{{ loc.id }}</td>
+          <td class="text-truncate">
+            <a
+              @click="urlClick($event, loc.url)"
+              :title="loc.url"
+              :href="getPageUrl(loc.url)"
+              :target="newTab ? '_blank' : undefined"
+              >{{ loc.location }}</a
+            >
+          </td>
+          <td class="text-center" :class="getConfidenceClass(loc.confidence)">{{ loc.confidence }}</td>
+          <td class="text-center">
+            <a
+              @click="showDeleteModal(loc.id?.toString() ?? '')"
+              title="Delete"
+              :data-id="loc.id"
+              :data-url="loc.url"
+              class="link-danger"
+              role="button"
+              ><i class="fa-regular fa-trash-can"></i
+            ></a>
+          </td>
+        </tr>
+      </tbody>
     </table>
 
     <div

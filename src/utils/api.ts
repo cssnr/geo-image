@@ -45,17 +45,19 @@ export async function processUrl(url?: string | null): Promise<LocationData> {
   console.log('data:', data)
 
   // // Fake Data
+  // const cities = ['Austin', 'Harlingen', 'Seattle', 'Elgin']
+  // const locations = ['He Calls this place BFE', 'Somewhere in the Lone Star']
   // const data: LocationData = {
   //   url: url,
-  //   city: 'Will Town',
+  //   city: cities[Math.floor(Math.random() * cities.length)],
   //   state: 'Texas',
-  //   country: 'United States',
-  //   location: 'He Calls this place BFE',
+  //   country: 'USA',
+  //   location: locations[Math.floor(Math.random() * locations.length)],
   //   description: 'Multiple Wal-Marts, Expressways, and an International Airport.',
   //   explanation: 'I cant explain this...',
   //   latitude: 32.4224,
   //   longitude: -99.8524,
-  //   confidence: 70,
+  //   confidence: Math.floor(Math.random() * 30) + 69,
   // }
   // console.log('data:', data)
 

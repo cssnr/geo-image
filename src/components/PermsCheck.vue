@@ -90,17 +90,15 @@ onUnmounted(() => {
         <i class="fa-solid fa-check-double me-1"></i> Grant Host Permissions
       </button>
       <p v-if="showInfo" class="text-center mb-0">
-        <a href="/permissions.html" target="_blank" @click.prevent="clickOpen($event, props.closeWindow)"
+        <a href="/permissions.html" target="_blank" @click.prevent="clickOpen($event, closeWindow)"
           >More Information on Permissions</a
         >
       </p>
     </div>
 
-    <div v-if="hasPerms && props.showAlert" class="alert alert-success mt-3 mb-0" role="alert">
-      Permissions Granted.
-    </div>
+    <div v-if="hasPerms && showAlert" class="alert alert-success mt-3 mb-0" role="alert">Permissions Granted.</div>
 
-    <div v-if="hasPerms && props.showRemove && isFirefox">
+    <div v-if="hasPerms && showRemove && isFirefox">
       <button
         class="btn btn-link link-danger revoke-permissions"
         type="button"
