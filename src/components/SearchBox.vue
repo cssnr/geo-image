@@ -53,7 +53,7 @@ async function processForm(event: Event) {
           aria-describedby="submit-image"
           required
         />
-        <button class="btn btn-outline-success" type="submit" id="submit-image">Go</button>
+        <button class="btn btn-success" type="submit" id="submit-image">Go</button>
       </div>
     </form>
   </div>
