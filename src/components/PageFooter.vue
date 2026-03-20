@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { clickOpen } from '@/utils/extension.ts'
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     homePage?: boolean
     requestFeature?: boolean
@@ -15,13 +15,12 @@ const props = withDefaults(
 )
 
 const manifest = chrome.runtime.getManifest()
-console.debug('manifest:', manifest)
 </script>
 
 <template>
   <div class="text-center">
     <a
-      v-if="props.homePage"
+      v-if="homePage"
       class="link-body-emphasis text-decoration-none d-inline-block"
       rel="noopener"
       :href="manifest.homepage_url"
@@ -31,7 +30,7 @@ console.debug('manifest:', manifest)
     >
     <span class="mx-1">&bull;</span>
     <a
-      v-if="props.requestFeature"
+      v-if="requestFeature"
       class="link-body-emphasis text-decoration-none d-inline-block"
       rel="noopener"
       :href="`${manifest.homepage_url}/issues/new?template=1-feature.yaml`"
@@ -41,7 +40,7 @@ console.debug('manifest:', manifest)
     >
     <span class="mx-1">&bull;</span>
     <a
-      v-if="props.openIssue"
+      v-if="openIssue"
       class="link-body-emphasis text-decoration-none d-inline-block"
       rel="noopener"
       :href="`${manifest.homepage_url}/issues`"

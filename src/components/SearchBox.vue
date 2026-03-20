@@ -11,7 +11,7 @@ const props = withDefaults(
   },
 )
 
-console.debug('closeWindow:', props.closeWindow)
+// console.debug('SearchBox.vue:', props)
 
 async function processForm(event: Event) {
   console.debug('processForm:', event)
@@ -53,7 +53,7 @@ async function processForm(event: Event) {
           aria-describedby="submit-image"
           required
         />
-        <button class="btn btn-outline-success" type="submit" id="submit-image">Go</button>
+        <button class="btn btn-success" type="submit" id="submit-image">Go</button>
       </div>
     </form>
   </div>

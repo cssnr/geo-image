@@ -4,10 +4,11 @@ import { getGeoUrl, processUrl, LocationData } from '@/utils/api.ts'
 import { showToast } from '@/composables/useToast.ts'
 import { openOptions } from '@/utils/extension.ts'
 import { getConfidenceClass } from '@/utils'
+import { isMobile } from '@/utils/system.ts'
 import ToastAlerts from '@/components/ToastAlerts.vue'
 import PanelHeader from '@/components/PanelHeader.vue'
 import ResultsTable from '@/components/ResultsTable.vue'
-import { isMobile } from '@/utils/system.ts'
+import OptionsOffscreen from '@/components/OptionsOffscreen.vue'
 
 const srcUrl = ref<string | null>(null)
 const errorMessage = ref('')
@@ -15,13 +16,12 @@ const hasError = ref(false)
 const isProcessing = ref(true)
 const historyShown = ref(false)
 
-const toggleHistory = () => (historyShown.value = !historyShown.value)
-
 const geoHref = ref('')
 const data = ref<LocationData | null>(null)
 
+const toggleHistory = () => (historyShown.value = !historyShown.value)
+
 const manifest = chrome.runtime.getManifest()
-console.debug('manifest:', manifest)
 const title = `${manifest.name} Processing...`
 if (document.title === '') document.title = title
 
@@ -76,9 +76,9 @@ onMounted(() => {
     <PanelHeader />
   </header>
 
-  <main class="flex-grow-1">
-    <div class="container-fluid p-3 h-100 mb-4">
-      <template v-if="!historyShown">
+  <main class="flex-grow-1 overflow-auto">
+    <div class="container-fluid p-3 h-100">
+      <div v-if="!historyShown" class="pb-5">
         <div
           v-if="isProcessing"
           id="processing"
@@ -150,8 +150,8 @@ onMounted(() => {
             </div>
           </div>
         </div>
-      </template>
-      <ResultsTable v-else :new-tab="false" />
+      </div>
+      <ResultsTable v-else :new-tab="false" class="pb-5" />
     </div>
   </main>
 
@@ -165,6 +165,8 @@ onMounted(() => {
   >
     <i class="fa-solid fa-table-list"></i>
   </button>
+
+  <OptionsOffscreen />
 
   <ToastAlerts />
   <!--<BackToTop />-->
@@ -197,7 +199,7 @@ onMounted(() => {
 #toggle-history {
   position: fixed;
   bottom: 10px;
-  right: 10px;
+  left: -8px;
   z-index: 3;
 }
 </style>

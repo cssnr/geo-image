@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { clickOpen, openExtPanel, openOptions, openPopup, openSidePanel } from '@/utils/extension.ts'
 import { isMobile } from '@/utils/system.ts'
+import ThemeSwitch from '@/components/ThemeSwitch.vue'
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     panelButton?: boolean
     sideButton?: boolean
@@ -25,41 +26,7 @@ const manifest = chrome.runtime.getManifest()
 <template>
   <div class="container-fluid p-2">
     <div class="d-flex flex-row align-items-center text-nowrap">
-      <div class="dropdown">
-        <a
-          class="link-body-emphasis text-decoration-none"
-          id="bs-theme-dropdown"
-          title="Theme Switcher"
-          role="button"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-          href="#"
-        >
-          <i id="theme-icon" class="fa-solid fa-circle-half-stroke fa-lg" style="min-width: 20px"></i>
-          <i class="fa-solid fa-caret-down fa-xs mx-1"></i
-        ></a>
-        <ul class="dropdown-menu auto dropdown-menu-end" aria-labelledby="bs-theme-dropdown">
-          <li>
-            <button class="dropdown-item" data-bs-theme-value="dark" aria-pressed="false">
-              <i class="fa-regular fa-moon" style="min-width: 16px"></i>
-              <span class="ms-3">Dark</span>
-            </button>
-          </li>
-          <li>
-            <button class="dropdown-item" data-bs-theme-value="light" aria-pressed="false">
-              <i class="fa-solid fa-sun" style="min-width: 16px"></i>
-              <span class="ms-3">Light</span>
-            </button>
-          </li>
-          <li>
-            <button class="dropdown-item" data-bs-theme-value="auto" aria-pressed="false">
-              <i class="fa-solid fa-circle-half-stroke" style="min-width: 16px"></i>
-              <span class="ms-3">Auto</span>
-            </button>
-          </li>
-        </ul>
-      </div>
-      <!-- dropdown -->
+      <ThemeSwitch />
 
       <div class="d-flex flex-grow-1 overflow-hidden align-items-baseline">
         <a
@@ -67,7 +34,7 @@ const manifest = chrome.runtime.getManifest()
           class="link-body-emphasis text-decoration-none fs-4"
           :href="manifest.homepage_url"
           target="_blank"
-          @click.prevent="clickOpen($event, props.closeWindow)"
+          @click.prevent="clickOpen($event, closeWindow)"
         >
           <img src="/images/logo32.png" alt="L" class="mb-1" style="height: 1.1em" />
           {{ manifest.name }}</a
@@ -77,45 +44,35 @@ const manifest = chrome.runtime.getManifest()
           class="link-body-emphasis text-decoration-none small ms-1"
           :href="`${manifest.homepage_url}/releases/tag/${manifest.version}`"
           target="_blank"
-          @click.prevent="clickOpen($event, props.closeWindow)"
+          @click.prevent="clickOpen($event, closeWindow)"
         >
           v<span class="version">{{ manifest.version }}</span></a
         >
       </div>
 
-      <div v-if="!isMobile && props.panelButton" class="ms-1">
-        <a
-          title="Extension Panel"
-          class="btn btn-sm btn-outline-info"
-          role="button"
-          @click="openExtPanel(props.closeWindow)"
-        >
+      <div v-if="!isMobile && panelButton" class="ms-1">
+        <a title="Extension Panel" class="btn btn-sm btn-outline-info" role="button" @click="openExtPanel(closeWindow)">
           <i class="fa-regular fa-window-restore me-1"></i
         ></a>
       </div>
-      <div v-if="!isMobile && props.sideButton" class="ms-1">
-        <a
-          title="Side Panel"
-          class="btn btn-sm btn-outline-info"
-          role="button"
-          @click="openSidePanel(props.closeWindow)"
-        >
+      <div v-if="!isMobile && sideButton" class="ms-1">
+        <a title="Side Panel" class="btn btn-sm btn-outline-info" role="button" @click="openSidePanel(closeWindow)">
           <i class="fa-solid fa-table-columns"></i
         ></a>
       </div>
-      <div v-if="!isMobile && props.popupButton" class="ms-1">
+      <div v-if="!isMobile && popupButton" class="ms-1">
         <a title="Open Popup" class="btn btn-sm btn-outline-info" role="button" @click="openPopup()">
           <i class="fa-solid fa-window-maximize"></i
         ></a>
       </div>
-      <div v-if="props.optionsButton" class="ms-1">
+      <div v-if="optionsButton" class="ms-1">
         <a
           title="Options"
           class="btn btn-sm btn-outline-info"
           role="button"
           href="/options.html"
           target="_blank"
-          @click.prevent="openOptions(props.closeWindow)"
+          @click.prevent="openOptions(closeWindow)"
         >
           <i class="fa-solid fa-gears"></i
         ></a>

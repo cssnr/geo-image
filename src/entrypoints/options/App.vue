@@ -9,10 +9,7 @@ import OptionsForm from '@/components/OptionsForm.vue'
 import KeyboardShortcuts from '@/components/KeyboardShortcuts.vue'
 import PageFooter from '@/components/PageFooter.vue'
 
-console.debug('%c options/App.vue', 'color: Lime')
-
 const manifest = chrome.runtime.getManifest()
-console.debug('manifest:', manifest)
 document.title = `${manifest.name} Options`
 </script>
 
@@ -72,6 +69,8 @@ document.title = `${manifest.name} Options`
         <OptionsForm />
 
         <PermsCheck :show-info="true" :show-remove="isFirefox" class="my-3" />
+
+        <p><i class="fa-solid fa-skull-crossbones"></i> Made for Pirates</p>
 
         <p class="fst-italic small mt-3">
           <a href="#" @click.prevent="copySupport">Copy Support Information</a>

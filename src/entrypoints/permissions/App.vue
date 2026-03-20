@@ -18,7 +18,6 @@ async function onAdded(permissions: chrome.permissions.Permissions) {
 }
 
 const manifest = chrome.runtime.getManifest()
-console.debug('manifest:', manifest)
 document.title = `${manifest.name} Permissions`
 </script>
 
