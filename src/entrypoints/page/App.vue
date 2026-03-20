@@ -16,13 +16,12 @@ const hasError = ref(false)
 const isProcessing = ref(true)
 const historyShown = ref(false)
 
-const toggleHistory = () => (historyShown.value = !historyShown.value)
-
 const geoHref = ref('')
 const data = ref<LocationData | null>(null)
 
+const toggleHistory = () => (historyShown.value = !historyShown.value)
+
 const manifest = chrome.runtime.getManifest()
-console.debug('manifest:', manifest)
 const title = `${manifest.name} Processing...`
 if (document.title === '') document.title = title
 

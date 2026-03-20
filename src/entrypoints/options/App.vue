@@ -9,10 +9,7 @@ import OptionsForm from '@/components/OptionsForm.vue'
 import KeyboardShortcuts from '@/components/KeyboardShortcuts.vue'
 import PageFooter from '@/components/PageFooter.vue'
 
-console.debug('%c options/App.vue', 'color: Lime')
-
 const manifest = chrome.runtime.getManifest()
-console.debug('manifest:', manifest)
 document.title = `${manifest.name} Options`
 </script>
 

@@ -11,9 +11,11 @@ import PermsCheck from '@/components/PermsCheck.vue'
 
 async function windowResize() {
   const size = { panelWidth: window.outerWidth, panelHeight: window.outerHeight }
-  console.debug('windowResize:', size)
   await chrome.storage.local.set(size).catch((e) => console.warn(e))
 }
+
+const manifest = chrome.runtime.getManifest()
+document.title = `${manifest.name} Panel`
 
 onMounted(() => {
   window.addEventListener('resize', debounce(windowResize))
@@ -24,10 +26,6 @@ onMounted(() => {
     })
   })
 })
-
-const manifest = chrome.runtime.getManifest()
-console.debug('manifest:', manifest)
-document.title = `${manifest.name} Panel`
 </script>
 
 <template>
