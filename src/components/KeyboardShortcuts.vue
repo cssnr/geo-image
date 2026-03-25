@@ -1,14 +1,12 @@
 <script setup lang="ts">
-import { isFirefox } from '@/utils/system.ts'
+import { i18n } from '#imports'
 import { onMounted } from 'vue'
+import { clickOpen } from '@/utils/extension.ts'
+import { isFirefox } from '@/utils/system.ts'
 
 function openChromeShortcuts() {
   chrome.tabs.update({ url: 'chrome://extensions/shortcuts' })
 }
-
-onMounted(() => {
-  setShortcuts()
-})
 
 // NOTE: Below is ported from VanillaJS
 async function setShortcuts(selector = '#keyboard-shortcuts') {
@@ -33,25 +31,31 @@ async function setShortcuts(selector = '#keyboard-shortcuts') {
     let description = command.description
     // Note: Chrome does not parse the description for _execute_action in manifest.json
     if (!description && command.name === '_execute_action') {
-      description = 'Open Popup' // NOTE: Also defined in: manifest.json
+      description = i18n.t('cmd.executeAction') // NOTE: Also defined in: manifest.json
     }
     row.querySelector('.description')!.textContent = description ?? null
     row.querySelector('kbd')!.textContent = command.shortcut || 'Not Set'
     tbody.appendChild(row)
   }
 }
+
+onMounted(() => {
+  setShortcuts()
+})
 </script>
 
 <template>
   <div>
     <table id="keyboard-shortcuts" class="table table-sm rounded table-borderless table-hover d-none">
       <caption class="visually-hidden">
-        Keyboard Shortcuts
+        {{
+          i18n.t('keyboard.caption')
+        }}
       </caption>
       <thead class="visually-hidden">
         <tr>
-          <th>Description</th>
-          <th>Shortcut</th>
+          <th>{{ i18n.t('keyboard.description') }}</th>
+          <th>{{ i18n.t('keyboard.shortcut') }}</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -61,8 +65,8 @@ async function setShortcuts(selector = '#keyboard-shortcuts') {
             <i class="fa-regular fa-keyboard me-1"></i>
             <span class="description"></span>
           </td>
-          <td class="bg-transparent text-end" title="Keyboard Shortcut">
-            <kbd>Unknown</kbd>
+          <td class="bg-transparent text-end" :title="i18n.t('keyboard.caption')">
+            <kbd>{{ i18n.t('keyboard.unknown') }}</kbd>
           </td>
         </tr>
       </tfoot>
@@ -70,13 +74,14 @@ async function setShortcuts(selector = '#keyboard-shortcuts') {
     <!-- keyboard-shortcuts -->
 
     <div class="mb-2">
-      Manage Keyboard Shortcuts:
+      {{ i18n.t('keyboard.manage') }}:
       <a
         v-if="isFirefox"
         class="text-decoration-none d-inline-block firefox"
         href="https://support.mozilla.org/en-US/kb/manage-extension-shortcuts-firefox"
         target="_blank"
         rel="noopener"
+        @click.prevent="clickOpen"
       >
         https://mzl.la/3Qwp5QQ
         <i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { i18n } from '#imports'
 import { openPageUrl } from '@/utils/extension.ts'
 import { showToast } from '@/composables/useToast.ts'
 
@@ -42,18 +43,18 @@ async function processForm(event: Event) {
 <template>
   <div>
     <form id="search-form" @submit.prevent="processForm">
-      <label for="image-input" class="visually-hidden">Image Link</label>
+      <label for="image-input" class="visually-hidden">{{ i18n.t('search.label') }}</label>
       <div class="input-group">
         <input
           id="image-input"
           type="text"
           class="form-control form-control-sm"
-          placeholder="Link to an Image to Analyze"
-          aria-label="Link to an Image to Analyze"
+          :placeholder="i18n.t('search.placeholder')"
+          :aria-label="i18n.t('search.placeholder')"
           aria-describedby="submit-image"
           required
         />
-        <button class="btn btn-success" type="submit" id="submit-image">Go</button>
+        <button class="btn btn-success" type="submit" id="submit-image">{{ i18n.t('search.go') }}</button>
       </div>
     </form>
   </div>

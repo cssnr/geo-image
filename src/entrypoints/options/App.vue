@@ -1,16 +1,18 @@
 <script setup lang="ts">
-import { copySupport } from '@/utils/options.ts'
+import { i18n } from '#imports'
 import { clickOpen } from '@/utils/extension.ts'
-import { isFirefox, isMobile } from '@/utils/system.ts'
+import { isFirefox } from '@/utils/system.ts'
 import BackToTop from '@/components/BackToTop.vue'
 import PermsCheck from '@/components/PermsCheck.vue'
 import ToastAlerts from '@/components/ToastAlerts.vue'
 import OptionsForm from '@/components/OptionsForm.vue'
 import KeyboardShortcuts from '@/components/KeyboardShortcuts.vue'
 import PageFooter from '@/components/PageFooter.vue'
+import HorizontalRule from '@/components/HorizontalRule.vue'
+import CopySupport from '@/components/CopySupport.vue'
 
 const manifest = chrome.runtime.getManifest()
-document.title = `${manifest.name} Options`
+document.title = `${manifest.name} ${i18n.t('options.title')}`
 </script>
 
 <template>
@@ -29,7 +31,7 @@ document.title = `${manifest.name} Options`
           <div>
             <a
               class="link-body-emphasis text-decoration-none fs-1"
-              title="Home Page"
+              :title="i18n.t('options.homePage')"
               :href="manifest.homepage_url"
               target="_blank"
               rel="nofollow"
@@ -39,7 +41,7 @@ document.title = `${manifest.name} Options`
             >
             <a
               class="link-body-emphasis text-decoration-none small"
-              title="Release Notes"
+              :title="i18n.t('options.releaseNotes')"
               :href="`${manifest.homepage_url}/releases/tag/${manifest.version}`"
               target="_blank"
               rel="nofollow"
@@ -50,32 +52,19 @@ document.title = `${manifest.name} Options`
           </div>
         </div>
 
-        <template v-if="!isMobile">
-          <div class="d-flex flex-row align-items-center justify-content-center">
-            <hr class="w-100 my-0" />
-            <span class="text-nowrap mx-2">Keyboard Shortcuts</span>
-            <hr class="w-100 my-0" />
-          </div>
+        <HorizontalRule>{{ i18n.t('options.keyboard') }}</HorizontalRule>
+        <KeyboardShortcuts />
 
-          <KeyboardShortcuts />
-        </template>
-
-        <div class="d-flex flex-row align-items-center justify-content-center">
-          <hr class="w-100 my-0" />
-          <span class="text-nowrap mx-2">Extension Options</span>
-          <hr class="w-100 my-0" />
-        </div>
-
+        <HorizontalRule>{{ i18n.t('options.extension') }}</HorizontalRule>
         <OptionsForm />
 
         <PermsCheck :show-info="true" :show-remove="isFirefox" class="my-3" />
 
-        <p><i class="fa-solid fa-skull-crossbones"></i> Made for Pirates</p>
+        <p><i class="fa-solid fa-skull-crossbones"></i> {{ i18n.t('options.madeFor') }}</p>
 
-        <p class="fst-italic small mt-3">
-          <a href="#" @click.prevent="copySupport">Copy Support Information</a>
-          for issue reporting.
-        </p>
+        <CopySupport :message="i18n.t('options.copySupportMsg')" :tip="i18n.t('options.copySupportTip')">{{
+          i18n.t('options.copySupport')
+        }}</CopySupport>
 
         <hr class="mt-0" />
 

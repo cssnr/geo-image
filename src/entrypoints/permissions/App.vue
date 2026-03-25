@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { i18n } from '#imports'
 import { openOptions } from '@/utils/extension.ts'
 import BackToTop from '@/components/BackToTop.vue'
 import PermsCheck from '@/components/PermsCheck.vue'
@@ -18,7 +19,7 @@ async function onAdded(permissions: chrome.permissions.Permissions) {
 }
 
 const manifest = chrome.runtime.getManifest()
-document.title = `${manifest.name} Permissions`
+document.title = `${manifest.name} ${i18n.t('permissions.title')}`
 </script>
 
 <template>
@@ -27,15 +28,22 @@ document.title = `${manifest.name} Permissions`
       <div class="col-xl-6 col-md-8 col-12 m-auto">
         <div class="card p-3 text-center">
           <div class="d-flex justify-content-center align-items-center">
-            <img src="/images/logo48.png" class="me-2" height="48" width="48" alt="GeoImage" title="GeoImage" />
-            <h1>GeoImage</h1>
+            <img
+              src="/images/logo48.png"
+              class="me-2"
+              height="48"
+              width="48"
+              :alt="manifest.name"
+              :title="manifest.name"
+            />
+            <h1>{{ manifest.name }}</h1>
           </div>
 
           <PermsCheck :show-alert="true" class="my-2" />
 
-          <p>To download an image on Chrome for upload to the API, host permissions are required.</p>
+          <p>{{ i18n.t('permissions.message') }}</p>
           <a class="btn btn-lg btn-outline-info w-100 mb-3" href="/options.html" @click.prevent="openOptions()">
-            <i class="fa-solid fa-sliders me-1"></i> Open Options</a
+            <i class="fa-solid fa-sliders me-1"></i> {{ i18n.t('ctx.openOptions') }}</a
           >
 
           <hr class="mt-0" />

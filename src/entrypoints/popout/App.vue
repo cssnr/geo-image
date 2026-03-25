@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { i18n } from '#imports'
 import { onMounted } from 'vue'
 import { debounce } from '@/utils'
 import ResultsTable from '@/components/ResultsTable.vue'
@@ -15,7 +16,7 @@ async function windowResize() {
 }
 
 const manifest = chrome.runtime.getManifest()
-document.title = `${manifest.name} Panel`
+document.title = `${manifest.name} ${i18n.t('popout.title')}`
 
 onMounted(() => {
   window.addEventListener('resize', debounce(windowResize))
