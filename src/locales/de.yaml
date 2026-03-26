@@ -1,0 +1,112 @@
+name: GeoImage
+shortName: GeoImage
+description: GeoImage Web-Erweiterung zur Bildlokalisierung mit Gemini AI.
+
+all:
+  close: Schließen
+
+ctx:
+  # background/menus.ts
+  analyzeImage: Bild analysieren
+  openPopup: Popup öffnen
+  openSidePanel: Seitenleiste öffnen
+  openExtPanel: Erweiterungsbereich öffnen
+  openOptions: Optionen öffnen
+
+cmd:
+  # wxt.config.ts
+  executeAction: Popup öffnen
+  openSidePanel: Seitenleiste öffnen
+  openExtPanel: Erweiterungsbereich öffnen
+  openOptions: Optionen öffnen
+
+option:
+  # OptionsForm.vue
+  toggle:
+    contextMenu: Rechtsklick-Menü aktivieren
+    contextMenuTip: Kontextmenü bei Rechtsklick anzeigen.
+    showUpdate: Versionshinweise bei Update anzeigen
+    showUpdateTip: Versionshinweise bei Versionsaktualisierung anzeigen.
+
+theme:
+  # ThemeSwitch.vue
+  dark: Dunkel
+  light: Hell
+  auto: Automatisch
+
+keyboard:
+  # KeyboardShortcuts.vue
+  caption: Tastaturkürzel
+  manage: Tastaturkürzel verwalten
+  description: Beschreibung
+  shortcut: Kürzel
+  unknown: Unbekannt
+
+form:
+  # OptionsForm.vue
+  getKey: API-Schlüssel abrufen
+  copyKey: API-Schlüssel kopieren.
+  showHideKey: API-Schlüssel anzeigen/verbergen.
+  keyNotice: Der API-Schlüssel und die analysierten Bilder werden zur Verarbeitung an den jeweiligen Dienst übermittelt.
+  geminiApiKey: Gemini API-Schlüssel
+  geminiKeyCopied: Gemini API-Schlüssel kopiert
+  nothingToCopy: Nichts zum Kopieren
+  copiedToClipboard: In die Zwischenablage kopiert
+
+search:
+  # SearchBox.vue
+  go: Los
+  label: Bildlink
+  placeholder: Link zu einem zu analysierenden Bild
+
+perms:
+  grant:
+    text: Host-Berechtigungen erteilen
+    tip: Diese Erweiterung benötigt Host-Berechtigungen zum Funktionieren
+  remove:
+    text: Host-Berechtigungen entfernen
+    tip: Sie können danach keine neuen Bilder mehr analysieren
+  info: Weitere Informationen zu Berechtigungen
+
+results:
+  # ResultsTable.vue
+  cancel: Abbrechen
+  delete: Löschen
+  deleteAnalysis: Analyse löschen
+  deleteConfirm: Löschen der Analyse bestätigen
+
+options:
+  # options/App.vue
+  title: Optionen
+  keyboard: Tastaturkürzel
+  extension: Erweiterungsoptionen
+  copySupport: Supportinformationen kopieren
+  copySupportTip: Für die Fehlerberichterstattung.
+  copySupportMsg: Supportinformationen kopiert.
+  madeFor: Für Piraten gemacht
+  # PanelHeader.vue
+  homePage: Startseite
+  releaseNotes: Versionshinweise
+  # pageFooter.vue
+  requestFeature: Funktion anfragen
+  openIssue: Problem melden
+
+page:
+  # page/App.vue
+  processing: Verarbeitung läuft...
+  processingMsg: Bild wird verarbeitet...
+  error: Fehler
+  errorMsg: GeoImage-Analysefehler
+  errorTip: "Tipp: Sobald der Fehler behoben ist, können Sie diese Seite neu laden..."
+  noImageData: Keine Bilddaten
+  localNotSupported: Lokale Analyse noch nicht unterstützt!
+  imageAlt: Bild
+
+permissions:
+  # permissions/App.vue
+  title: Berechtigungen
+  message: Um ein Bild in Chrome für den Upload zur API herunterzuladen, sind Host-Berechtigungen erforderlich.
+
+popout:
+  # popout/App.vue
+  title: Bereich
