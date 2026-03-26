@@ -68,6 +68,13 @@ perms:
     tip: You will no longer be able to analyze new images
   info: More Information on Permissions
 
+results:
+  # ResultsTable.vue
+  cancel: Cancel
+  delete: Delete
+  deleteAnalysis: Delete Analysis
+  deleteConfirm: Confirm deleting analysis
+
 options:
   # options/App.vue
   title: Options

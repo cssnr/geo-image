@@ -20,6 +20,13 @@ cmd:
   openExtPanel: Abrir panel de extensión
   openOptions: Abrir opciones
 
+results:
+  # ResultsTable.vue
+  cancel: Cancelar
+  delete: Eliminar
+  deleteAnalysis: Eliminar análisis
+  deleteConfirm: Confirmar eliminación del análisis
+
 option:
   # OptionsForm.vue
   toggle:

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { i18n } from '#imports'
 import { onMounted, ref } from 'vue'
 import { Modal } from 'bootstrap'
 import { showToast } from '@/composables/useToast.ts'
@@ -96,7 +97,7 @@ onMounted(() => {
           <td class="text-center">
             <a
               @click="showDeleteModal(loc.id?.toString() ?? '')"
-              title="Delete"
+              :title="i18n.t('results.delete')"
               :data-id="loc.id"
               :data-url="loc.url"
               class="link-danger"
@@ -119,19 +120,21 @@ onMounted(() => {
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="delete-modal-label">Delete Analysis</h1>
+            <h1 class="modal-title fs-5" id="delete-modal-label">{{ i18n.t('results.deleteAnalysis') }}</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" tabindex="-1"></button>
           </div>
           <div class="modal-body text-center p-2">
             <p class="mb-1">
-              Confirm deleting analysis <kbd>{{ hostToDelete }}</kbd> ?
+              {{ i18n.t('results.deleteConfirm') }} <kbd>{{ hostToDelete }}</kbd> ?
             </p>
           </div>
           <div class="modal-footer p-2">
             <button type="button" class="btn btn-danger me-auto" @click="confirmDelete">
-              Delete <i class="fa-regular fa-trash-can ms-2"></i>
+              {{ i18n.t('results.delete') }} <i class="fa-regular fa-trash-can ms-2"></i>
             </button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              {{ i18n.t('results.cancel') }}
+            </button>
           </div>
         </div>
       </div>
