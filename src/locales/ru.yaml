@@ -1,0 +1,112 @@
+name: GeoImage
+shortName: GeoImage
+description: Веб-расширение GeoImage для определения местоположения изображений с помощью Gemini AI.
+
+all:
+  close: Закрыть
+
+ctx:
+  # background/menus.ts
+  analyzeImage: Анализировать изображение
+  openPopup: Открыть всплывающее окно
+  openSidePanel: Открыть боковую панель
+  openExtPanel: Открыть панель расширения
+  openOptions: Открыть настройки
+
+cmd:
+  # wxt.config.ts
+  executeAction: Открыть всплывающее окно
+  openSidePanel: Открыть боковую панель
+  openExtPanel: Открыть панель расширения
+  openOptions: Открыть настройки
+
+option:
+  # OptionsForm.vue
+  toggle:
+    contextMenu: Включить контекстное меню
+    contextMenuTip: Показывать контекстное меню при нажатии правой кнопки мыши.
+    showUpdate: Показывать примечания к выпуску при обновлении
+    showUpdateTip: Показывать примечания к выпуску при обновлении версии.
+
+theme:
+  # ThemeSwitch.vue
+  dark: Тёмная
+  light: Светлая
+  auto: Авто
+
+keyboard:
+  # KeyboardShortcuts.vue
+  caption: Горячие клавиши
+  manage: Управление горячими клавишами
+  description: Описание
+  shortcut: Сочетание клавиш
+  unknown: Неизвестно
+
+form:
+  # OptionsForm.vue
+  getKey: Получить API-ключ
+  copyKey: Скопировать API-ключ.
+  showHideKey: Показать/скрыть API-ключ.
+  keyNotice: API-ключ и анализируемые изображения отправляются в соответствующий сервис для обработки.
+  geminiApiKey: API-ключ Gemini
+  geminiKeyCopied: API-ключ Gemini скопирован
+  nothingToCopy: Нечего копировать
+  copiedToClipboard: Скопировано в буфер обмена
+
+search:
+  # SearchBox.vue
+  go: Перейти
+  label: Ссылка на изображение
+  placeholder: Ссылка на изображение для анализа
+
+perms:
+  grant:
+    text: Предоставить разрешения хоста
+    tip: Для работы расширения требуются разрешения хоста
+  remove:
+    text: Удалить разрешения хоста
+    tip: Вы больше не сможете анализировать новые изображения
+  info: Подробнее о разрешениях
+
+results:
+  # ResultsTable.vue
+  cancel: Отмена
+  delete: Удалить
+  deleteAnalysis: Удалить анализ
+  deleteConfirm: Подтвердите удаление анализа
+
+options:
+  # options/App.vue
+  title: Настройки
+  keyboard: Горячие клавиши
+  extension: Настройки расширения
+  copySupport: Скопировать информацию для поддержки
+  copySupportTip: Для сообщения о проблемах.
+  copySupportMsg: Информация для поддержки скопирована.
+  madeFor: Made for Pirates
+  # PanelHeader.vue
+  homePage: Домашняя страница
+  releaseNotes: Примечания к выпуску
+  # pageFooter.vue
+  requestFeature: Запросить функцию
+  openIssue: Сообщить о проблеме
+
+page:
+  # page/App.vue
+  processing: Обработка...
+  processingMsg: Обработка изображения...
+  error: Ошибка
+  errorMsg: Ошибка анализа GeoImage
+  errorTip: "Подсказка: после устранения ошибки вы можете обновить эту страницу..."
+  noImageData: Нет данных изображения
+  localNotSupported: Локальный анализ пока не поддерживается!
+  imageAlt: Изображение
+
+permissions:
+  # permissions/App.vue
+  title: Разрешения
+  message: Для загрузки изображения в Chrome с целью отправки в API требуются разрешения хоста.
+
+popout:
+  # popout/App.vue
+  title: Панель

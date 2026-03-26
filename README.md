@@ -64,6 +64,13 @@ _Note: To install self-hosted extensions on Android you must enable a hidden men
 - Stores Response Data
 - Provides a GeoHack Link
 - Has Panel, Popup, and Side Panel.
+- Localized in 7 Languages:
+  - English
+  - Spanish
+  - German
+  - Japanese
+  - French
+  - Russian
 
 ### Upcoming
 
