@@ -1,0 +1,112 @@
+name: GeoImage
+shortName: GeoImage
+description: Gemini AIを使用して画像の位置を特定するGeoImage Web拡張機能。
+
+all:
+  close: 閉じる
+
+ctx:
+  # background/menus.ts
+  analyzeImage: 画像を分析
+  openPopup: ポップアップを開く
+  openSidePanel: サイドパネルを開く
+  openExtPanel: 拡張パネルを開く
+  openOptions: オプションを開く
+
+cmd:
+  # wxt.config.ts
+  executeAction: ポップアップを開く
+  openSidePanel: サイドパネルを開く
+  openExtPanel: 拡張パネルを開く
+  openOptions: オプションを開く
+
+option:
+  # OptionsForm.vue
+  toggle:
+    contextMenu: 右クリックメニューを有効にする
+    contextMenuTip: 右クリック時にコンテキストメニューを表示します。
+    showUpdate: アップデート時にリリースノートを表示する
+    showUpdateTip: バージョン更新時にリリースノートを表示します。
+
+theme:
+  # ThemeSwitch.vue
+  dark: ダーク
+  light: ライト
+  auto: 自動
+
+keyboard:
+  # KeyboardShortcuts.vue
+  caption: キーボードショートカット
+  manage: キーボードショートカットを管理
+  description: 説明
+  shortcut: ショートカット
+  unknown: 不明
+
+form:
+  # OptionsForm.vue
+  getKey: APIキーを取得する
+  copyKey: APIキーをコピー。
+  showHideKey: APIキーの表示／非表示。
+  keyNotice: APIキーおよび分析する画像は、処理のために関連サービスに送信されます。
+  geminiApiKey: Gemini APIキー
+  geminiKeyCopied: Gemini APIキーをコピーしました
+  nothingToCopy: コピーするものがありません
+  copiedToClipboard: クリップボードにコピーしました
+
+search:
+  # SearchBox.vue
+  go: 実行
+  label: 画像リンク
+  placeholder: 分析する画像のリンクを入力
+
+perms:
+  grant:
+    text: ホスト権限を付与する
+    tip: この拡張機能を使用するにはホスト権限が必要です
+  remove:
+    text: ホスト権限を削除する
+    tip: 新しい画像の分析ができなくなります
+  info: 権限の詳細情報
+
+results:
+  # ResultsTable.vue
+  cancel: キャンセル
+  delete: 削除
+  deleteAnalysis: 分析を削除
+  deleteConfirm: 分析の削除を確認
+
+options:
+  # options/App.vue
+  title: オプション
+  keyboard: キーボードショートカット
+  extension: 拡張機能オプション
+  copySupport: サポート情報をコピー
+  copySupportTip: 問題の報告に使用します。
+  copySupportMsg: サポート情報をコピーしました。
+  madeFor: 海賊のために作られた
+  # PanelHeader.vue
+  homePage: ホームページ
+  releaseNotes: リリースノート
+  # pageFooter.vue
+  requestFeature: 機能をリクエスト
+  openIssue: 問題を報告
+
+page:
+  # page/App.vue
+  processing: 処理中...
+  processingMsg: 画像を処理中...
+  error: エラー
+  errorMsg: GeoImage 分析エラー
+  errorTip: "ヒント: エラーが解決したら、このページを更新してください..."
+  noImageData: 画像データがありません
+  localNotSupported: ローカル分析はまだサポートされていません！
+  imageAlt: 画像
+
+permissions:
+  # permissions/App.vue
+  title: 権限
+  message: ChromeでAPIへのアップロード用に画像をダウンロードするには、ホスト権限が必要です。
+
+popout:
+  # popout/App.vue
+  title: パネル

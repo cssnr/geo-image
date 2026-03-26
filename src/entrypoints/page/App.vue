@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { i18n } from '#imports'
 import { onMounted, ref } from 'vue'
 import { getGeoUrl, processUrl, LocationData } from '@/utils/api.ts'
 import { showToast } from '@/composables/useToast.ts'
@@ -8,7 +9,6 @@ import { isMobile } from '@/utils/system.ts'
 import ToastAlerts from '@/components/ToastAlerts.vue'
 import PanelHeader from '@/components/PanelHeader.vue'
 import ResultsTable from '@/components/ResultsTable.vue'
-import OptionsOffscreen from '@/components/OptionsOffscreen.vue'
 
 const srcUrl = ref<string | null>(null)
 const errorMessage = ref('')
@@ -22,7 +22,7 @@ const data = ref<LocationData | null>(null)
 const toggleHistory = () => (historyShown.value = !historyShown.value)
 
 const manifest = chrome.runtime.getManifest()
-const title = `${manifest.name} Processing...`
+const title = `${manifest.name} ${i18n.t('page.processing')}`
 if (document.title === '') document.title = title
 
 function setErrorIcon() {
@@ -40,9 +40,9 @@ async function process(): Promise<LocationData> {
   if (url === 'message') {
     const response = await chrome.runtime.sendMessage('hello')
     console.log('response:', response)
-    if (!response.imageData) throw new Error('No Image Data')
+    if (!response.imageData) throw new Error(i18n.t('page.noImageData'))
     srcUrl.value = response.imageData
-    throw new Error('Local Analysis Not Yet Supported!')
+    throw new Error(i18n.t('page.localNotSupported'))
   } else {
     srcUrl.value = url
     return await processUrl(url)
@@ -60,7 +60,7 @@ onMounted(() => {
     .catch((e) => {
       console.log(e)
       errorMessage.value = e.message
-      document.title = `${title} - Error`
+      document.title = `${title} - ${i18n.t('page.error')}`
       setErrorIcon()
       showToast(e.message, 'danger')
       hasError.value = true
@@ -85,17 +85,17 @@ onMounted(() => {
           class="fs-1 text-center py-5 h-100 img-thumbnail"
           :style="{ backgroundImage: 'url(' + srcUrl + ')' }"
         >
-          <p>Processing Image...</p>
+          <p>{{ i18n.t('page.processingMsg') }}</p>
           <p><i class="fa-solid fa-sync fa-spin fa-xl"></i></p>
         </div>
 
         <div v-if="hasError">
-          <h1>GeoImage Analysis Error</h1>
+          <h1>{{ i18n.t('page.errorMsg') }}</h1>
           <div class="alert alert-danger my-3" role="alert">{{ errorMessage }}</div>
-          <p class="fst-italic">Tip: once the error is resolved you can refresh this page...</p>
+          <p class="fst-italic">{{ i18n.t('page.errorTip') }}</p>
           <div class="d-flex gap-2">
             <button type="button" class="btn btn-outline-primary" @click="openOptions()">
-              <i class="fa-solid fa-cog me-1"></i> Options Page
+              <i class="fa-solid fa-cog me-1"></i> {{ i18n.t('ctx.openOptions') }}
             </button>
           </div>
           <hr />
@@ -145,7 +145,7 @@ onMounted(() => {
 
             <div class="col-12 col-md-5 col-lg-4">
               <a v-if="srcUrl" :href="srcUrl" target="_blank" rel="noopener">
-                <img v-if="srcUrl" :src="srcUrl" alt="Image" class="img-thumbnail w-100 h-auto" />
+                <img v-if="srcUrl" :src="srcUrl" :alt="i18n.t('page.imageAlt')" class="img-thumbnail w-100 h-auto" />
               </a>
             </div>
           </div>
@@ -166,7 +166,7 @@ onMounted(() => {
     <i class="fa-solid fa-table-list"></i>
   </button>
 
-  <OptionsOffscreen />
+  <!--<OptionsOffscreen />-->
 
   <ToastAlerts />
   <!--<BackToTop />-->

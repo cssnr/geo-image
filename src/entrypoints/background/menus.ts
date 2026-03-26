@@ -1,14 +1,22 @@
+import { i18n } from '#imports'
 import { openExtPanel, openPageUrl, openSidePanel } from '@/utils/extension.ts'
 
-const contexts: chrome.contextMenus.CreateProperties[] = [
-  { contexts: ['image'], id: 'analyzeImage', title: 'Analyze Image' },
-  { contexts: ['all'], id: 'kWhwbrDe', type: 'separator' },
-  { contexts: ['all'], id: 'openPopup', title: 'Open Popup' },
-  { contexts: ['all'], id: 'openSidePanel', title: 'Open Side Panel' },
-  { contexts: ['all'], id: 'openExtPanel', title: 'Open Extension Panel' },
-  { contexts: ['all'], id: '4jaqIR9b', type: 'separator' },
-  { contexts: ['all'], id: 'openOptions', title: 'Open Options' },
+const config: chrome.contextMenus.CreateProperties[] = [
+  { contexts: ['image'], id: 'analyzeImage' },
+  { contexts: ['all'], id: 'separator' },
+  { contexts: ['all'], id: 'openPopup' },
+  { contexts: ['all'], id: 'openSidePanel' },
+  { contexts: ['all'], id: 'openExtPanel' },
+  { contexts: ['all'], id: 'separator' },
+  { contexts: ['all'], id: 'openOptions' },
 ]
+
+const contexts: chrome.contextMenus.CreateProperties[] = config.map((entry) => ({
+  ...entry,
+  ...(entry.id === 'separator'
+    ? { type: 'separator', id: crypto.randomUUID() }
+    : { title: i18n.t(`ctx.${entry.id}` as any) }),
+}))
 
 // NOTE: Below is ported from VanillaJS
 

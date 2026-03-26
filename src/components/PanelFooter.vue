@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { i18n } from '#imports'
 import { openOptions } from '@/utils/extension.ts'
 
 const closeWindow = () => window.close()
@@ -13,10 +14,10 @@ const closeWindow = () => window.close()
         href="/options.html"
         @click.prevent="openOptions()"
       >
-        <i class="fa-solid fa-gears"></i> Options
+        <i class="fa-solid fa-gears"></i> {{ i18n.t('options.title') }}
       </a>
       <button title="Close" class="btn btn-sm btn-outline-warning hvr-grow-sm" @click="closeWindow()">
-        <i class="fa-regular fa-circle-xmark"></i> Close
+        <i class="fa-regular fa-circle-xmark"></i> {{ i18n.t('all.close') }}
       </button>
     </div>
   </div>

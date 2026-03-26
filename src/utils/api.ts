@@ -1,7 +1,4 @@
-// api
-
 import { getOptions } from '@/utils/options.ts'
-
 import { useLocationsDB } from '@/composables/useLocationsDB'
 
 const { addLocation, getByUrl } = useLocationsDB()
@@ -119,7 +116,11 @@ export async function getData(mimeType: string, base64: string) {
   }
   // console.log('headers:', headers)
 
+  const lang = chrome.i18n.getUILanguage()
   const request = {
+    system_instruction: {
+      parts: [{ text: `Always respond in the language with BCP-47 code: "${lang}".` }],
+    },
     contents: [
       {
         parts: [

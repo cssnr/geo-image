@@ -16,17 +16,24 @@ const icons = {
 // noinspection JSUnusedGlobalSymbols
 export default defineConfig({
   srcDir: 'src',
-  modules: ['@wxt-dev/module-vue'],
+  modules: ['@wxt-dev/module-vue', '@wxt-dev/i18n/module'],
 
+  // https://wxt.dev/guide/essentials/config/auto-imports.html#disabling-auto-imports
+  // imports: false,
+
+  // https://wxt.dev/guide/essentials/config/manifest.html
   manifest: ({ browser }) => {
     const isFirefox = browser === 'firefox'
     console.log('isFirefox:', isFirefox)
 
     return {
       icons,
-      name: 'GeoImage',
-      description: 'GeoImage Web Extension to Locate Images using Gemini AI.',
+      default_locale: 'en',
+      name: '__MSG_name__',
+      // short_name: '__MSG_shortName__',
+      description: '__MSG_description__',
       homepage_url: 'https://github.com/cssnr/geo-image',
+
       permissions: ['contextMenus', 'storage'],
       host_permissions: ['*://*/*'],
 
@@ -56,48 +63,54 @@ export default defineConfig({
       // }),
 
       commands: {
+        _execute_action: {
+          description: '__MSG_cmd_executeAction__',
+          suggested_key: { default: 'Alt+Shift+A' },
+        },
         openSidePanel: {
-          description: 'Open Side Panel',
+          description: '__MSG_cmd_openSidePanel__',
           suggested_key: { default: 'Alt+Shift+P' },
         },
         openExtPanel: {
-          description: 'Open Extension Panel',
+          description: '__MSG_cmd_openExtPanel__',
           suggested_key: { default: 'Alt+Shift+W' },
         },
-        _execute_action: {
-          description: 'Open Popup',
-          suggested_key: { default: 'Alt+Shift+A' },
-        },
         openOptions: {
-          description: 'Open Options',
+          description: '__MSG_cmd_openOptions__',
           suggested_key: { default: 'Alt+Shift+O' },
         },
       },
 
-      ...(isFirefox && {
-        browser_specific_settings: {
-          gecko: {
-            id: 'geo-image@cssnr.com',
-            strict_min_version: '112.0',
-            data_collection_permissions: {
-              required: ['none'],
+      ...(isFirefox
+        ? {
+            browser_specific_settings: {
+              gecko: {
+                id: 'geo-image@cssnr.com',
+                strict_min_version: '112.0',
+                data_collection_permissions: {
+                  required: ['none'],
+                },
+                update_url:
+                  'https://raw.githubusercontent.com/cssnr/geo-image/master/update.json',
+              },
+              gecko_android: {
+                strict_min_version: '120.0',
+              },
             },
-            update_url:
-              'https://raw.githubusercontent.com/cssnr/geo-image/master/update.json',
-          },
-          gecko_android: {
-            strict_min_version: '120.0',
-          },
-        },
-      }),
+          }
+        : {
+            minimum_chrome_version: '127',
+          }),
     }
   },
 
+  // https://wxt.dev/guide/essentials/config/browser-startup.html
   // NOTE: Override with web-ext.config.ts
   webExt: {
     disabled: true,
   },
 
+  // https://wxt.dev/guide/essentials/config/vite.html
   vite: () => ({
     // NOTE: This silences bootstrap deprecation warnings
     css: {

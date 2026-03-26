@@ -63,7 +63,15 @@ _Note: To install self-hosted extensions on Android you must enable a hidden men
 - Uses Gemini API
 - Stores Response Data
 - Provides a GeoHack Link
-- Has Panel, Popup, and Side Panel.
+- Has Panel, Popup, and Side Panel
+- AI Responses are in Set Language
+- Extension Localized in 7 Languages:
+  - English (English)
+  - Spanish (Español)
+  - German (Deutsch)
+  - Japanese (日本語)
+  - French (Français)
+  - Russian (Русский)
 
 ### Upcoming
 

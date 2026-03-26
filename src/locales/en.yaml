@@ -1,0 +1,112 @@
+name: GeoImage
+shortName: GeoImage
+description: GeoImage Web Extension to Locate Images using Gemini AI.
+
+all:
+  close: Close
+
+ctx:
+  # background/menus.ts
+  analyzeImage: Analyze Image
+  openPopup: Open Popup
+  openSidePanel: Open Side Panel
+  openExtPanel: Open Extension Panel
+  openOptions: Open Options
+
+cmd:
+  # wxt.config.ts
+  executeAction: Open Popup
+  openSidePanel: Open Side Panel
+  openExtPanel: Open Extension Panel
+  openOptions: Open Options
+
+option:
+  # OptionsForm.vue
+  toggle:
+    contextMenu: Enable Right Click Menu
+    contextMenuTip: Show Context Menu on Right Click.
+    showUpdate: Show Release Notes on Update
+    showUpdateTip: Show Release Notes on Version Update.
+
+theme:
+  # ThemeSwitch.vue
+  dark: Dark
+  light: Light
+  auto: Auto
+
+keyboard:
+  # KeyboardShortcuts.vue
+  caption: Keyboard Shortcuts
+  manage: Manage Keyboard Shortcuts
+  description: Description
+  shortcut: Shortcut
+  unknown: Unknown
+
+form:
+  # OptionsForm.vue
+  getKey: Get your API Key
+  copyKey: Copy API Key.
+  showHideKey: Show/Hide API Key.
+  keyNotice: The API key and images you analyze are sent to the related service for processing.
+  geminiApiKey: Gemini API Key
+  geminiKeyCopied: Gemini API Key Copied
+  nothingToCopy: Nothing to Copy
+  copiedToClipboard: Copied to Clipboard
+
+search:
+  # SearchBox.vue
+  go: Go
+  label: Image Link
+  placeholder: Link to an Image to Analyze
+
+perms:
+  grant:
+    text: Grant Host Permissions
+    tip: This Extension Requires Host Permissions to Function
+  remove:
+    text: Remove Host Permissions
+    tip: You will no longer be able to analyze new images
+  info: More Information on Permissions
+
+results:
+  # ResultsTable.vue
+  cancel: Cancel
+  delete: Delete
+  deleteAnalysis: Delete Analysis
+  deleteConfirm: Confirm deleting analysis
+
+options:
+  # options/App.vue
+  title: Options
+  keyboard: Keyboard Shortcuts
+  extension: Extension Options
+  copySupport: Copy Support Information
+  copySupportTip: For issue reporting.
+  copySupportMsg: Support Information Copied.
+  madeFor: Made for Pirates
+  # PanelHeader.vue
+  homePage: Home Page
+  releaseNotes: Release Notes
+  # pageFooter.vue
+  requestFeature: Request Feature
+  openIssue: Open Issue
+
+page:
+  # page/App.vue
+  processing: Processing...
+  processingMsg: Processing Image...
+  error: Error
+  errorMsg: GeoImage Analysis Error
+  errorTip: "Tip: once the error is resolved you can refresh this page..."
+  noImageData: No Image Data
+  localNotSupported: Local Analysis Not Yet Supported!
+  imageAlt: Image
+
+permissions:
+  # permissions/App.vue
+  title: Permissions
+  message: To download an image on Chrome for upload to the API, host permissions are required.
+
+popout:
+  # popout/App.vue
+  title: Panel

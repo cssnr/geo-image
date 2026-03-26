@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { i18n } from '#imports'
 import { clickOpen, openExtPanel, openOptions, openPopup, openSidePanel } from '@/utils/extension.ts'
 import { isMobile } from '@/utils/system.ts'
 import ThemeSwitch from '@/components/ThemeSwitch.vue'
@@ -30,7 +31,7 @@ const manifest = chrome.runtime.getManifest()
 
       <div class="d-flex flex-grow-1 overflow-hidden align-items-baseline">
         <a
-          title="Home Page"
+          :title="i18n.t('options.homePage')"
           class="link-body-emphasis text-decoration-none fs-4"
           :href="manifest.homepage_url"
           target="_blank"
@@ -40,7 +41,7 @@ const manifest = chrome.runtime.getManifest()
           {{ manifest.name }}</a
         >
         <a
-          title="Release Notes"
+          :title="i18n.t('options.releaseNotes')"
           class="link-body-emphasis text-decoration-none small ms-1"
           :href="`${manifest.homepage_url}/releases/tag/${manifest.version}`"
           target="_blank"
@@ -51,23 +52,33 @@ const manifest = chrome.runtime.getManifest()
       </div>
 
       <div v-if="!isMobile && panelButton" class="ms-1">
-        <a title="Extension Panel" class="btn btn-sm btn-outline-info" role="button" @click="openExtPanel(closeWindow)">
+        <a
+          :title="i18n.t('ctx.openExtPanel')"
+          class="btn btn-sm btn-outline-info"
+          role="button"
+          @click="openExtPanel(closeWindow)"
+        >
           <i class="fa-regular fa-window-restore me-1"></i
         ></a>
       </div>
       <div v-if="!isMobile && sideButton" class="ms-1">
-        <a title="Side Panel" class="btn btn-sm btn-outline-info" role="button" @click="openSidePanel(closeWindow)">
+        <a
+          :title="i18n.t('ctx.openSidePanel')"
+          class="btn btn-sm btn-outline-info"
+          role="button"
+          @click="openSidePanel(closeWindow)"
+        >
           <i class="fa-solid fa-table-columns"></i
         ></a>
       </div>
       <div v-if="!isMobile && popupButton" class="ms-1">
-        <a title="Open Popup" class="btn btn-sm btn-outline-info" role="button" @click="openPopup()">
+        <a :title="i18n.t('ctx.openPopup')" class="btn btn-sm btn-outline-info" role="button" @click="openPopup()">
           <i class="fa-solid fa-window-maximize"></i
         ></a>
       </div>
       <div v-if="optionsButton" class="ms-1">
         <a
-          title="Options"
+          :title="i18n.t('ctx.openOptions')"
           class="btn btn-sm btn-outline-info"
           role="button"
           href="/options.html"
