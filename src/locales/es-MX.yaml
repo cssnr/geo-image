@@ -1,0 +1,105 @@
+name: GeoImage
+shortName: GeoImage
+description: Extensión web GeoImage para localizar imágenes usando Gemini AI.
+
+all:
+  close: Cerrar
+
+ctx:
+  # background/menus.ts
+  analyzeImage: Analizar imagen
+  openPopup: Abrir ventana emergente
+  openSidePanel: Abrir panel lateral
+  openExtPanel: Abrir panel de extensión
+  openOptions: Abrir opciones
+
+cmd:
+  # wxt.config.ts
+  executeAction: Abrir ventana emergente
+  openSidePanel: Abrir panel lateral
+  openExtPanel: Abrir panel de extensión
+  openOptions: Abrir opciones
+
+option:
+  # OptionsForm.vue
+  toggle:
+    contextMenu: Activar menú del clic derecho
+    contextMenuTip: Mostrar menú contextual al hacer clic derecho.
+    showUpdate: Mostrar notas de la versión al actualizar
+    showUpdateTip: Mostrar notas de la versión al actualizar.
+
+theme:
+  # ThemeSwitch.vue
+  dark: Oscuro
+  light: Claro
+  auto: Automático
+
+keyboard:
+  # KeyboardShortcuts.vue
+  caption: Atajos de teclado
+  manage: Administrar atajos de teclado
+  description: Descripción
+  shortcut: Atajo
+  unknown: Desconocido
+
+form:
+  # OptionsForm.vue
+  getKey: Obtén tu clave de API
+  copyKey: Copiar clave de API.
+  showHideKey: Mostrar/Ocultar clave de API.
+  keyNotice: La clave de API y las imágenes que analices se envían al servicio correspondiente para su procesamiento.
+  geminiApiKey: Clave de API de Gemini
+  geminiKeyCopied: Clave de API de Gemini copiada
+  nothingToCopy: Nada que copiar
+  copiedToClipboard: Copiado al portapapeles
+
+search:
+  # SearchBox.vue
+  go: Ir
+  label: Enlace de imagen
+  placeholder: Enlace a una imagen para analizar
+
+perms:
+  grant:
+    text: Conceder permisos de host
+    tip: Esta extensión requiere permisos de host para funcionar
+  remove:
+    text: Eliminar permisos de host
+    tip: Ya no podrás analizar nuevas imágenes
+  info: Más información sobre los permisos
+
+options:
+  # options/App.vue
+  title: Opciones
+  keyboard: Atajos de teclado
+  extension: Opciones de la extensión
+  copySupport: Copiar información de soporte
+  copySupportTip: Para reportar problemas.
+  copySupportMsg: Información de soporte copiada.
+  madeFor: Hecho para piratas
+  # PanelHeader.vue
+  homePage: Página de inicio
+  releaseNotes: Notas de la versión
+  # pageFooter.vue
+  requestFeature: Solicitar función
+  openIssue: Abrir incidencia
+
+page:
+  # page/App.vue
+  processing: Procesando...
+  processingMsg: Procesando imagen...
+  error: Error
+  errorMsg: Error de análisis de GeoImage
+  errorTip: "Consejo: una vez resuelto el error, puedes actualizar esta página..."
+  noImageData: Sin datos de imagen
+  localNotSupported: "¡El análisis local aún no está disponible!"
+  imageAlt: Imagen
+
+permissions:
+  # permissions/App.vue
+  title: Permisos
+  message: Para descargar una imagen en Chrome y cargarla a la API, se requieren permisos de host.
+
+popout:
+  # popout/App.vue
+  title: Panel

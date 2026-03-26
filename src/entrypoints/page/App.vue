@@ -85,7 +85,7 @@ onMounted(() => {
           class="fs-1 text-center py-5 h-100 img-thumbnail"
           :style="{ backgroundImage: 'url(' + srcUrl + ')' }"
         >
-          <p>i18n.t('page.processingMsg')</p>
+          <p>{{ i18n.t('page.processingMsg') }}</p>
           <p><i class="fa-solid fa-sync fa-spin fa-xl"></i></p>
         </div>
 
