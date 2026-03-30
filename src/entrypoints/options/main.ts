@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import { bootstrapDirective } from '@/utils/bootstrapDirective.ts'
+import { bootstrapDirective } from '@/directives/bootstrap.ts'
 import App from './App.vue'
 import '@/main.ts'
 import './style.css'

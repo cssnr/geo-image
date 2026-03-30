@@ -2,8 +2,13 @@ name: GeoImage
 shortName: GeoImage
 description: GeoImage Web Extension to Locate Images using Gemini AI.
 
-all:
-  close: Close
+ui:
+  text:
+    location: Location
+  action:
+    close: Close
+    cancel: Cancel # NOT TRANSLATED / NOT USED
+    analyze: Analyze # NOT TRANSLATED / NOT USED
 
 ctx:
   # background/menus.ts

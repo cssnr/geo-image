@@ -2,8 +2,11 @@ name: GeoImage
 shortName: GeoImage
 description: Gemini AIを使用して画像の位置を特定するGeoImage Web拡張機能。
 
-all:
-  close: 閉じる
+ui:
+  text:
+    location: 所在地
+  action:
+    close: 閉じる
 
 ctx:
   # background/menus.ts

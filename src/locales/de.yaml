@@ -2,8 +2,11 @@ name: GeoImage
 shortName: GeoImage
 description: GeoImage Web-Erweiterung zur Bildlokalisierung mit Gemini AI.
 
-all:
-  close: Schließen
+ui:
+  text:
+    location: Standort
+  action:
+    close: Schließen
 
 ctx:
   # background/menus.ts

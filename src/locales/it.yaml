@@ -1,0 +1,115 @@
+name: GeoImage
+shortName: GeoImage
+description: Estensione Web GeoImage per Localizzare Immagini tramite Gemini AI.
+
+ui:
+  text:
+    location: Posizione
+  action:
+    close: Chiudi
+
+ctx:
+  # background/menus.ts
+  analyzeImage: Analizza Immagine
+  openPopup: Apri Popup
+  openSidePanel: Apri Pannello Laterale
+  openExtPanel: Apri Pannello Estensione
+  openOptions: Apri Opzioni
+
+cmd:
+  # wxt.config.ts
+  executeAction: Apri Popup
+  openSidePanel: Apri Pannello Laterale
+  openExtPanel: Apri Pannello Estensione
+  openOptions: Apri Opzioni
+
+option:
+  # OptionsForm.vue
+  toggle:
+    contextMenu: Abilita Menu Contestuale
+    contextMenuTip: Mostra il menu contestuale al clic destro.
+    showUpdate: Mostra Note di Rilascio all'Aggiornamento
+    showUpdateTip: Mostra le Note di Rilascio all'Aggiornamento della Versione.
+
+theme:
+  # ThemeSwitch.vue
+  dark: Scuro
+  light: Chiaro
+  auto: Automatico
+
+keyboard:
+  # KeyboardShortcuts.vue
+  caption: Scorciatoie da Tastiera
+  manage: Gestisci Scorciatoie da Tastiera
+  description: Descrizione
+  shortcut: Scorciatoia
+  unknown: Sconosciuto
+
+form:
+  # OptionsForm.vue
+  getKey: Ottieni la tua Chiave API
+  copyKey: Copia Chiave API.
+  showHideKey: Mostra/Nascondi Chiave API.
+  keyNotice: La chiave API e le immagini analizzate vengono inviate al servizio corrispondente per l'elaborazione.
+  geminiApiKey: Chiave API Gemini
+  geminiKeyCopied: Chiave API Gemini Copiata
+  nothingToCopy: Niente da Copiare
+  copiedToClipboard: Copiato negli Appunti
+
+search:
+  # SearchBox.vue
+  go: Vai
+  label: Link Immagine
+  placeholder: Link a un'Immagine da Analizzare
+
+perms:
+  grant:
+    text: Concedi Permessi Host
+    tip: Questa Estensione Richiede i Permessi Host per Funzionare
+  remove:
+    text: Rimuovi Permessi Host
+    tip: Non sarà più possibile analizzare nuove immagini
+  info: Ulteriori Informazioni sui Permessi
+
+results:
+  # ResultsTable.vue
+  cancel: Annulla
+  delete: Elimina
+  deleteAnalysis: Elimina Analisi
+  deleteConfirm: Conferma eliminazione analisi
+
+options:
+  # options/App.vue
+  title: Opzioni
+  keyboard: Scorciatoie da Tastiera
+  extension: Opzioni Estensione
+  copySupport: Copia Informazioni di Supporto
+  copySupportTip: Per la segnalazione di problemi.
+  copySupportMsg: Informazioni di Supporto Copiate.
+  madeFor: Fatto per i Pirati
+  # PanelHeader.vue
+  homePage: Pagina Iniziale
+  releaseNotes: Note di Rilascio
+  # pageFooter.vue
+  requestFeature: Richiedi Funzionalità
+  openIssue: Apri Segnalazione
+
+page:
+  # page/App.vue
+  processing: Elaborazione in corso...
+  processingMsg: Elaborazione Immagine in corso...
+  error: Errore
+  errorMsg: Errore di Analisi GeoImage
+  errorTip: "Suggerimento: una volta risolto l'errore, puoi aggiornare questa pagina..."
+  noImageData: Nessun Dato Immagine
+  localNotSupported: Analisi Locale Non Ancora Supportata!
+  imageAlt: Immagine
+
+permissions:
+  # permissions/App.vue
+  title: Permessi
+  message: Per scaricare un'immagine in Chrome da caricare all'API, sono necessari i permessi host.
+
+popout:
+  # popout/App.vue
+  title: Pannello
