@@ -66,7 +66,7 @@ _Note: To install self-hosted extensions on Android you must enable a hidden men
 - Provides a GeoHack Link
 - Has Panel, Popup, and Side Panel
 - AI Responses are in Browser Language
-- Extension is Localized in 8 Languages:
+- Extension is Localized in 8 Languages
   - English (English)
   - Spanish (Español)
   - German (Deutsch)
