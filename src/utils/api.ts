@@ -57,6 +57,7 @@ export async function processUrl(url?: string | null): Promise<LocationData> {
   //   confidence: Math.floor(Math.random() * 30) + 69,
   // }
   // console.log('data:', data)
+  // // await new Promise((resolve) => setTimeout(resolve, 5000))
 
   // Save data to IDB
   const idbKey = await addLocation(data)

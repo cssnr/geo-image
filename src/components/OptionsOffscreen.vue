@@ -25,7 +25,12 @@ import ThemeSwitch from '@/components/ThemeSwitch.vue'
     <div class="offcanvas-header">
       <ThemeSwitch />
       <h5 class="offcanvas-title ms-2" id="optionsOffcanvasLabel">{{ i18n.t('options.title') }}</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="offcanvas"
+        :aria-label="i18n.t('ui.action.close')"
+      ></button>
     </div>
     <div class="offcanvas-body p-2">
       <OptionsForm :compact="true" />

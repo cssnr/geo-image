@@ -117,15 +117,15 @@ onMounted(() => {
               <h5 class="mb-0">{{ data.location }}</h5>
 
               <div :class="['d-flex', 'flex-wrap', isMobile ? 'gap-1' : 'gap-3']">
-                <div class="d-flex align-items-center gap-2">
+                <div class="d-flex align-items-center gap-1">
                   <i class="fa-solid fa-grip-lines text-secondary"></i>
                   <span class="fw-semibold font-monospace small">{{ data.latitude || 'N/A' }}</span>
                 </div>
-                <div class="d-flex align-items-center gap-2">
+                <div class="d-flex align-items-center gap-1">
                   <i class="fa-solid fa-grip-lines-vertical text-secondary"></i>
                   <span class="fw-semibold font-monospace small">{{ data.longitude || 'N/A' }}</span>
                 </div>
-                <div class="d-flex align-items-center gap-2">
+                <div class="d-flex align-items-center gap-1">
                   <i class="fa-solid fa-percent text-secondary"></i>
                   <span class="fw-semibold font-monospace small" :class="getConfidenceClass(data.confidence)">{{
                     data.confidence || 'N/A'
@@ -158,6 +158,7 @@ onMounted(() => {
   <!--<footer class="flex-shrink-0"></footer>-->
 
   <button
+    v-if="!isProcessing"
     id="toggle-history"
     type="button"
     :class="['btn', historyShown ? 'btn-primary' : 'btn-link']"

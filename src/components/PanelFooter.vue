@@ -9,15 +9,19 @@ const closeWindow = () => window.close()
   <div class="p-1 pt-0">
     <div class="d-flex flex-row justify-content-end gap-2">
       <a
-        title="Options"
+        :title="i18n.t('options.title')"
         class="btn btn-sm btn-outline-info hvr-grow-sm"
         href="/options.html"
         @click.prevent="openOptions()"
       >
         <i class="fa-solid fa-gears"></i> {{ i18n.t('options.title') }}
       </a>
-      <button title="Close" class="btn btn-sm btn-outline-warning hvr-grow-sm" @click="closeWindow()">
-        <i class="fa-regular fa-circle-xmark"></i> {{ i18n.t('all.close') }}
+      <button
+        :title="i18n.t('ui.action.close')"
+        class="btn btn-sm btn-outline-warning hvr-grow-sm"
+        @click="closeWindow()"
+      >
+        <i class="fa-regular fa-circle-xmark"></i> {{ i18n.t('ui.action.close') }}
       </button>
     </div>
   </div>

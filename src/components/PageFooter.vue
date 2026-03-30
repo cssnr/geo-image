@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { i18n } from '#imports'
 import { clickOpen } from '@/utils/extension.ts'
 
 withDefaults(

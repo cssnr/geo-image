@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { i18n } from '#imports'
 import { ref, onMounted, onUnmounted } from 'vue'
 import { Modal } from 'bootstrap'
 import Uppy from '@uppy/core'
@@ -73,8 +74,14 @@ onUnmounted(() => {
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="image-modal-label">Analyze Image</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" tabindex="-1"></button>
+          <h1 class="modal-title fs-5" id="image-modal-label">{{ i18n.t('ctx.analyzeImage') }}</h1>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            :aria-label="i18n.t('ui.action.close')"
+            tabindex="-1"
+          ></button>
         </div>
         <div class="modal-body text-center p-2">
           <div class="modal-body text-center p-2">
@@ -83,9 +90,11 @@ onUnmounted(() => {
         </div>
         <div class="modal-footer p-2">
           <button type="button" class="btn btn-success me-auto" @click="analyzeImage()">
-            Analyze <i class="fa-solid fa-rotate ms-2"></i>
+            {{ i18n.t('ui.action.analyze') }} <i class="fa-solid fa-rotate ms-2"></i>
           </button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            {{ i18n.t('ui.action.cancel') }}
+          </button>
         </div>
       </div>
     </div>

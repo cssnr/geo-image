@@ -76,7 +76,7 @@ onMounted(() => {
       <thead>
         <tr>
           <th class="text-center" style="width: 28px"><i class="fa-solid fa-list-ol"></i></th>
-          <th>Location</th>
+          <th>{{ i18n.t('ui.text.location') }}</th>
           <th class="text-center" style="width: 42px"><i class="fa-solid fa-percent"></i></th>
           <th class="text-center" style="width: 28px"><i class="fa-solid fa-trash-can"></i></th>
         </tr>
@@ -121,7 +121,13 @@ onMounted(() => {
         <div class="modal-content">
           <div class="modal-header">
             <h1 class="modal-title fs-5" id="delete-modal-label">{{ i18n.t('results.deleteAnalysis') }}</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" tabindex="-1"></button>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              :aria-label="i18n.t('ui.action.close')"
+              tabindex="-1"
+            ></button>
           </div>
           <div class="modal-body text-center p-2">
             <p class="mb-1">
