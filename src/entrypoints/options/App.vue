@@ -20,14 +20,7 @@ document.title = `${manifest.name} ${i18n.t('options.title')}`
     <div class="m-auto pb-4 w-100">
       <div id="options-wrapper" class="glass-outline blur rounded rounded-3 p-2 p-sm-3 m-auto w-100">
         <div class="d-flex flex-row justify-content-center align-items-center">
-          <img
-            src="/images/logo48.png"
-            class="me-1"
-            height="48"
-            width="48"
-            :alt="manifest.name"
-            :title="manifest.name"
-          />
+          <img :src="'/icons/48.png'" class="me-1" height="48" width="48" :alt="manifest.name" :title="manifest.name" />
           <div>
             <a
               class="link-body-emphasis text-decoration-none fs-1"
