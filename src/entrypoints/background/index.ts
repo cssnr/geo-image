@@ -2,7 +2,7 @@ import { openExtPanel, openPageUrl, openSidePanel } from '@/utils/extension.ts'
 import { isFirefox } from '@/utils/system.ts'
 import { defaultOptions, getOptions } from '@/utils/options.ts'
 import { createContextMenus } from './menus.ts'
-import { STORE_KEY } from '@/utils/prompt.ts'
+import { PROMPTS_KEY } from '@/utils/prompt.ts'
 
 export default defineBackground(() => {
   console.log(`Loaded: %c${chrome.runtime.id}`, 'Color: Cyan')
@@ -105,7 +105,7 @@ function onChanged(changes: Record<string, chrome.storage.StorageChange>) {
     }
   }
 
-  if (STORE_KEY in changes) {
+  if (PROMPTS_KEY in changes) {
     console.log('%c STORE KEY IN CHANGES YOU DID IT BOBBY', 'color: Lime')
     getOptions().then((options) => {
       if (options.contextMenu) createContextMenus().catch(console.warn)
@@ -140,7 +140,11 @@ async function onClicked(ctx: chrome.contextMenus.OnClickData, tab?: chrome.tabs
     // const encoded = encodeURIComponent(ctx.srcUrl ?? '')
     // const url = chrome.runtime.getURL(`page.html?url=${encoded}`)
     // return activateOrOpen(url)
-    return openPageUrl(ctx.srcUrl ?? '')
+    await openPageUrl(ctx.srcUrl)
+  } else if (ctx.menuItemId.toString().startsWith('prompt-')) {
+    const prompt = ctx.menuItemId.toString().slice('prompt-'.length)
+    console.debug('Custom Prompt:', prompt)
+    await openPageUrl(ctx.srcUrl, prompt)
   } else {
     console.error(`Unknown ctx.menuItemId: ${ctx.menuItemId}`)
   }

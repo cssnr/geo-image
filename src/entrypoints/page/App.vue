@@ -9,6 +9,7 @@ import { isMobile } from '@/utils/system.ts'
 import ToastAlerts from '@/components/ToastAlerts.vue'
 import PanelHeader from '@/components/PanelHeader.vue'
 import ResultsTable from '@/components/ResultsTable.vue'
+import { getPrompt } from '@/utils/prompt.ts'
 
 const srcUrl = ref<string | null>(null)
 const errorMessage = ref('')
@@ -37,6 +38,15 @@ async function process(): Promise<LocationData> {
   const params = new URLSearchParams(window.location.search)
   const url = params.get('url')
   console.debug('url:', url)
+
+  const promptName = params.get('prompt')
+  console.debug('promptName:', promptName)
+  if (promptName) {
+    const prompt = await getPrompt(promptName)
+    console.debug('prompt:', prompt)
+    throw new Error('INOP - WIP')
+  }
+
   if (url === 'message') {
     const response = await chrome.runtime.sendMessage('hello')
     console.log('response:', response)

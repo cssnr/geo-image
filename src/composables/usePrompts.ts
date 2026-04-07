@@ -1,5 +1,5 @@
 import { ref, onMounted, onUnmounted } from 'vue'
-import { getPrompts, STORE_KEY } from '@/utils/prompt.ts'
+import { getPrompts, PROMPTS_KEY } from '@/utils/prompt.ts'
 import type { Ref } from 'vue'
 import type { Prompt } from '@/utils/prompt.ts'
 
@@ -10,7 +10,7 @@ export function usePrompts(): Ref<Prompt[]> {
 
   const onChanged = async (changes: any) => {
     console.log('usePrompts - onChanged:', changes)
-    if (STORE_KEY in changes) {
+    if (PROMPTS_KEY in changes) {
       console.log('%c composables/usePrompts.ts - CHANGE DETECTED ', 'color: Yellow')
       items.value = await getPrompts()
       console.log('usePrompts - items.value:', items.value)

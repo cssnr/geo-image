@@ -3,12 +3,22 @@ export interface Prompt {
   prompt: string
 }
 
-export const STORE_KEY = 'prompts'
+export const PROMPTS_KEY = 'prompts'
+
+export async function getPrompt(name: string): Promise<Prompt> {
+  const items = await chrome.storage.sync.get([PROMPTS_KEY])
+  console.log('getPrompt - items:', items)
+  const results = (items?.[PROMPTS_KEY] || []) as Prompt[]
+  console.log('results:', results)
+  const result = results.find((prompt: Prompt) => prompt.name === name)
+  console.log('result:', result)
+  return result as Prompt
+}
 
 export async function getPrompts(): Promise<Prompt[]> {
-  const items = await chrome.storage.sync.get([STORE_KEY])
+  const items = await chrome.storage.sync.get([PROMPTS_KEY])
   console.log('getPrompts - items:', items)
-  const results = items?.[STORE_KEY] || []
+  const results = items?.[PROMPTS_KEY] || []
   console.log('results:', results)
   return results as Prompt[]
 }
@@ -23,7 +33,7 @@ export async function addPrompt(name: string, prompt: string): Promise<void> {
   }
   data.push(item)
   console.log('data:', data)
-  await chrome.storage.sync.set({ [STORE_KEY]: data })
+  await chrome.storage.sync.set({ [PROMPTS_KEY]: data })
 }
 
 export async function deletePrompt(name?: string): Promise<void> {
@@ -33,5 +43,5 @@ export async function deletePrompt(name?: string): Promise<void> {
   console.log('data:', data)
   const filtered = data.filter((s) => s.name !== name)
   console.log('filtered:', filtered)
-  await chrome.storage.sync.set({ [STORE_KEY]: filtered })
+  await chrome.storage.sync.set({ [PROMPTS_KEY]: filtered })
 }
