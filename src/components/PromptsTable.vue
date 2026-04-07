@@ -58,7 +58,9 @@ async function confirmDelete(name: string) {
 <template>
   <div>
     <form @submit.prevent="onSubmit" id="prompts-form" class="mb-1">
-      <label class="form-label" for="regex"><i class="fa-solid fa-filter me-2"></i> Saved Prompts</label>
+      <h5>
+        <label class="form-label" for="promptName"><i class="fa-solid fa-indent me-2"></i> Add Prompt</label>
+      </h5>
       <div class="input-group">
         <input
           v-model="promptName"
@@ -91,21 +93,21 @@ async function confirmDelete(name: string) {
       </div>
     </form>
 
+    <h5><i class="fa-solid fa-filter me-2"></i> Saved Prompts</h5>
+
     <div class="table-wrapper">
       <table id="prompts-table" class="table table-sm table-hover small w-100" style="table-layout: fixed">
         <thead class="">
           <tr>
-            <th class="bg-transparent">Prompts - {{ items.length }}</th>
             <th class="bg-transparent">Name</th>
+            <th class="bg-transparent">Prompt</th>
             <th class="bg-transparent text-center" style="width: 28px"><i class="fa-solid fa-trash-can"></i></th>
           </tr>
         </thead>
         <tbody id="links-body">
           <tr v-if="items?.length" v-for="item of items">
             <td class="bg-transparent text-truncate">{{ item.name }}</td>
-            <td class="bg-transparent text-truncate" :class="{ 'text-muted': !item.name }">
-              {{ item.name || 'not set' }}
-            </td>
+            <td class="bg-transparent text-truncate">{{ item.prompt }}</td>
             <td class="bg-transparent">
               <a @click.prevent="openDeleteModal(item.name)" title="Delete" class="link-danger" role="button" href="#"
                 ><i class="fa-regular fa-trash-can"></i

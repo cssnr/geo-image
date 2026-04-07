@@ -13,11 +13,13 @@ ui:
 
 ctx:
   # background/menus.ts
-  analyzeImage: Analyze Image
-  openPopup: Open Popup
-  openSidePanel: Open Side Panel
-  openExtPanel: Open Extension Panel
-  openOptions: Open Options
+  # TODO: ADD LOCALIZED &Keybinds
+  analyzeImage: "&Analyze Image"
+  savedPrompts: "&Saved Prompts"
+  openPopup: Open &Popup
+  openSidePanel: Open &Side Panel
+  openExtPanel: Open &Extension Panel
+  openOptions: Open &Options
 
 cmd:
   # wxt.config.ts

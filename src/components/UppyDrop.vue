@@ -74,7 +74,7 @@ onUnmounted(() => {
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="image-modal-label">{{ i18n.t('ctx.analyzeImage') }}</h1>
+          <h1 class="modal-title fs-5" id="image-modal-label">Analyze Image</h1>
           <button
             type="button"
             class="btn-close"
