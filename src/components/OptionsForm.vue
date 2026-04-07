@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { i18n } from '#imports'
 import { ref } from 'vue'
-import { saveOptions } from '@/utils/options.ts'
+import { saveKeyValue } from '@/utils/options.ts'
 import { useOptions } from '@/composables/useOptions.ts'
 import { showToast } from '@/composables/useToast.ts'
 import FormSwitch from '@/components/FormSwitch.vue'
@@ -9,22 +9,17 @@ import FormSwitch from '@/components/FormSwitch.vue'
 withDefaults(
   defineProps<{
     compact?: boolean
+    switches?: string[]
   }>(),
   {
     compact: false,
+    switches: () => ['contextMenu', 'showUpdate'],
   },
 )
 
 const options = useOptions()
 
 const authTokenInput = ref<HTMLInputElement | null>(null)
-
-const toggleOptions = ['contextMenu', 'showUpdate'].map((key) => ({
-  key,
-  label: i18n.t(`option_toggle_${key}` as any),
-  tooltip: i18n.t(`option_toggle_${key}Tip` as any),
-}))
-console.log('toggleOptions:', toggleOptions)
 
 function showHidePassword(el: HTMLInputElement | null) {
   console.debug('showHidePassword:', el)
@@ -57,7 +52,7 @@ async function copyInput(el: HTMLInputElement | null) {
       <div class="input-group col-12">
         <input
           v-model="options.authToken"
-          @change="saveOptions"
+          @change="saveKeyValue('authToken', options.authToken)"
           :data-toast="i18n.t('form.geminiKeyCopied')"
           ref="authTokenInput"
           id="authToken"
@@ -98,15 +93,8 @@ async function copyInput(el: HTMLInputElement | null) {
     </div>
 
     <div>
-      <template v-for="option in toggleOptions" :key="option.key">
-        <FormSwitch
-          :class="{ 'col-12': true, 'col-sm-6': !compact }"
-          :value="(options[option.key] as boolean) || false"
-          :name="option.key"
-          :label="option.label"
-          :tooltip="option.label"
-          @save="saveOptions"
-        />
+      <template v-for="id in switches" :key="id">
+        <FormSwitch :id="id" v-model="options[id]" :class="{ 'col-12': true, 'col-sm-6': !compact }" />
       </template>
     </div>
   </form>

@@ -1,6 +1,4 @@
-// NOTE: Below is ported from VanillaJS
-
-import { showToast } from '@/composables/useToast.ts'
+// NOTE: All functions below are ported from VanillaJS
 
 export function openSidePanel(close?: boolean) {
   console.debug('openSidePanel:', close)
@@ -52,7 +50,6 @@ export async function openExtPanel(close = false) {
 
   if (!chrome.windows) {
     console.log('Browser does not support: chrome.windows')
-    showToast('Browser does not support windows', 'danger')
     return
   }
 
@@ -63,28 +60,36 @@ export async function openExtPanel(close = false) {
   ])
   console.debug('local:', local)
 
-  const lastPanelID = local.lastPanelID as number
+  const lastPanelID = local.lastPanelID as number | undefined
   console.debug('lastPanelID:', lastPanelID)
 
   try {
-    const panel = await chrome.windows.get(lastPanelID)
-    // console.debug('window', window)
-    if (panel) {
-      console.debug(`%c Window found: ${panel.id}`, 'color: Lime')
-      await chrome.windows.update(lastPanelID, { focused: true })
-      if (close) window.close()
-      return
+    if (lastPanelID) {
+      const panel = await chrome.windows.get(lastPanelID)
+      // console.debug('panel', panel)
+      console.debug('panel?.id', panel?.id)
+      if (panel) {
+        const tabs = await chrome.tabs.query({ active: true, currentWindow: true })
+        // console.debug('tabs:', tabs)
+        console.debug('tabs[0]?.windowId:', tabs[0]?.windowId)
+        if (panel.id != tabs[0]?.windowId) {
+          console.debug('%c Window found:', 'color: SpringGreen', panel.id)
+          await chrome.windows.update(lastPanelID, { focused: true })
+          if (close) window.close()
+          return
+        }
+      }
     }
   } catch (e) {
     console.log(e)
   }
 
-  const panelWidth = local.panelWidth as number
+  const panelWidth = local.panelWidth as number | undefined
   console.debug('panelWidth:', panelWidth)
-  const panelHeight = local.panelHeight as number
+  const panelHeight = local.panelHeight as number | undefined
   console.debug('panelHeight:', panelHeight)
-  const width = panelWidth || defaultWidth
-  const height = panelHeight || defaultHeight
+  const width = panelWidth || defaultWidth // NOSONAR
+  const height = panelHeight || defaultHeight // NOSONAR
   console.debug(`width, height:`, width, height)
   const url = chrome.runtime.getURL(panelPath)
   console.debug('url:', url)
@@ -92,7 +97,7 @@ export async function openExtPanel(close = false) {
   console.debug('panel:', panel)
   if (panel) {
     console.debug(`%c Created new window: ${panel.id}`, 'color: Magenta')
-    chrome.storage.local.set({ lastPanelID: panel.id }).catch((e) => console.warn(e))
+    chrome.storage.local.set({ lastPanelID: panel.id }).catch(console.warn)
   }
   if (close) window.close()
 }
@@ -114,14 +119,6 @@ export async function activateOrOpen(url: string, open = true) {
   }
   console.warn('tab not found and open not set!')
 }
-
-// export async function checkPerms(manifest: chrome.runtime.Manifest) {
-//   // const manifest = chrome.runtime.getManifest()
-//   console.debug('checkPerms:', manifest.host_permissions)
-//   return chrome.permissions.contains({
-//     origins: manifest.host_permissions,
-//   })
-// }
 
 export function clickOpen(e: Event, close = false) {
   const target = e.currentTarget as HTMLAnchorElement

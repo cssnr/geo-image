@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
-import { debounce } from '@/utils'
+import { debounce } from '@/utils/index.ts'
 
 withDefaults(
   defineProps<{

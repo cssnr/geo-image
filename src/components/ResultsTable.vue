@@ -5,7 +5,7 @@ import { Modal } from 'bootstrap'
 import { showToast } from '@/composables/useToast.ts'
 import { useLocationsDB } from '@/composables/useLocationsDB'
 import { openPageUrl } from '@/utils/extension.ts'
-import { getConfidenceClass } from '@/utils'
+import { getConfidenceClass } from '@/utils/index.ts'
 import { LocationData } from '@/utils/api.ts'
 
 const { getAllLocations, deleteLocation, locationDBChannel } = useLocationsDB()
@@ -55,7 +55,7 @@ async function confirmDelete() {
 
   await deleteLocation(Number(hostToDelete.value)) // NOTE: can silently delete nothing
   updateLocations()
-  showToast(`Deleted Analysis ID: ${hostToDelete.value}`, 'warning')
+  showToast(`${i18n.t('results.deletedAnalysis')}: ${hostToDelete.value}`, 'warning')
 
   Modal.getOrCreateInstance(deleteModalEl.value!).hide()
 }

@@ -29,7 +29,7 @@ document.title = `${manifest.name} ${i18n.t('permissions.title')}`
         <div class="card p-3 text-center">
           <div class="d-flex justify-content-center align-items-center">
             <img
-              :src="'/icons/48.png'"
+              src="@/assets/icon.svg"
               class="me-2"
               height="48"
               width="48"

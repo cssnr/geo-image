@@ -12,52 +12,13 @@ export async function getOptions(): Promise<Options> {
   return options as Options
 }
 
-// NOTE: Below is ported from VanillaJS
-
-export async function saveOptions(event: Event) /* NOSONAR */ {
-  console.debug('saveOptions:', event)
+// NOTE: This is a WIP to replace the VanillaJS saveOptions
+export async function saveKeyValue(key: string, value: any) /* NOSONAR */ {
+  console.debug(`saveKeyValue: ${key}:`, value)
+  if (!key || value === undefined) return
   const options = await getOptions()
-  const target = event.target as HTMLInputElement
-  let key = target.id
-  let value
-  if (target.type === 'radio') {
-    key = target.name
-    const radios = document.getElementsByName(key) as unknown as HTMLInputElement[]
-    for (const input of radios) {
-      if (input.checked) {
-        value = input.id
-        break
-      }
-    }
-  } else if (target.type === 'checkbox') {
-    value = target.checked
-  } else if (target.type === 'number') {
-    const number = Number.parseFloat(target.value)
-    const toBound = (val: string, fallback: number): number =>
-      val != null && val !== '' ? Number.parseFloat(val) : fallback
-    if (
-      !Number.isNaN(number) &&
-      number >= toBound(target.min, -Infinity) &&
-      number <= toBound(target.max, Infinity)
-    ) {
-      // Valid number
-      target.value = number.toString()
-      value = number
-    } else {
-      // Invalid number - revert to last saved value
-      target.value = String(options[key])
-      return
-    }
-  } else {
-    value = target.value
-  }
-  if (options[key] === value) {
-    return console.log(`Value not changed for key: %c${key}`, 'color: Yellow')
-  } else if (value !== undefined) {
-    options[key] = value
-    console.log(`Set %c${key}:`, 'color: Lime', value)
-    await chrome.storage.sync.set({ options })
-  } else {
-    console.warn(`No Value for key: ${key}`)
-  }
+  if (options[key] === value) return
+  options[key] = value
+  console.log(`Set %c${key}:`, 'color: Lime', value)
+  await chrome.storage.sync.set({ options })
 }
