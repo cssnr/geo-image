@@ -7,6 +7,7 @@ ui:
     location: Location
   action:
     close: Close
+    delete: Delete # TODO: ADD TRANSLATION
     cancel: Cancel # NOT TRANSLATED / NOT USED
     analyze: Analyze # NOT TRANSLATED / NOT USED
 
