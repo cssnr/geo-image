@@ -133,8 +133,9 @@ export function clickOpen(e: Event, close = false) {
   })
 }
 
-export function openPageUrl(srcUrl: string) {
-  const encoded = encodeURIComponent(srcUrl)
-  const url = chrome.runtime.getURL(`page.html?url=${encoded}`)
+export function openPageUrl(srcUrl?: string, prompt?: string) {
+  const encoded = encodeURIComponent(srcUrl ?? '')
+  let url = chrome.runtime.getURL(`page.html?url=${encoded}`)
+  if (prompt) url += `&prompt=${encodeURIComponent(prompt)}`
   return activateOrOpen(url)
 }

@@ -7,16 +7,19 @@ ui:
     location: Location
   action:
     close: Close
+    delete: Delete # TODO: ADD TRANSLATION
     cancel: Cancel # NOT TRANSLATED / NOT USED
     analyze: Analyze # NOT TRANSLATED / NOT USED
 
 ctx:
   # background/menus.ts
-  analyzeImage: Analyze Image
-  openPopup: Open Popup
-  openSidePanel: Open Side Panel
-  openExtPanel: Open Extension Panel
-  openOptions: Open Options
+  # TODO: ADD LOCALIZED &Keybinds
+  analyzeImage: "&Analyze Image"
+  savedPrompts: "&Saved Prompts"
+  openPopup: Open &Popup
+  openSidePanel: Open &Side Panel
+  openExtPanel: Open &Extension Panel
+  openOptions: Open &Options
 
 cmd:
   # wxt.config.ts

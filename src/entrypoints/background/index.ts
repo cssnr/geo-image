@@ -2,6 +2,7 @@ import { openExtPanel, openPageUrl, openSidePanel } from '@/utils/extension.ts'
 import { isFirefox } from '@/utils/system.ts'
 import { defaultOptions, getOptions } from '@/utils/options.ts'
 import { createContextMenus } from './menus.ts'
+import { PROMPTS_KEY } from '@/utils/prompt.ts'
 
 export default defineBackground(() => {
   console.log(`Loaded: %c${chrome.runtime.id}`, 'Color: Cyan')
@@ -38,7 +39,7 @@ async function onInstalled(details: chrome.runtime.InstalledDetails) {
   const options = await setDefaultOptions(defaultOptions)
   console.debug('options:', options)
 
-  if (options.contextMenu) createContextMenus()
+  if (options.contextMenu) createContextMenus().catch(console.warn)
 
   const manifest = chrome.runtime.getManifest()
   console.debug('manifest:', manifest)
@@ -75,7 +76,7 @@ async function onStartup() {
     // NOTE: Confirm these checks are still necessary...
     const options = await getOptions()
     console.debug('options:', options)
-    if (options.contextMenu) createContextMenus()
+    if (options.contextMenu) createContextMenus().catch(console.warn)
 
     const manifest = chrome.runtime.getManifest()
     console.debug('manifest:', manifest)
@@ -84,22 +85,31 @@ async function onStartup() {
 }
 
 function onChanged(changes: Record<string, chrome.storage.StorageChange>) {
-  // console.log('%c background/index.ts - onChanged:', 'color: Cyan', changes)
+  console.log('%c background/index.ts - onChanged:', 'color: Cyan', changes)
   // process and type options
-  const oldValue = changes.options?.oldValue as Options | undefined
-  const newValue = changes.options?.newValue as Options | undefined
-  // if (!oldValue || !newValue) return console.log('missing oldValue or newValue')
-  if (!oldValue) return console.log('onChanged: missing options oldValue')
-  if (!newValue) return console.warn('onChanged: missing options newValue')
+  if ('options' in changes) {
+    const oldValue = changes.options?.oldValue as Options | undefined
+    const newValue = changes.options?.newValue as Options | undefined
+    // if (!oldValue || !newValue) return console.log('missing oldValue or newValue')
+    if (!oldValue) return console.log('onChanged: missing options oldValue')
+    if (!newValue) return console.warn('onChanged: missing options newValue')
 
-  if (oldValue?.contextMenu !== newValue.contextMenu) {
-    if (newValue.contextMenu) {
-      console.log('%c Enabled contextMenu...', 'color: Lime')
-      createContextMenus()
-    } else {
-      console.log('%c Disabled contextMenu...', 'color: OrangeRed')
-      chrome.contextMenus?.removeAll().catch(console.warn)
+    if (oldValue?.contextMenu !== newValue.contextMenu) {
+      if (newValue.contextMenu) {
+        console.log('%c Enabled contextMenu...', 'color: Lime')
+        createContextMenus().catch(console.warn)
+      } else {
+        console.log('%c Disabled contextMenu...', 'color: OrangeRed')
+        chrome.contextMenus?.removeAll().catch(console.warn)
+      }
     }
+  }
+
+  if (PROMPTS_KEY in changes) {
+    console.log('%c STORE KEY IN CHANGES YOU DID IT BOBBY', 'color: Lime')
+    getOptions().then((options) => {
+      if (options.contextMenu) createContextMenus().catch(console.warn)
+    })
   }
 }
 
@@ -130,7 +140,11 @@ async function onClicked(ctx: chrome.contextMenus.OnClickData, tab?: chrome.tabs
     // const encoded = encodeURIComponent(ctx.srcUrl ?? '')
     // const url = chrome.runtime.getURL(`page.html?url=${encoded}`)
     // return activateOrOpen(url)
-    return openPageUrl(ctx.srcUrl ?? '')
+    await openPageUrl(ctx.srcUrl)
+  } else if (ctx.menuItemId.toString().startsWith('prompt-')) {
+    const prompt = ctx.menuItemId.toString().slice('prompt-'.length)
+    console.debug('Custom Prompt:', prompt)
+    await openPageUrl(ctx.srcUrl, prompt)
   } else {
     console.error(`Unknown ctx.menuItemId: ${ctx.menuItemId}`)
   }

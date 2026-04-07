@@ -10,6 +10,7 @@ import KeyboardShortcuts from '@/components/KeyboardShortcuts.vue'
 import PageFooter from '@/components/PageFooter.vue'
 import HorizontalRule from '@/components/HorizontalRule.vue'
 import CopySupport from '@/components/CopySupport.vue'
+import PromptsTable from '@/components/PromptsTable.vue'
 
 const manifest = chrome.runtime.getManifest()
 document.title = `${manifest.name} ${i18n.t('options.title')}`
@@ -57,6 +58,9 @@ document.title = `${manifest.name} ${i18n.t('options.title')}`
 
         <HorizontalRule>{{ i18n.t('options.extension') }}</HorizontalRule>
         <OptionsForm />
+
+        <HorizontalRule>Saved Prompts</HorizontalRule>
+        <PromptsTable />
 
         <PermsCheck :show-info="true" :show-remove="isFirefox" class="my-3" />
 

@@ -4,6 +4,15 @@ body,
     height: 100%;
 }
 
+@supports (scrollbar-gutter: stable both-edges) {
+    html {
+        scrollbar-gutter: stable;
+    }
+    body {
+        padding-right: 0 !important;
+    }
+}
+
 :root,
 [data-bs-theme='light'] {
     --bs-emphasis-bg: var(--bs-white);
