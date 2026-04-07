@@ -1,9 +1,5 @@
 import { defineConfig } from 'wxt'
 
-// NOTE: Icons are also defined in <mata> tags for:
-//    popup/index.html
-//    sidepanel/index.html
-
 // See https://wxt.dev/api/config.html
 // noinspection JSUnusedGlobalSymbols
 export default defineConfig({
@@ -20,22 +16,20 @@ export default defineConfig({
     // developmentIndicator: 'overlay',
     sizes: [96, 24], // Dfault: 128, 48, 32, 16
   },
-  // NOTE: Icons are also defined in <mata> tags for:
-  //    popup/index.html
-  //    sidepanel/index.html
 
   // https://wxt.dev/guide/essentials/config/manifest.html
-  manifest: ({ browser }) => {
+  manifest: ({ browser, mode }) => {
     const isFirefox = browser === 'firefox'
-    console.log('isFirefox:', isFirefox)
+    const isDev = mode === 'development'
+    console.log(`isDev: ${isDev} - isFirefox: ${isFirefox}`)
 
     return {
       default_locale: 'en',
       name: '__MSG_name__',
       // short_name: '__MSG_shortName__',
       description: '__MSG_description__',
-      homepage_url: 'https://github.com/cssnr/geo-image',
 
+      homepage_url: 'https://github.com/cssnr/geo-image',
       permissions: ['contextMenus', 'storage'],
       host_permissions: ['*://*/*'],
 
@@ -50,7 +44,7 @@ export default defineConfig({
         },
         openExtPanel: {
           description: '__MSG_cmd_openExtPanel__',
-          suggested_key: { default: 'Alt+Shift+W' },
+          ...(!isDev && { suggested_key: { default: 'Alt+Shift+W' } }),
         },
         openOptions: {
           description: '__MSG_cmd_openOptions__',
@@ -79,6 +73,15 @@ export default defineConfig({
   // NOTE: Override with web-ext.config.ts
   webExt: {
     disabled: true,
+  },
+
+  // https://wxt.dev/guide/essentials/config/hooks
+  hooks: {
+    'build:manifestGenerated': (wxt, manifest) => {
+      console.log('build:manifestGenerated:', wxt.config.browser)
+      if (manifest.action) manifest.action.default_icon = manifest.icons
+      if (manifest.sidebar_action) manifest.sidebar_action.default_icon = manifest.icons
+    },
   },
 
   // https://wxt.dev/guide/essentials/config/vite.html

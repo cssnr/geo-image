@@ -35,6 +35,7 @@ option:
 
 theme:
   # ThemeSwitch.vue
+  title: Theme Switcher # TODO: ADD TRANSLATION
   dark: Dark
   light: Light
   auto: Auto
@@ -72,12 +73,14 @@ perms:
     text: Remove Host Permissions
     tip: You will no longer be able to analyze new images
   info: More Information on Permissions
+  granted: Permissions Granted # TODO: ADD TRANSLATION
 
 results:
   # ResultsTable.vue
   cancel: Cancel
   delete: Delete
   deleteAnalysis: Delete Analysis
+  deletedAnalysis: Deleted Analysis # TODO: ADD TRANSLATION
   deleteConfirm: Confirm deleting analysis
 
 options:

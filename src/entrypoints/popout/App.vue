@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { i18n } from '#imports'
 import { onMounted } from 'vue'
-import { debounce } from '@/utils'
+import { debounce } from '@/utils/index.ts'
 import ResultsTable from '@/components/ResultsTable.vue'
 import ToastAlerts from '@/components/ToastAlerts.vue'
 import BackToTop from '@/components/BackToTop.vue'

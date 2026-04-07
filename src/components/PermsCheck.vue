@@ -25,32 +25,28 @@ const props = withDefaults(
 const hasPerms = ref(true)
 
 const manifest = chrome.runtime.getManifest()
-console.debug('host_permissions:', manifest.host_permissions)
+// TODO: Verify permissions check in background/index.ts
+const origins = manifest.host_permissions
+console.debug('PermsCheck.vue - origins:', origins)
 
 async function updatePerms() {
-  hasPerms.value = await chrome.permissions.contains({
-    origins: manifest.host_permissions,
-  })
+  hasPerms.value = await chrome.permissions.contains({ origins })
   console.debug('updatePerms:', hasPerms.value)
 }
 
 async function grantPerms(event: Event) {
   console.debug('grantPerms:', event)
-  // noinspection ES6MissingAwait
-  requestPerms()
-  if (props.closeWindow) {
-    window.close()
-  }
+  requestPerms().catch(console.log)
+  if (props.closeWindow) window.close()
 }
 
 async function revokePerms(event: Event) {
   console.debug('revokePerms:', event)
+  // NOTE: This was modified to remove origins and not permissions...
   const permissions = await chrome.permissions.getAll()
   console.debug('permissions:', permissions)
   try {
-    await chrome.permissions.remove({
-      origins: permissions.origins,
-    })
+    await chrome.permissions.remove({ origins })
     await updatePerms()
   } catch (e) {
     console.debug(e)
@@ -59,9 +55,7 @@ async function revokePerms(event: Event) {
 }
 
 async function requestPerms() {
-  return await chrome.permissions.request({
-    origins: manifest.host_permissions,
-  })
+  return await chrome.permissions.request({ origins })
 }
 
 onMounted(() => {
@@ -77,7 +71,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div>
+  <div v-if="!hasPerms || showAlert || showRemove">
     <div v-if="!hasPerms" class="text-center d-grid gap-2">
       <button
         class="btn btn-lg btn-success"
@@ -89,7 +83,7 @@ onUnmounted(() => {
         @click="grantPerms"
         v-bs
       >
-        <i class="fa-solid fa-check-double me-1"></i> {{ i18n.t('perms.grant.text') }}
+        <i class="fa-solid fa-check-double me-2"></i> {{ i18n.t('perms.grant.text') }}
       </button>
       <p v-if="showInfo" class="text-center mb-0">
         <a href="/permissions.html" target="_blank" @click.prevent="clickOpen($event, closeWindow)">{{
@@ -98,7 +92,9 @@ onUnmounted(() => {
       </p>
     </div>
 
-    <div v-if="hasPerms && showAlert" class="alert alert-success mt-3 mb-0" role="alert">Permissions Granted.</div>
+    <div v-if="hasPerms && showAlert" class="alert alert-success mt-3 mb-0" role="alert">
+      {{ i18n.t('perms.granted') }}.
+    </div>
 
     <div v-if="hasPerms && showRemove && isFirefox">
       <button
