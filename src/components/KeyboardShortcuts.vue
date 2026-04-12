@@ -21,7 +21,7 @@ onMounted(async () => {
   const notSet = i18n.t('keyboard.notSet')
   const result = await chrome.commands.getAll()
   commands.value = result.map(({ description, name, shortcut }) => ({
-    description: description ?? (name === '_execute_action' ? i18n.t('cmd.executeAction') : notSet),
+    description: description || (name === '_execute_action' ? i18n.t('cmd.executeAction') : notSet),
     shortcut: shortcut || notSet,
   }))
 })
