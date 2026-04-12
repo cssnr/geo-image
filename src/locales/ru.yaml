@@ -44,6 +44,7 @@ keyboard:
   description: Описание
   shortcut: Сочетание клавиш
   unknown: Неизвестно
+  notSet: Не назначено
 
 form:
   # OptionsForm.vue

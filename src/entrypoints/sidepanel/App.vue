@@ -30,5 +30,3 @@ import PermsCheck from '@/components/PermsCheck.vue'
   <BackToTop />
   <!--<UppyDrop />-->
 </template>
-
-<!--<style scoped></style>-->

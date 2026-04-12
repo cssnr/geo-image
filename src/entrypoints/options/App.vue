@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { i18n } from '#imports'
 import { clickOpen } from '@/utils/extension.ts'
-import { isFirefox } from '@/utils/system.ts'
+import { useTitle } from '@/composables/useTitle.ts'
 import BackToTop from '@/components/BackToTop.vue'
 import PermsCheck from '@/components/PermsCheck.vue'
 import ToastAlerts from '@/components/ToastAlerts.vue'
@@ -11,8 +11,9 @@ import PageFooter from '@/components/PageFooter.vue'
 import HorizontalRule from '@/components/HorizontalRule.vue'
 import CopySupport from '@/components/CopySupport.vue'
 
+useTitle(i18n.t('options.title'))
+
 const manifest = chrome.runtime.getManifest()
-document.title = `${manifest.name} ${i18n.t('options.title')}`
 </script>
 
 <template>
@@ -52,30 +53,26 @@ document.title = `${manifest.name} ${i18n.t('options.title')}`
           </div>
         </div>
 
-        <HorizontalRule>{{ i18n.t('options.keyboard') }}</HorizontalRule>
         <KeyboardShortcuts />
 
-        <HorizontalRule>{{ i18n.t('options.extension') }}</HorizontalRule>
+        <HorizontalRule class="my-2">{{ i18n.t('options.extension') }}</HorizontalRule>
         <OptionsForm />
 
-        <PermsCheck :show-info="true" :show-remove="isFirefox" class="my-3" />
+        <PermsCheck :show-info="true" class="my-3" />
 
-        <p><i class="fa-solid fa-skull-crossbones"></i> {{ i18n.t('options.madeFor') }}</p>
+        <p class="my-3"><i class="fa-solid fa-skull-crossbones"></i> {{ i18n.t('options.madeFor') }}</p>
 
         <CopySupport :message="i18n.t('options.copySupportMsg')" :tip="i18n.t('options.copySupportTip')">{{
           i18n.t('options.copySupport')
         }}</CopySupport>
 
-        <hr class="mt-0" />
+        <hr class="" />
 
         <PageFooter />
       </div>
-      <!-- #options-wrapper -->
     </div>
   </div>
 
   <ToastAlerts />
   <BackToTop />
 </template>
-
-<!--<style scoped></style>-->

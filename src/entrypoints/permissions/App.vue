@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { i18n } from '#imports'
+import { onMounted, onUnmounted } from 'vue'
 import { openOptions } from '@/utils/extension.ts'
+import { useTitle } from '@/composables/useTitle.ts'
 import BackToTop from '@/components/BackToTop.vue'
 import PermsCheck from '@/components/PermsCheck.vue'
 import ToastAlerts from '@/components/ToastAlerts.vue'
@@ -8,7 +10,9 @@ import PageFooter from '@/components/PageFooter.vue'
 
 console.debug('%c options/App.vue', 'color: Lime')
 
-chrome.permissions.onAdded.addListener(onAdded)
+useTitle(i18n.t('permissions.title'))
+
+const manifest = chrome.runtime.getManifest()
 
 async function onAdded(permissions: chrome.permissions.Permissions) {
   console.debug('onAdded:', permissions)
@@ -18,8 +22,8 @@ async function onAdded(permissions: chrome.permissions.Permissions) {
   }
 }
 
-const manifest = chrome.runtime.getManifest()
-document.title = `${manifest.name} ${i18n.t('permissions.title')}`
+onMounted(() => chrome.permissions.onAdded.addListener(onAdded))
+onUnmounted(() => chrome.permissions.onAdded.removeListener(onAdded))
 </script>
 
 <template>
@@ -57,5 +61,3 @@ document.title = `${manifest.name} ${i18n.t('permissions.title')}`
   <ToastAlerts />
   <BackToTop />
 </template>
-
-<!--<style scoped></style>-->

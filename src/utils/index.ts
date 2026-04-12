@@ -1,5 +1,3 @@
-// utils
-
 export function debounce<T extends (...args: unknown[]) => unknown>(
   fn: T,
   timeout = 250,

@@ -36,7 +36,7 @@ Use Gemini AI to determine the location of an image based on the image data (not
 
 Works with a Free Gemini API Key: https://aistudio.google.com/app/api-keys
 
-> Note: This is the new TS Extension.
+> Note: This is the new Vue3 Extension.
 > For the VanillaJS Extension see: https://github.com/cssnr/geo-image-js
 
 ## Install

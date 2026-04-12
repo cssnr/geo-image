@@ -2,3 +2,24 @@
 @import 'bootswatch/dist/brite/variables';
 @import 'bootstrap/scss/bootstrap';
 @import 'bootswatch/dist/brite/bootswatch';
+
+:root,
+[data-bs-theme='light'] {
+    --bs-emphasis-bg: var(--bs-white);
+    --bs-emphasis-bg-rgb: var(--bs-white-rgb);
+}
+
+[data-bs-theme='dark'] {
+    --bs-emphasis-bg: var(--bs-black);
+    --bs-emphasis-bg-rgb: var(--bs-black-rgb);
+}
+
+.transparent-table {
+    --bs-table-bg: transparent;
+    //--bs-table-striped-bg: rgba(var(--bs-emphasis-bg-rgb), 0.5);
+    --bs-table-hover-bg: rgba(var(--bs-emphasis-bg-rgb), 0.4);
+}
+
+.blur {
+    backdrop-filter: blur(6px);
+}

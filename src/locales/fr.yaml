@@ -44,6 +44,7 @@ keyboard:
   description: Description
   shortcut: Raccourci
   unknown: Inconnu
+  notSet: Non défini
 
 form:
   # OptionsForm.vue

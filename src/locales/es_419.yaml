@@ -51,6 +51,7 @@ keyboard:
   description: Descripción
   shortcut: Atajo
   unknown: Desconocido
+  notSet: No asignado
 
 form:
   # OptionsForm.vue
