@@ -94,5 +94,3 @@ const manifest = chrome.runtime.getManifest()
 
   <hr class="my-0" />
 </template>
-
-<!--<style scoped></style>-->

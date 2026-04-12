@@ -1,5 +1,6 @@
-import { openExtPanel, openPageUrl, openSidePanel } from '@/utils/extension.ts'
+import { getAppConfig } from '#imports'
 import { isFirefox } from '@/utils/system.ts'
+import { openExtPanel, openPageUrl, openSidePanel } from '@/utils/extension.ts'
 import { defaultOptions, getOptions } from '@/utils/options.ts'
 import { createContextMenus } from './menus.ts'
 
@@ -13,41 +14,18 @@ export default defineBackground(() => {
   chrome.contextMenus?.onClicked.addListener(onClicked)
 })
 
-async function setDefaultOptions(defaultOptions: object) {
-  console.log('setDefaultOptions', defaultOptions)
-  const options = await getOptions()
-  let changed = false
-  for (const [key, value] of Object.entries(defaultOptions)) {
-    // console.log(`${key}: default: ${value} current: ${options[key]}`)
-    if (options[key] === undefined) {
-      changed = true
-      options[key] = value
-      console.log(`Set %c${key}:`, 'color: Khaki', value)
-    }
-  }
-  if (changed) {
-    await chrome.storage.sync.set({ options })
-    console.log('changed options:', options)
-  }
-  return options
-}
-
 async function onInstalled(details: chrome.runtime.InstalledDetails) {
   console.log('onInstalled:', details)
 
   const options = await setDefaultOptions(defaultOptions)
   console.debug('options:', options)
-
   if (options.contextMenu) createContextMenus()
+  setUninstall().catch(console.warn)
 
   const manifest = chrome.runtime.getManifest()
   console.debug('manifest:', manifest)
 
-  await chrome.runtime.setUninstallURL(`${manifest.homepage_url}/issues`)
-
   if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
-    // await chrome.runtime.openOptionsPage()
-    // const hasPerms = await checkPerms(manifest)
     const hasPerms = await chrome.permissions.contains({
       origins: manifest.host_permissions,
     })
@@ -76,29 +54,28 @@ async function onStartup() {
     const options = await getOptions()
     console.debug('options:', options)
     if (options.contextMenu) createContextMenus()
-
-    const manifest = chrome.runtime.getManifest()
-    console.debug('manifest:', manifest)
-    await chrome.runtime.setUninstallURL(`${manifest.homepage_url}/issues`)
+    setUninstall().catch(console.warn)
   }
 }
 
 function onChanged(changes: Record<string, chrome.storage.StorageChange>) {
   // console.log('%c background/index.ts - onChanged:', 'color: Cyan', changes)
   // process and type options
-  const oldValue = changes.options?.oldValue as Options | undefined
-  const newValue = changes.options?.newValue as Options | undefined
-  // if (!oldValue || !newValue) return console.log('missing oldValue or newValue')
-  if (!oldValue) return console.log('onChanged: missing options oldValue')
-  if (!newValue) return console.warn('onChanged: missing options newValue')
+  if ('options' in changes) {
+    const oldValue = changes.options?.oldValue as Options | undefined
+    const newValue = changes.options?.newValue as Options | undefined
+    // if (!oldValue || !newValue) return console.log('missing oldValue or newValue')
+    if (!oldValue) return console.log('onChanged: missing options oldValue')
+    if (!newValue) return console.warn('onChanged: missing options newValue')
 
-  if (oldValue?.contextMenu !== newValue.contextMenu) {
-    if (newValue.contextMenu) {
-      console.log('%c Enabled contextMenu...', 'color: Lime')
-      createContextMenus()
-    } else {
-      console.log('%c Disabled contextMenu...', 'color: OrangeRed')
-      chrome.contextMenus?.removeAll().catch(console.warn)
+    if (oldValue?.contextMenu !== newValue.contextMenu) {
+      if (newValue.contextMenu) {
+        console.log('%c Enabled contextMenu...', 'color: Lime')
+        createContextMenus()
+      } else {
+        console.log('%c Disabled contextMenu...', 'color: OrangeRed')
+        chrome.contextMenus?.removeAll().catch(console.warn)
+      }
     }
   }
 }
@@ -134,4 +111,34 @@ async function onClicked(ctx: chrome.contextMenus.OnClickData, tab?: chrome.tabs
   } else {
     console.error(`Unknown ctx.menuItemId: ${ctx.menuItemId}`)
   }
+}
+
+async function setDefaultOptions(defaultOptions: object) {
+  console.log('setDefaultOptions', defaultOptions)
+  const options = await getOptions()
+  let changed = false
+  for (const [key, value] of Object.entries(defaultOptions)) {
+    // console.log(`${key}: default: ${value} current: ${options[key]}`)
+    if (options[key] === undefined) {
+      changed = true
+      options[key] = value
+      console.log(`Set %c${key}:`, 'color: Khaki', value)
+    }
+  }
+  if (changed) {
+    await chrome.storage.sync.set({ options })
+    console.log('changed options:', options)
+  }
+  return options
+}
+
+async function setUninstall() {
+  // NOTE: Calling this setUninstallURL and using getAppConfig breaks WXT
+  const config = getAppConfig()
+  console.debug('config:', config)
+  const url = new URL(config.uninstallUrl)
+  url.searchParams.append('version', config.version)
+  url.searchParams.append('id', chrome.runtime.id)
+  console.debug('setUninstallURL:', url.href)
+  await chrome.runtime.setUninstallURL(url.href)
 }

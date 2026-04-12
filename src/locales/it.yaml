@@ -44,6 +44,7 @@ keyboard:
   description: Descrizione
   shortcut: Scorciatoia
   unknown: Sconosciuto
+  notSet: Non impostato
 
 form:
   # OptionsForm.vue

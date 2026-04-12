@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { i18n } from '#imports'
-import { onMounted } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
 import { debounce } from '@/utils/index.ts'
+import { useTitle } from '@/composables/useTitle.ts'
 import ResultsTable from '@/components/ResultsTable.vue'
 import ToastAlerts from '@/components/ToastAlerts.vue'
 import BackToTop from '@/components/BackToTop.vue'
@@ -10,13 +11,12 @@ import SearchBox from '@/components/SearchBox.vue'
 import PanelFooter from '@/components/PanelFooter.vue'
 import PermsCheck from '@/components/PermsCheck.vue'
 
+useTitle(i18n.t('permissions.title'))
+
 async function windowResize() {
   const size = { panelWidth: window.outerWidth, panelHeight: window.outerHeight }
   await chrome.storage.local.set(size).catch((e) => console.warn(e))
 }
-
-const manifest = chrome.runtime.getManifest()
-document.title = `${manifest.name} ${i18n.t('popout.title')}`
 
 onMounted(() => {
   window.addEventListener('resize', debounce(windowResize))
@@ -27,6 +27,7 @@ onMounted(() => {
     })
   })
 })
+onUnmounted(() => window.removeEventListener('resize', debounce(windowResize)))
 </script>
 
 <template>
@@ -49,5 +50,3 @@ onMounted(() => {
   <ToastAlerts />
   <BackToTop />
 </template>
-
-<!--<style scoped></style>-->

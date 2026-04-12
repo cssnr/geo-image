@@ -24,13 +24,15 @@ async function copySupport(event: Event) {
   const options = await getOptions()
   const local = await chrome.storage.local.get()
 
-  options.authToken = options.authToken ? 'SET' : 'NOT SET'
+  // options.authToken = options.authToken ? 'SET' : 'NOT SET'
+  options.authToken = `length: ${options.authToken?.length}`
   // delete local.results
 
   const result = [
     `${manifest.name} - ${manifest.version}`,
     date.toString(),
     navigator.userAgent,
+    `id: ${chrome.runtime.id}`,
     `permissions.origins: ${JSON.stringify(permissions.origins)}`,
     `options: ${JSON.stringify(options)}`,
     `local: ${JSON.stringify(local)}`,
@@ -54,5 +56,3 @@ async function copySupport(event: Event) {
     <i v-if="!isMobile" class="fa-solid fa-circle-info ms-2" data-bs-toggle="tooltip" :data-bs-title="tip" v-bs></i>
   </p>
 </template>
-
-<!--<style scoped></style>-->

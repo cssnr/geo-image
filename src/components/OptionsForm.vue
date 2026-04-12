@@ -99,5 +99,3 @@ async function copyInput(el: HTMLInputElement | null) {
     </div>
   </form>
 </template>
-
-<!--<style scoped></style>-->

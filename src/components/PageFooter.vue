@@ -19,7 +19,7 @@ const manifest = chrome.runtime.getManifest()
 </script>
 
 <template>
-  <div class="text-center">
+  <div class="text-center pb-1">
     <a
       v-if="homePage"
       class="link-body-emphasis text-decoration-none d-inline-block"
@@ -29,7 +29,7 @@ const manifest = chrome.runtime.getManifest()
       @click.prevent="clickOpen"
       >{{ i18n.t('options.homePage') }}</a
     >
-    <span class="mx-1">&bull;</span>
+    <span class="mx-2 mx-md-3">&bull;</span>
     <a
       v-if="requestFeature"
       class="link-body-emphasis text-decoration-none d-inline-block"
@@ -39,7 +39,7 @@ const manifest = chrome.runtime.getManifest()
       @click.prevent="clickOpen"
       >{{ i18n.t('options.requestFeature') }}</a
     >
-    <span class="mx-1">&bull;</span>
+    <span class="mx-2 mx-md-3">&bull;</span>
     <a
       v-if="openIssue"
       class="link-body-emphasis text-decoration-none d-inline-block"
@@ -51,5 +51,3 @@ const manifest = chrome.runtime.getManifest()
     >
   </div>
 </template>
-
-<!--<style scoped></style>-->
