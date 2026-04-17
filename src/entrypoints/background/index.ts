@@ -1,7 +1,8 @@
 import { getAppConfig } from '#imports'
 import { isFirefox } from '@/utils/system.ts'
-import { openExtPanel, openPageUrl, openSidePanel } from '@/utils/extension.ts'
-import { defaultOptions, getOptions } from '@/utils/options.ts'
+import { defineBackground } from 'wxt/utils/define-background'
+import { openExtPanel, openPopup, openSidePanel } from '@/utils/extension.ts'
+import { type Options, defaultOptions, getOptions } from '@/utils/options.ts'
 import { createContextMenus } from './menus.ts'
 
 export default defineBackground(() => {
@@ -37,11 +38,9 @@ async function onInstalled(details: chrome.runtime.InstalledDetails) {
       await chrome.tabs.create({ active: true, url })
     }
   } else if (details.reason === chrome.runtime.OnInstalledReason.UPDATE) {
-    if (options.showUpdate) {
-      if (manifest.version !== details.previousVersion) {
-        const url = `${manifest.homepage_url}/releases/tag/${manifest.version}`
-        await chrome.tabs.create({ active: false, url })
-      }
+    if (options.showUpdate && manifest.version !== details.previousVersion) {
+      const url = `${manifest.homepage_url}/releases/tag/${manifest.version}`
+      await chrome.tabs.create({ active: false, url })
     }
   }
 }
@@ -50,7 +49,6 @@ async function onStartup() {
   console.log('onStartup')
   if (isFirefox) {
     console.log('Firefox Startup Workarounds')
-    // NOTE: Confirm these checks are still necessary...
     const options = await getOptions()
     console.debug('options:', options)
     if (options.contextMenu) createContextMenus()
@@ -60,13 +58,10 @@ async function onStartup() {
 
 function onChanged(changes: Record<string, chrome.storage.StorageChange>) {
   // console.log('%c background/index.ts - onChanged:', 'color: Cyan', changes)
-  // process and type options
   if ('options' in changes) {
     const oldValue = changes.options?.oldValue as Options | undefined
     const newValue = changes.options?.newValue as Options | undefined
-    // if (!oldValue || !newValue) return console.log('missing oldValue or newValue')
-    if (!oldValue) return console.log('onChanged: missing options oldValue')
-    if (!newValue) return console.warn('onChanged: missing options newValue')
+    if (!oldValue || !newValue) return console.log('missing oldValue or newValue')
 
     if (oldValue?.contextMenu !== newValue.contextMenu) {
       if (newValue.contextMenu) {
@@ -127,7 +122,7 @@ async function setDefaultOptions(defaultOptions: object) {
   }
   if (changed) {
     await chrome.storage.sync.set({ options })
-    console.log('changed options:', options)
+    console.log('set changed options:', options)
   }
   return options
 }
@@ -139,6 +134,6 @@ async function setUninstall() {
   const url = new URL(config.uninstallUrl)
   url.searchParams.append('version', config.version)
   url.searchParams.append('id', chrome.runtime.id)
-  console.debug('setUninstallURL:', url.href)
+  console.log('setUninstallURL:', url.href)
   await chrome.runtime.setUninstallURL(url.href)
 }

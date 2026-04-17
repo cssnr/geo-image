@@ -30,30 +30,32 @@ onMounted(async () => {
 <template>
   <div v-if="hasCommands">
     <HorizontalRule v-if="!hideHeading" class="my-2">{{ i18n.t('options.keyboard') }}</HorizontalRule>
-    <table class="table table-sm rounded table-borderless table-hover transparent-table mb-0">
-      <caption class="visually-hidden">
-        {{
-          i18n.t('keyboard.shortcut')
-        }}
-      </caption>
-      <thead class="visually-hidden">
-        <tr>
-          <th>{{ i18n.t('keyboard.description') }}</th>
-          <th>{{ i18n.t('keyboard.shortcut') }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="cmd in commands">
-          <td class="ps-2 text-truncate w-100" style="max-width: 0">
-            <i class="fa-regular fa-keyboard me-1"></i>
-            {{ cmd.description }}
-          </td>
-          <td class="text-end pe-2 text-nowrap">
-            <kbd>{{ cmd.shortcut }}</kbd>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="rounded rounded-2 overflow-hidden">
+      <table class="table table-sm rounded table-borderless table-hover transparent-table mb-0">
+        <caption class="visually-hidden">
+          {{
+            i18n.t('keyboard.shortcut')
+          }}
+        </caption>
+        <thead class="visually-hidden">
+          <tr>
+            <th>{{ i18n.t('keyboard.description') }}</th>
+            <th>{{ i18n.t('keyboard.shortcut') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="cmd in commands">
+            <td class="ps-2 text-truncate w-100" style="max-width: 0">
+              <i class="fa-regular fa-keyboard me-1"></i>
+              {{ cmd.description }}
+            </td>
+            <td class="text-end pe-2 text-nowrap">
+              <kbd>{{ cmd.shortcut }}</kbd>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
     <div v-if="!hideLink" :class="linkMt || `mt-2`">
       {{ i18n.t('keyboard.manage') }}:
@@ -80,12 +82,12 @@ onMounted(async () => {
   </div>
 </template>
 
-<style scoped>
-/*#table td:first-child {*/
-/*  width: 100%;*/
-/*  max-width: 0;*/
-/*}*/
-table {
-  border-collapse: separate;
-}
-</style>
+<!--<style scoped>-->
+<!--/*#table td:first-child {*/-->
+<!--/*  width: 100%;*/-->
+<!--/*  max-width: 0;*/-->
+<!--/*}*/-->
+<!--/*table {*/-->
+<!--/*  border-collapse: separate;*/-->
+<!--/*}*/-->
+<!--</style>-->

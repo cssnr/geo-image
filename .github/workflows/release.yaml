@@ -64,7 +64,7 @@ jobs:
 
     steps:
       - name: "Download Artifacts"
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: artifacts
 
@@ -113,7 +113,7 @@ jobs:
           file "${{ env.PACKAGE_NAME }}-firefox.xpi"
 
       - name: "Upload to Actions"
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: signed
           path: web-ext-artifacts
@@ -153,27 +153,6 @@ jobs:
           echo "::group::cat ${{ env.UPDATE_JSON }}"
           cat -n "${{ env.UPDATE_JSON }}"
           echo "::endgroup::"
-
-      #- name: "Commit files"
-      #  run: |
-      #    git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-      #    git config --local user.name "github-actions[bot]"
-      #    git commit -a -m "Update ${{ env.UPDATE_JSON }}"
-      #
-      #- name: "Push changes"
-      #  uses: ad-m/github-push-action@master
-      #  with:
-      #    github_token: ${{ secrets.GITHUB_TOKEN }}
-      #    branch: master
-
-      #- name: "Create App Token"
-      #  if: ${{ !github.event.release.prerelease }}
-      #  id: app
-      #  uses: actions/create-github-app-token@v2
-      #  with:
-      #    app-id: 146360
-      #    private-key: ${{ secrets.APP_PRIVATE_KEY }}
-      #    owner: ${{ github.repository_owner }}
 
       - name: "Commit Action"
         id: commit
@@ -225,57 +204,3 @@ jobs:
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           description: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
-#  publish-chrome:
-#    name: 'Publish Chrome'
-#    runs-on: ubuntu-latest
-#    timeout-minutes: 30
-#    needs: [build]
-#
-#    steps:
-#      - name: 'Download Artifacts'
-#        uses: actions/download-artifact@v3
-#        with:
-#          name: artifacts
-#
-#      - name: 'Setup Node'
-#        uses: actions/setup-node@v3
-#        with:
-#          node-version: 18
-#
-#      - name: 'Install chrome-webstore-upload-cli'
-#        run: |-
-#          npm install -g chrome-webstore-upload-cli
-#
-#      - name: Upload step
-#        run: |-
-#          export archive=$(ls *chrome*.zip)
-#          chrome-webstore-upload upload \\
-#            --source chrome-extension-${archive} \\
-#            --extension-id ${{ env.CHROME_ID }} \\
-#            --client-id ${{ secrets.CI_GOOGLE_CLIENT_ID }} \\
-#            --client-secret ${{ secrets.CI_GOOGLE_CLIENT_SECRET }} \\
-#            --refresh-token ${{ secrets.CI_GOOGLE_REFRESH_TOKEN }}
-#
-#      - name: 'Rename Signed Artifact'
-#        working-directory: web-ext-artifacts
-#        run: |-
-#          ls -l .
-#          mv *.xpi "${{ needs.build.outputs.package_name }}-chrome.xpi"
-#          ls -l .
-#
-#      - name: 'Upload to Actions'
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: signed
-#          path: web-ext-artifacts
-#
-#      - name: 'Upload to Release'
-#        uses: svenstaro/upload-release-action@v2
-#        with:
-#          repo_token: ${{ secrets.GITHUB_TOKEN }}
-#          file: web-ext-artifacts/*
-#          tag: ${{ github.ref }}
-#          overwrite: true
-#          file_glob: true
-
