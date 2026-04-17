@@ -15,20 +15,6 @@ body {
     background-size: cover;
 }
 
-#options-wrapper {
-    max-width: 767px;
-}
-
-.form-control,
-.glass-outline {
+.form-control {
     background-color: rgba(var(--bs-emphasis-bg-rgb), 50%);
-}
-
-[data-bs-theme='dark'] .glass-outline {
-    border: 1px solid rgba(var(--bs-white-rgb), 15%);
-    filter: drop-shadow(15px 15px 12px var(--bs-black));
-}
-
-[data-bs-theme='light'] .glass-outline {
-    border: 1px solid rgba(var(--bs-black-rgb), 17.5%);
 }

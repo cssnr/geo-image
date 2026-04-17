@@ -90,7 +90,6 @@ const manifest = chrome.runtime.getManifest()
       </div>
     </div>
   </div>
-  <!-- container-fluid -->
 
   <hr class="my-0" />
 </template>

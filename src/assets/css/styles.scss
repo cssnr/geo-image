@@ -14,12 +14,15 @@
     --bs-emphasis-bg-rgb: var(--bs-black-rgb);
 }
 
-.transparent-table {
-    --bs-table-bg: transparent;
-    //--bs-table-striped-bg: rgba(var(--bs-emphasis-bg-rgb), 0.5);
-    --bs-table-hover-bg: rgba(var(--bs-emphasis-bg-rgb), 0.4);
+.glass-outline {
+    backdrop-filter: blur(6px);
+    background-color: rgba(var(--bs-emphasis-bg-rgb), 50%);
+    border: 1px solid var(--bs-border-color-translucent);
+    filter: drop-shadow(15px 12px 12px var(--bs-emphasis-bg));
 }
 
-.blur {
-    backdrop-filter: blur(6px);
+.transparent-table {
+    --bs-table-bg: rgba(var(--bs-emphasis-bg-rgb), 0.3);
+    --bs-table-striped-bg: rgba(var(--bs-emphasis-bg-rgb), 0.5);
+    --bs-table-hover-bg: rgba(var(--bs-emphasis-bg-rgb), 0.6);
 }
