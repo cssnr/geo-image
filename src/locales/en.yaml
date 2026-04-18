@@ -7,6 +7,8 @@ ui:
     location: Location
   action:
     close: Close
+    cancel: Cancel # NOT TRANSLATED / NOT USED / FOR LINTER
+    analyze: Analyze # NOT TRANSLATED / NOT USED / FOR LINTER
 
 ctx:
   # background/menus.ts
