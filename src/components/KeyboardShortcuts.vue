@@ -83,11 +83,11 @@ onMounted(async () => {
 </template>
 
 <!--<style scoped>-->
-<!--/*#table td:first-child {*/-->
-<!--/*  width: 100%;*/-->
-<!--/*  max-width: 0;*/-->
-<!--/*}*/-->
-<!--/*table {*/-->
-<!--/*  border-collapse: separate;*/-->
-<!--/*}*/-->
+<!--#table td:first-child {-->
+<!--  width: 100%;-->
+<!--  max-width: 0;-->
+<!--}-->
+<!--table {-->
+<!--  border-collapse: separate;-->
+<!--}-->
 <!--</style>-->

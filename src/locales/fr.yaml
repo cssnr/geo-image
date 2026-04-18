@@ -26,8 +26,8 @@ cmd:
 option:
   # OptionsForm.vue
   toggle:
-    contextMenu: Activer le menu contextuel
-    contextMenuTip: Afficher le menu contextuel au clic droit.
+    contextMenu: Afficher les options supplémentaires du clic droit
+    contextMenuTip: Afficher des éléments supplémentaires dans le menu du clic droit.
     showUpdate: Afficher les notes de version lors d'une mise à jour
     showUpdateTip: Afficher les notes de version lors d'une mise à jour du logiciel.
 
@@ -77,6 +77,7 @@ results:
   cancel: Annuler
   delete: Supprimer
   deleteAnalysis: Supprimer l'analyse
+  deletedAnalysis: Analyse supprimée
   deleteConfirm: Confirmer la suppression de l'analyse
 
 options:

@@ -26,8 +26,8 @@ cmd:
 option:
   # OptionsForm.vue
   toggle:
-    contextMenu: 右クリックメニューを有効にする
-    contextMenuTip: 右クリック時にコンテキストメニューを表示します。
+    contextMenu: 右クリックの追加オプションを表示
+    contextMenuTip: 右クリックメニューに追加項目を表示します。
     showUpdate: アップデート時にリリースノートを表示する
     showUpdateTip: バージョン更新時にリリースノートを表示します。
 
@@ -77,6 +77,7 @@ results:
   cancel: キャンセル
   delete: 削除
   deleteAnalysis: 分析を削除
+  deletedAnalysis: 削除された分析
   deleteConfirm: 分析の削除を確認
 
 options:

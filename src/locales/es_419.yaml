@@ -23,18 +23,11 @@ cmd:
   openExtPanel: Abrir panel de extensión
   openOptions: Abrir opciones
 
-results:
-  # ResultsTable.vue
-  cancel: Cancelar
-  delete: Eliminar
-  deleteAnalysis: Eliminar análisis
-  deleteConfirm: Confirmar eliminación del análisis
-
 option:
   # OptionsForm.vue
   toggle:
-    contextMenu: Activar menú del clic derecho
-    contextMenuTip: Mostrar menú contextual al hacer clic derecho.
+    contextMenu: Mostrar opciones adicionales del clic derecho
+    contextMenuTip: Mostrar elementos adicionales en el menú del clic derecho.
     showUpdate: Mostrar notas de la versión al actualizar
     showUpdateTip: Mostrar notas de la versión al actualizar.
 
@@ -78,6 +71,14 @@ perms:
     text: Eliminar permisos de host
     tip: Ya no podrás analizar nuevas imágenes
   info: Más información sobre los permisos
+
+results:
+  # ResultsTable.vue
+  cancel: Cancelar
+  delete: Eliminar
+  deleteAnalysis: Eliminar análisis
+  deletedAnalysis: Gelöschte Analyse
+  deleteConfirm: Confirmar eliminación del análisis
 
 options:
   # options/App.vue
