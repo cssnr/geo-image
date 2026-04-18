@@ -8,7 +8,6 @@ env:
   PACKAGE_NAME: geoimage
   CHROME_ID: ipliinigkdddaaeaoncoljmdaoabgjdo
   MOZILLA_ID: geo-image@cssnr.com
-  MOZILLA_CHANNEL: unlisted
   UPDATE_JSON: update.json
 
 jobs:
@@ -136,7 +135,7 @@ jobs:
           npx web-ext sign \
             --api-key="${{ secrets.FIREFOX_API_KEY }}" \
             --api-secret="${{ secrets.FIREFOX_API_SECRET }}" \
-            --channel="${{ env.MOZILLA_CHANNEL }}" \
+            --channel=unlisted \
             --source-dir="firefox-mv3" \
             --amo-metadata="amo-metadata.json" \
             --upload-source-code="${{ env.PACKAGE_NAME }}-${{ github.event.release.tag_name }}-sources.zip"
@@ -237,8 +236,8 @@ jobs:
       #      echo -e "⛔ Cleanup Failed!\n" >> "$GITHUB_STEP_SUMMARY"
       #    fi
 
-      - name: "Send Failure Notification"
-        if: ${{ failure() }}
+      - name: "Send Notification"
+        if: ${{ !cancelled() }}
         uses: sarisia/actions-status-discord@eb045afee445dc055c18d3d90bd0f244fd062708 # v1.16.0
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
