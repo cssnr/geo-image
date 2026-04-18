@@ -26,8 +26,8 @@ cmd:
 option:
   # OptionsForm.vue
   toggle:
-    contextMenu: Abilita Menu Contestuale
-    contextMenuTip: Mostra il menu contestuale al clic destro.
+    contextMenu: Mostra opzioni extra tasto destro
+    contextMenuTip: Mostra elementi aggiuntivi nel menu del tasto destro.
     showUpdate: Mostra Note di Rilascio all'Aggiornamento
     showUpdateTip: Mostra le Note di Rilascio all'Aggiornamento della Versione.
 
@@ -77,6 +77,7 @@ results:
   cancel: Annulla
   delete: Elimina
   deleteAnalysis: Elimina Analisi
+  deletedAnalysis: Analisi eliminata
   deleteConfirm: Conferma eliminazione analisi
 
 options:

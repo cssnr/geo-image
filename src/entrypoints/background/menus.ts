@@ -22,12 +22,13 @@ export function updateContextMenus(enabled?: boolean) {
   if (!chrome.contextMenus) return console.debug('Skipping: chrome.contextMenus')
   chrome.contextMenus.removeAll().then(() => {
     for (const [i, item] of contexts.entries()) {
-      console.log(`item: ${i}`, item)
+      const entry = { ...item }
       if (!enabled) {
         if (i === 1) continue
-        if (item.contexts?.includes('all')) item.contexts = ['action']
+        if (entry.contexts?.includes('all')) entry.contexts = ['action']
       }
-      chrome.contextMenus.create(item)
+      console.log(`entry: ${i}`, entry.id, entry.contexts)
+      chrome.contextMenus.create(entry)
     }
   })
 }

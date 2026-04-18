@@ -7,8 +7,6 @@ ui:
     location: Location
   action:
     close: Close
-    cancel: Cancel # NOT TRANSLATED / NOT USED
-    analyze: Analyze # NOT TRANSLATED / NOT USED
 
 ctx:
   # background/menus.ts
@@ -28,8 +26,8 @@ cmd:
 option:
   # OptionsForm.vue
   toggle:
-    contextMenu: Enable Right Click Menu
-    contextMenuTip: Show Context Menu on Right Click.
+    contextMenu: Show Extra Right-Click Options
+    contextMenuTip: Show Additional Items on Right Click Menu.
     showUpdate: Show Release Notes on Update
     showUpdateTip: Show Release Notes on Version Update.
 
