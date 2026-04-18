@@ -76,6 +76,11 @@ jobs:
           cat chrome-mv3/manifest.json
           echo -e "\n::endgroup::"
 
+      - name: "Install PBE"
+        run: |
+          npm i -g publish-browser-extension
+          npx publish-extension --version
+
       - name: "Publish Extension"
         run: |
           npx publish-extension \
