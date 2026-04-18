@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { useToast } from '@/composables/useToast.ts'
-import * as bootstrap from 'bootstrap'
+import { Toast } from 'bootstrap'
 
 const { toasts, removeToast } = useToast()
 
 // noinspection JSUnusedGlobalSymbols
 const vToast = {
   mounted(el: HTMLElement, binding: { value: number }) {
-    const bsToast = new bootstrap.Toast(el)
+    const bsToast = new Toast(el)
     el.addEventListener('mousemove', () => bsToast.hide())
     el.addEventListener('hidden.bs.toast', () => removeToast(binding.value))
     bsToast.show()

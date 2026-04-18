@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { i18n } from '#imports'
+import { i18n, useAppConfig } from '#imports'
 import { clickOpen, openExtPanel, openOptions, openPopup, openSidePanel } from '@/utils/extension.ts'
 import { isMobile } from '@/utils/system.ts'
 import ThemeSwitch from '@/components/ThemeSwitch.vue'
@@ -11,6 +11,7 @@ withDefaults(
     popupButton?: boolean
     optionsButton?: boolean
     closeWindow?: boolean
+    icon?: boolean
   }>(),
   {
     panelButton: true,
@@ -18,10 +19,11 @@ withDefaults(
     popupButton: true,
     optionsButton: true,
     closeWindow: false,
+    icon: true,
   },
 )
 
-const manifest = chrome.runtime.getManifest()
+const config = useAppConfig()
 </script>
 
 <template>
@@ -33,56 +35,55 @@ const manifest = chrome.runtime.getManifest()
         <a
           :title="i18n.t('options.homePage')"
           class="link-body-emphasis text-decoration-none fs-4"
-          :href="manifest.homepage_url"
+          :href="config.githubUrl"
           target="_blank"
           @click.prevent="clickOpen($event, closeWindow)"
         >
-          <img src="@/assets/icon.svg" alt="L" class="mb-1" style="height: 1.1em" />
-          {{ manifest.name }}</a
+          <img v-if="icon" src="@/assets/icon.svg" alt="I" class="mb-1" style="height: 1.1em" />
+          {{ config.shortName }}</a
         >
         <a
           :title="i18n.t('options.releaseNotes')"
           class="link-body-emphasis text-decoration-none small ms-1"
-          :href="`${manifest.homepage_url}/releases/tag/${manifest.version}`"
+          :href="`${config.githubUrl}/releases/tag/${config.version}`"
           target="_blank"
           @click.prevent="clickOpen($event, closeWindow)"
         >
-          v<span class="version">{{ manifest.version }}</span></a
+          v<span class="version">{{ config.version }}</span></a
         >
       </div>
 
       <div v-if="!isMobile && panelButton" class="ms-1">
-        <a
+        <button
           :title="i18n.t('ctx.openExtPanel')"
           class="btn btn-sm btn-outline-info"
-          role="button"
           @click="openExtPanel(closeWindow)"
         >
-          <i class="fa-regular fa-window-restore me-1"></i
-        ></a>
+          <i class="fa-regular fa-window-restore me-1"></i>
+        </button>
       </div>
+
       <div v-if="!isMobile && sideButton" class="ms-1">
-        <a
+        <button
           :title="i18n.t('ctx.openSidePanel')"
           class="btn btn-sm btn-outline-info"
-          role="button"
           @click="openSidePanel(closeWindow)"
         >
-          <i class="fa-solid fa-table-columns"></i
-        ></a>
+          <i class="fa-solid fa-table-columns"></i>
+        </button>
       </div>
+
       <div v-if="!isMobile && popupButton" class="ms-1">
-        <a :title="i18n.t('ctx.openPopup')" class="btn btn-sm btn-outline-info" role="button" @click="openPopup()">
-          <i class="fa-solid fa-window-maximize"></i
-        ></a>
+        <button :title="i18n.t('ctx.openPopup')" class="btn btn-sm btn-outline-info" @click="openPopup()">
+          <i class="fa-solid fa-window-maximize"></i>
+        </button>
       </div>
+
       <div v-if="optionsButton" class="ms-1">
         <a
           :title="i18n.t('ctx.openOptions')"
-          class="btn btn-sm btn-outline-info"
-          role="button"
           href="/options.html"
-          target="_blank"
+          class="btn btn-sm btn-outline-info"
           @click.prevent="openOptions(closeWindow)"
         >
           <i class="fa-solid fa-gears"></i

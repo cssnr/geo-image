@@ -1,7 +1,7 @@
 import { getAppConfig } from '#imports'
 import { isFirefox } from '@/utils/system.ts'
 import { defineBackground } from 'wxt/utils/define-background'
-import { openExtPanel, openPopup, openSidePanel } from '@/utils/extension.ts'
+import { openExtPanel, openPageUrl, openPopup, openSidePanel } from '@/utils/extension.ts'
 import { type Options, defaultOptions, getOptions } from '@/utils/options.ts'
 import { createContextMenus } from './menus.ts'
 
