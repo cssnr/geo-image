@@ -27,10 +27,14 @@ if (document.title === '') document.title = title
 
 function setErrorIcon() {
   const href = chrome.runtime.getURL('/images/error128.png')
-  document.querySelectorAll<HTMLLinkElement>('link[rel*="icon"]').forEach((link) => {
-    link.href = href
-    console.debug('link.href:', link.href)
-  })
+  const link = document.querySelector<HTMLLinkElement>('link[rel*="icon"]')
+  if (!link) return console.warn('favicon link not found')
+  link.href = href
+  console.debug('link.href:', link.href)
+  // document.querySelectorAll<HTMLLinkElement>('link[rel*="icon"]').forEach((link) => {
+  //   link.href = href
+  //   console.debug('link.href:', link.href)
+  // })
 }
 
 async function process(): Promise<LocationData> {
