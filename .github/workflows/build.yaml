@@ -6,7 +6,7 @@ on:
       version:
         description: "Build Version"
         type: string
-        default: "0.0.1"
+        default: "0.0.0"
   workflow_dispatch:
     inputs: *inputs
 
