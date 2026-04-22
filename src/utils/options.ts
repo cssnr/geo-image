@@ -13,7 +13,7 @@ export async function getOptions(): Promise<Options> {
 }
 
 // NOTE: This is a WIP to replace the VanillaJS saveOptions
-export async function saveKeyValue(key: string, value: any) /* NOSONAR */ {
+export async function saveKeyValue(key: string, value: any) {
   console.debug(`saveKeyValue: ${key}:`, value)
   if (!key || value === undefined) return
   const options = await getOptions()
