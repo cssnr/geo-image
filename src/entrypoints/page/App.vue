@@ -21,8 +21,8 @@ const data = ref<LocationData | null>(null)
 
 const toggleHistory = () => (historyShown.value = !historyShown.value)
 
-const manifest = chrome.runtime.getManifest()
-const title = `${manifest.name} ${i18n.t('page.processing')}`
+const config = useAppConfig()
+const title = `${config.name} ${i18n.t('page.processing')}`
 if (document.title === '') document.title = title
 
 function copyText(text?: string) {
@@ -39,7 +39,7 @@ function copyMarkdown() {
   const r = data.value
   let text = `# ${r.city}, ${r.state}, ${r.country}\n`
   text += `## ${r.location}\n\n`
-  text += `**${r.longitude}/${r.latitude}** - [GeoHack](${geoHref.value})\n\n`
+  text += `\`${r.longitude}/${r.latitude}\` [GeoHack](${geoHref.value})\n\n`
   text += `${r.description}\n\n${r.explanation}`
   copyText(text)
 }
@@ -214,6 +214,9 @@ onMounted(() => {
               <button type="button" class="btn btn-info" @click="copyText(data?.url)">
                 <i class="fa-regular fa-image me-1"></i>
                 {{ i18n.t('ui.action.copy') }} {{ i18n.t('ui.text.image') }} URL
+              </button>
+              <button type="button" class="btn btn-secondary" @click="copyText(config.homepageUrl)">
+                <i class="fa-solid fa-location-dot me-1"></i> {{ i18n.t('ui.action.share') }} GeoImage
               </button>
             </div>
           </div>
