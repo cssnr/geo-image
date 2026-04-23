@@ -10,7 +10,7 @@ export function openSidePanel(close?: boolean) {
         .then(() => {
           if (close) window.close()
         })
-        .catch((e) => console.warn(e))
+        .catch(console.warn)
     })
   } else if (chrome.sidebarAction) {
     console.debug('chrome.sidebarAction')
@@ -28,7 +28,7 @@ export function openOptions(close = false) {
     .then(() => {
       if (close) window.close()
     })
-    .catch((e) => console.warn(e))
+    .catch(console.warn)
 }
 
 export async function openPopup() {
@@ -65,16 +65,17 @@ export async function openExtPanel(close = false) {
 
   try {
     if (lastPanelID) {
+      // NOTE: This throws if lastPanelID is not an existing window ID
       const panel = await chrome.windows.get(lastPanelID)
       // console.debug('panel', panel)
       console.debug('panel?.id', panel?.id)
-      if (panel) {
+      if (panel?.id) {
         const tabs = await chrome.tabs.query({ active: true, currentWindow: true })
         // console.debug('tabs:', tabs)
         console.debug('tabs[0]?.windowId:', tabs[0]?.windowId)
         if (panel.id != tabs[0]?.windowId) {
-          console.debug('%c Window found:', 'color: SpringGreen', panel.id)
-          await chrome.windows.update(lastPanelID, { focused: true })
+          console.debug('%c Panel found:', 'color: SpringGreen', panel.id)
+          await chrome.windows.update(panel.id, { focused: true })
           if (close) window.close()
           return
         }
@@ -128,9 +129,11 @@ export function clickOpen(e: Event, close = false) {
   if (url.startsWith('/')) {
     url = chrome.runtime.getURL(url)
   }
-  activateOrOpen(url).then(() => {
-    if (close || target.dataset.close === 'true') window.close()
-  })
+  activateOrOpen(url)
+    .then(() => {
+      if (close || target.dataset.close === 'true') window.close()
+    })
+    .catch(console.log)
 }
 
 export function openPageUrl(srcUrl: string) {

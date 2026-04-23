@@ -182,6 +182,7 @@ jobs:
 
   update-mozilla:
     name: "Update Mozilla"
+    if: ${{ env.UPDATE_JSON != '' }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     needs: [publish-mozilla]
@@ -238,8 +239,8 @@ jobs:
         uses: re-actors/alls-green@release/v1
         with:
           jobs: ${{ toJSON(needs) }}
+          allowed-skips: update-mozilla
           #allowed-failures: release
-          #allowed-skips: release
 
       #- name: "Cleanup Release"
       #  if: ${{ failure() }}
