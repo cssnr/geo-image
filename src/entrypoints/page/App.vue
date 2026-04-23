@@ -25,6 +25,25 @@ const manifest = chrome.runtime.getManifest()
 const title = `${manifest.name} ${i18n.t('page.processing')}`
 if (document.title === '') document.title = title
 
+function copyText(text?: string) {
+  if (!text) {
+    showToast(i18n.t('form.nothingToCopy'))
+  } else {
+    navigator.clipboard.writeText(text).then(() => showToast(i18n.t('form.copiedToClipboard')))
+  }
+}
+
+function copyMarkdown() {
+  console.debug('copyMarkdown:', data.value)
+  if (!data.value) return
+  const r = data.value
+  let text = `# ${r.city}, ${r.state}, ${r.country}\n`
+  text += `## ${r.location}\n\n`
+  text += `**${r.longitude}/${r.latitude}** - [GeoHack](${geoHref.value})\n\n`
+  text += `${r.description}\n\n${r.explanation}`
+  copyText(text)
+}
+
 function setErrorIcon() {
   const href = chrome.runtime.getURL('/images/error128.png')
   const link = document.querySelector<HTMLLinkElement>('link[rel*="icon"]')
@@ -136,8 +155,11 @@ onMounted(() => {
                   }}</span>
                 </div>
                 <a v-if="geoHref" :href="geoHref" class="btn btn-sm btn-outline-success" target="_blank" rel="noopener">
-                  <i class="fa-solid fa-map me-1"></i>GeoHack
+                  <i class="fa-solid fa-map me-1"></i> GeoHack
                 </a>
+                <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                  <i class="fa-solid fa-share-nodes me-1"></i> {{ i18n.t('ui.action.share') }}
+                </button>
               </div>
 
               <hr class="my-1" />
@@ -170,6 +192,40 @@ onMounted(() => {
   >
     <i class="fa-solid fa-table-list"></i>
   </button>
+
+  <Teleport to="body">
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">
+              <i class="fa-solid fa-share-nodes me-1"></i> {{ i18n.t('ui.action.share') }}
+            </h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="d-grid gap-2">
+              <button type="button" class="btn btn-primary" @click="copyMarkdown">
+                <i class="fa-brands fa-markdown me-1"></i> {{ i18n.t('ui.action.copy') }} Markdown Results
+              </button>
+              <button type="button" class="btn btn-success" @click="copyText(geoHref)">
+                <i class="fa-solid fa-map me-1"></i> {{ i18n.t('ui.action.copy') }} GeoHack URL
+              </button>
+              <button type="button" class="btn btn-info" @click="copyText(data?.url)">
+                <i class="fa-regular fa-image me-1"></i>
+                {{ i18n.t('ui.action.copy') }} {{ i18n.t('ui.text.image') }} URL
+              </button>
+            </div>
+          </div>
+          <!--<div class="modal-footer">-->
+          <!--  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">-->
+          <!--    {{ i18n.t('ui.action.close') }}-->
+          <!--  </button>-->
+          <!--</div>-->
+        </div>
+      </div>
+    </div>
+  </Teleport>
 
   <!--<OptionsOffscreen />-->
 

@@ -4,9 +4,13 @@ description: Extensão Web GeoImage para Localizar Imagens usando Gemini AI.
 
 ui:
   text:
+    image: Imagem
     location: Localização
+    markdownResults: Resultados em Markdown
   action:
     close: Fechar
+    copy: Copiar
+    share: Compartilhar
 
 ctx:
   # background/menus.ts
