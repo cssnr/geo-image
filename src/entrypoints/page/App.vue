@@ -9,6 +9,7 @@ import { isMobile } from '@/utils/system.ts'
 import ToastAlerts from '@/components/ToastAlerts.vue'
 import PanelHeader from '@/components/PanelHeader.vue'
 import ResultsTable from '@/components/ResultsTable.vue'
+import GeoIcon from '@/assets/icon.svg?raw'
 
 const srcUrl = ref<string | null>(null)
 const errorMessage = ref('')
@@ -216,7 +217,7 @@ onMounted(() => {
                 {{ i18n.t('ui.action.copy') }} {{ i18n.t('ui.text.image') }} URL
               </button>
               <button type="button" class="btn btn-secondary" @click="copyText(config.homepageUrl)">
-                <i class="fa-solid fa-location-dot me-1"></i> {{ i18n.t('ui.action.share') }} GeoImage
+                <span class="icon me-1" v-html="GeoIcon" /> {{ i18n.t('ui.action.share') }} {{ config.name }}
               </button>
             </div>
           </div>
