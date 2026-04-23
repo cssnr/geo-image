@@ -238,8 +238,8 @@ jobs:
         uses: re-actors/alls-green@release/v1
         with:
           jobs: ${{ toJSON(needs) }}
+          allowed-skips: update-mozilla
           #allowed-failures: release
-          #allowed-skips: release
 
       #- name: "Cleanup Release"
       #  if: ${{ failure() }}

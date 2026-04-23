@@ -3,16 +3,10 @@ import { isFirefox, isMobile } from '@/utils/system.ts'
 import { getOptions } from '@/utils/options.ts'
 import { showToast } from '@/composables/useToast.ts'
 
-const props = withDefaults(
-  defineProps<{
-    message?: string
-    tip?: string
-  }>(),
-  {
-    message: 'Support Information Copied.',
-    tip: 'For Issue Reporting',
-  },
-)
+const props = defineProps<{
+  message: string
+  tip: string
+}>()
 
 async function copySupport(event: Event) {
   console.debug('copySupport:', event)
