@@ -4,9 +4,13 @@ description: Веб-расширение GeoImage для определения 
 
 ui:
   text:
+    image: Изображение
     location: Местоположение
+    markdownResults: Результаты Markdown
   action:
     close: Закрыть
+    copy: Копировать
+    share: Поделиться
 
 ctx:
   # background/menus.ts

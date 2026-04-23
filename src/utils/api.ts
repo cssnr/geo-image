@@ -89,9 +89,9 @@ You MUST respond with a valid JSON object in the following format:
   "state": "State/region/province",
   "country": "Country name",
   "location": "Human readable address, street, location, place, site, etc.",
-  "description": "A short 3-5 sentence summary: what you see, what it tells you, and your conclusion.",
   "explanation": "Concise summary of the key evidence supporting this specific location.",
-  "confidence": 85,
+  "description": "A short 3-5 sentence summary: what you see, what it tells you, and your conclusion.",
+  "confidence": 65,
   "latitude": 12.3456,
   "longitude": 78.9012
 }

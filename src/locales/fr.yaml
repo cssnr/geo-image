@@ -4,9 +4,13 @@ description: Extension Web GeoImage pour localiser des images grâce à l'IA Gem
 
 ui:
   text:
+    image: Image
     location: Emplacement
+    markdownResults: Résultats Markdown
   action:
     close: Fermer
+    copy: Copier
+    share: Partager
 
 ctx:
   # background/menus.ts

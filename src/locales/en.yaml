@@ -4,9 +4,13 @@ description: GeoImage Web Extension to Locate Images using Gemini AI.
 
 ui:
   text:
+    image: Image
     location: Location
+    markdownResults: Markdown Results
   action:
     close: Close
+    copy: Copy
+    share: Share
     cancel: Cancel # NOT TRANSLATED / NOT USED / FOR LINTER
     analyze: Analyze # NOT TRANSLATED / NOT USED / FOR LINTER
 

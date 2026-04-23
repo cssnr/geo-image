@@ -26,3 +26,14 @@
     --bs-table-striped-bg: rgba(var(--bs-emphasis-bg-rgb), 0.5);
     --bs-table-hover-bg: rgba(var(--bs-emphasis-bg-rgb), 0.6);
 }
+
+.icon {
+    display: inline-flex;
+    height: 100%;
+    vertical-align: middle;
+}
+
+.icon svg {
+    width: 1.25em;
+    height: 1.25em;
+}
