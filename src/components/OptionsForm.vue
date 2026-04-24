@@ -239,6 +239,7 @@ async function copyInput(el: HTMLInputElement | null) {
             </div>
           </div>
         </div>
+        <hr />
       </div>
     </div>
   </form>
