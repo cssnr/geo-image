@@ -79,6 +79,7 @@ function resetPrompt() {
   if (geoPrompt.value !== defaultOptions.geoPrompt) {
     saveKeyValue('geoPrompt', defaultOptions.geoPrompt)
     geoPrompt.value = defaultOptions.geoPrompt
+    promptInvalid.value = ''
     showToast('Prompt Reset')
   }
 }
@@ -87,6 +88,7 @@ function resetJSON() {
   if (geoJSON.value !== defaultOptions.geoJSON) {
     saveKeyValue('geoJSON', defaultOptions.geoJSON)
     geoJSON.value = defaultOptions.geoJSON
+    jsonInvalid.value = ''
     showToast('JSON Reset')
   }
 }
