@@ -1,7 +1,11 @@
+import { geoJSON, geoPrompt } from '@/utils/api.ts'
+
 export const defaultOptions = {
   authToken: '',
   contextMenu: true,
   showUpdate: false,
+  geoPrompt: geoPrompt,
+  geoJSON: geoJSON,
 }
 
 export type Options = typeof defaultOptions & { [key: string]: unknown }
