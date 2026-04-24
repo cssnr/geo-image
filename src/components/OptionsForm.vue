@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { i18n } from '#imports'
-import { ref } from 'vue'
-import { saveKeyValue } from '@/utils/options.ts'
+import { ref, watch } from 'vue'
+import { validateJSON } from '@/utils/index.ts'
+import { defaultOptions, saveKeyValue } from '@/utils/options.ts'
 import { useOptions } from '@/composables/useOptions.ts'
 import { showToast } from '@/composables/useToast.ts'
 import FormSwitch from '@/components/FormSwitch.vue'
@@ -18,6 +19,79 @@ withDefaults(
 )
 
 const options = useOptions()
+
+const geoPrompt = ref('')
+const promptInvalid = ref('')
+const geoJSON = ref('')
+const jsonInvalid = ref('')
+
+watch(
+  options,
+  (opts) => {
+    geoPrompt.value = opts.geoPrompt
+    geoJSON.value = opts.geoJSON
+  },
+  { once: true },
+)
+
+function promptChange() {
+  console.debug('promptChange')
+  const data = geoPrompt.value
+  console.debug('data:', data)
+  if (!data) {
+    promptInvalid.value = 'Prompt must NOT be empty.'
+    return
+  }
+  const isUnder8KB = new Blob([JSON.stringify(data)]).size < 8000
+  console.debug('data:', data, 'under 8KB:', isUnder8KB)
+  if (!isUnder8KB) {
+    promptInvalid.value = 'Prompt must be less than 8kb of data.'
+    return
+  }
+  saveKeyValue('geoPrompt', data)
+}
+
+function jsonChange() {
+  console.debug('jsonChange')
+  try {
+    const data = JSON.parse(geoJSON.value)
+    console.debug('data:', data)
+    const errors = validateJSON(data)
+    if (errors.length) {
+      console.debug('errors:', errors)
+      jsonInvalid.value = errors.join(', ')
+      return
+    }
+    const result = JSON.stringify(data, null, 2)
+    console.debug('result:', result)
+    saveKeyValue('geoJSON', result)
+    geoJSON.value = result
+  } catch (e) {
+    console.debug('JSON.parse error:', e)
+    // let err = i18n.t('import.errorJson')
+    // if (e instanceof Error) err += `: ${e}`
+    // TODO: Ensure error is shown...
+    if (e instanceof Error) jsonInvalid.value = e.message
+  }
+}
+
+function resetPrompt() {
+  if (geoPrompt.value !== defaultOptions.geoPrompt) {
+    saveKeyValue('geoPrompt', defaultOptions.geoPrompt)
+    geoPrompt.value = defaultOptions.geoPrompt
+    promptInvalid.value = ''
+    showToast('Prompt Reset')
+  }
+}
+
+function resetJSON() {
+  if (geoJSON.value !== defaultOptions.geoJSON) {
+    saveKeyValue('geoJSON', defaultOptions.geoJSON)
+    geoJSON.value = defaultOptions.geoJSON
+    jsonInvalid.value = ''
+    showToast('JSON Reset')
+  }
+}
 
 const authTokenInput = ref<HTMLInputElement | null>(null)
 
@@ -96,6 +170,76 @@ async function copyInput(el: HTMLInputElement | null) {
       <template v-for="id in switches" :key="id">
         <FormSwitch :id="id" v-model="options[id]" :class="{ 'col-12': true, 'col-sm-6': !compact }" />
       </template>
+    </div>
+
+    <div class="mt-2">
+      <button
+        class="btn btn-outline-danger w-100"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#collapseExample"
+        aria-expanded="false"
+        aria-controls="collapseExample"
+      >
+        Show Advanced Settings
+      </button>
+
+      <div class="collapse" id="collapseExample">
+        <div class="alert alert-warning text-center fw-bold p-2 mt-2" role="alert">
+          Changing these settings may produce undesired results.
+        </div>
+
+        <div class="d-grid gap-2 mt-2">
+          <!--TODO: Make the input-groups a re-usable component-->
+          <div>
+            <div class="input-group has-validation">
+              <div class="form-floating" :class="{ 'is-invalid': promptInvalid }">
+                <textarea
+                  v-model.trim="geoPrompt"
+                  class="form-control"
+                  :class="{ 'is-invalid': promptInvalid }"
+                  placeholder="Leave a comment here"
+                  id="floatingTextarea2"
+                  style="height: 220px"
+                  @change="promptChange"
+                  @input="promptInvalid = ''"
+                ></textarea>
+                <label for="floatingTextarea2">Instructions</label>
+              </div>
+              <div class="invalid-feedback">{{ promptInvalid }}</div>
+            </div>
+            <div class="d-flex justify-content-end">
+              <button type="button" class="btn btn-outline-warning" @click="resetPrompt">
+                <i class="fa-solid fa-rotate-left"></i> Reset Instructions
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <div class="input-group has-validation">
+              <div class="form-floating" :class="{ 'is-invalid': jsonInvalid }">
+                <textarea
+                  v-model="geoJSON"
+                  class="form-control"
+                  :class="{ 'is-invalid': jsonInvalid }"
+                  placeholder="Leave a comment here"
+                  id="floatingTextarea2"
+                  style="height: 240px"
+                  @change="jsonChange"
+                  @input="jsonInvalid = ''"
+                ></textarea>
+                <label for="floatingTextarea2">JSON Object</label>
+              </div>
+              <div class="invalid-feedback">{{ jsonInvalid }}</div>
+            </div>
+            <div class="d-flex justify-content-end">
+              <button type="button" class="btn btn-outline-warning" @click="resetJSON">
+                <i class="fa-solid fa-rotate-left"></i> Reset JSON
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </form>
 </template>
