@@ -181,7 +181,7 @@ async function copyInput(el: HTMLInputElement | null) {
         aria-expanded="false"
         aria-controls="collapseExample"
       >
-        Show Advanced Settings
+        <i class="fa-solid fa-gears me-1"></i> Show Advanced Settings
       </button>
 
       <div class="collapse" id="collapseExample">

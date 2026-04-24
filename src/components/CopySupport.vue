@@ -20,7 +20,11 @@ async function copySupport(event: Event) {
 
   // options.authToken = options.authToken ? 'SET' : 'NOT SET'
   options.authToken = `length: ${options.authToken?.length}`
-  // delete local.results
+
+  const geoJSON = JSON.parse(options.geoJSON)
+  delete (options as any).geoJSON
+  const geoPrompt = options.geoPrompt
+  delete (options as any).geoPrompt
 
   const result = [
     `${manifest.name} - ${manifest.version}`,
@@ -34,6 +38,8 @@ async function copySupport(event: Event) {
     `pinned: ${userSettings.isOnToolbar}`,
     `isFirefox: ${isFirefox}`,
     `isMobile: ${isMobile}`,
+    `geoJSON: ${JSON.stringify(geoJSON)}`,
+    `geoPrompt: ${geoPrompt}`,
   ]
   const commands = await chrome.commands?.getAll()
   if (commands) {
