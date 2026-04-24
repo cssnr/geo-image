@@ -206,17 +206,17 @@ onMounted(() => {
           </div>
           <div class="modal-body">
             <div class="d-grid gap-2">
-              <button type="button" class="btn btn-primary" @click="copyMarkdown">
+              <button type="button" class="btn btn-outline-primary" @click="copyMarkdown">
                 <i class="fa-brands fa-markdown me-1"></i> {{ i18n.t('ui.action.copy') }} Markdown Results
               </button>
-              <button type="button" class="btn btn-success" @click="copyText(geoHref)">
+              <button type="button" class="btn btn-outline-success" @click="copyText(geoHref)">
                 <i class="fa-solid fa-map me-1"></i> {{ i18n.t('ui.action.copy') }} GeoHack URL
               </button>
-              <button type="button" class="btn btn-info" @click="copyText(data?.url)">
+              <button type="button" class="btn btn-outline-info" @click="copyText(data?.url)">
                 <i class="fa-regular fa-image me-1"></i>
                 {{ i18n.t('ui.action.copy') }} {{ i18n.t('ui.text.image') }} URL
               </button>
-              <button type="button" class="btn btn-secondary" @click="copyText(config.homepageUrl)">
+              <button type="button" class="btn btn-outline-secondary" @click="copyText(config.homepageUrl)">
                 <span class="icon me-1" v-html="GeoIcon" /> {{ i18n.t('ui.action.share') }} {{ config.name }}
               </button>
             </div>

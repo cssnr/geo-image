@@ -1,4 +1,4 @@
-import { GEO_JSON, GEO_PROMPT } from '@/utils/api.ts'
+import { GEO_JSON, GEO_PROMPT } from '@/utils/constants.ts'
 
 export const defaultOptions = {
   authToken: '',

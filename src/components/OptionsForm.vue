@@ -174,18 +174,18 @@ async function copyInput(el: HTMLInputElement | null) {
 
     <div class="mt-2">
       <button
-        class="btn btn-outline-danger w-100"
+        class="btn btn-outline-info w-100"
         type="button"
         data-bs-toggle="collapse"
         data-bs-target="#collapseExample"
         aria-expanded="false"
         aria-controls="collapseExample"
       >
-        Show Advanced Settings
+        <i class="fa-solid fa-gears me-1"></i> Show Advanced Settings
       </button>
 
       <div class="collapse" id="collapseExample">
-        <div class="alert alert-warning text-center fw-bold p-2 mt-2" role="alert">
+        <div class="alert alert-danger text-center fw-bold p-2 mt-2" role="alert">
           Changing these settings may produce undesired results.
         </div>
 
@@ -239,6 +239,7 @@ async function copyInput(el: HTMLInputElement | null) {
             </div>
           </div>
         </div>
+        <hr />
       </div>
     </div>
   </form>
