@@ -7,6 +7,7 @@ on:
 env:
   PACKAGE_NAME: geoimage
   CHROME_ID: ipliinigkdddaaeaoncoljmdaoabgjdo
+  PUBLISHER_ID: 428868da-c02f-433a-b34c-208b3d01fbc3
   MOZILLA_ID: geo-image@cssnr.com
   UPDATE_JSON: update.json
 
@@ -81,23 +82,32 @@ jobs:
           cat chrome-mv3/manifest.json
           echo -e "\n::endgroup::"
 
-      - name: "Install PBE"
-        run: |
-          npm i -g publish-browser-extension
-          npx publish-extension --version
+      #- name: "Install PBE"
+      #  run: |
+      #    npm i -g publish-browser-extension
+      #    npx publish-extension --version
+      #
+      ## NOTE: This does not support Firefox amo-metadata
+      #- name: "Publish Extension"
+      #  run: |
+      #    npx publish-extension \
+      #      --chrome-zip "${{ env.PACKAGE_NAME }}-${{ github.event.release.tag_name }}-chrome.zip" \
+      #      --chrome-extension-id ${{ env.CHROME_ID }} \
+      #      --chrome-client-id ${{ secrets.WEBSTORE_CLIENT_ID }} \
+      #      --chrome-client-secret ${{ secrets.WEBSTORE_CLIENT_SECRET }} \
+      #      --chrome-refresh-token  ${{ secrets.WEBSTORE_REFRESH_TOKEN }} \
+      #      --chrome-publish-target default \
+      #      --chrome-deploy-percentage 100 \
+      #      --chrome-skip-submit-review
 
-      # NOTE: This does not support Firefox amo-metadata
-      - name: "Publish Extension"
-        run: |
-          npx publish-extension \
-            --chrome-zip "${{ env.PACKAGE_NAME }}-${{ github.event.release.tag_name }}-chrome.zip" \
-            --chrome-extension-id ${{ env.CHROME_ID }} \
-            --chrome-client-id ${{ secrets.WEBSTORE_CLIENT_ID }} \
-            --chrome-client-secret ${{ secrets.WEBSTORE_CLIENT_SECRET }} \
-            --chrome-refresh-token  ${{ secrets.WEBSTORE_REFRESH_TOKEN }} \
-            --chrome-publish-target default \
-            --chrome-deploy-percentage 100 \
-            --chrome-skip-submit-review
+      - name: "Web Store Upload Action"
+        uses: cssnr/webstore-upload-action@master
+        with:
+          zip_file: chrome-extension.zip
+          extension_id: ${{ env.CHROME_ID }}
+          publisher_id: ${{env.PUBLISHER_ID}}
+          json_data: ${{ secrets.WEBSTORE_JSON }}
+          submit: false
 
       # TODO: This only submits for review! Need automation to upload signed release...
 
