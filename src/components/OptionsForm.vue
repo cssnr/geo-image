@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { i18n } from '#imports'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { validateJSON } from '@/utils/index.ts'
-import { saveKeyValue } from '@/utils/options.ts'
+import { defaultOptions, saveKeyValue } from '@/utils/options.ts'
 import { useOptions } from '@/composables/useOptions.ts'
 import { showToast } from '@/composables/useToast.ts'
 import FormSwitch from '@/components/FormSwitch.vue'
@@ -40,12 +40,15 @@ function promptChange() {
   console.debug('data:', data)
   if (!data) {
     promptInvalid.value = 'Prompt must NOT be empty.'
+    return
   }
   const isUnder8KB = new Blob([JSON.stringify(data)]).size < 8000
   console.debug('data:', data, 'under 8KB:', isUnder8KB)
   if (!isUnder8KB) {
     promptInvalid.value = 'Prompt must be less than 8kb of data.'
+    return
   }
+  saveKeyValue('geoPrompt', data)
 }
 
 function jsonChange() {
@@ -69,6 +72,22 @@ function jsonChange() {
     // if (e instanceof Error) err += `: ${e}`
     // TODO: Ensure error is shown...
     if (e instanceof Error) jsonInvalid.value = e.message
+  }
+}
+
+function resetPrompt() {
+  if (geoPrompt.value !== defaultOptions.geoPrompt) {
+    saveKeyValue('geoPrompt', defaultOptions.geoPrompt)
+    geoPrompt.value = defaultOptions.geoPrompt
+    showToast('Prompt Reset')
+  }
+}
+
+function resetJSON() {
+  if (geoJSON.value !== defaultOptions.geoJSON) {
+    saveKeyValue('geoJSON', defaultOptions.geoJSON)
+    geoJSON.value = defaultOptions.geoJSON
+    showToast('JSON Reset')
   }
 }
 
@@ -153,7 +172,7 @@ async function copyInput(el: HTMLInputElement | null) {
 
     <div class="mt-2">
       <button
-        class="btn btn-danger w-100"
+        class="btn btn-outline-danger w-100"
         type="button"
         data-bs-toggle="collapse"
         data-bs-target="#collapseExample"
@@ -164,40 +183,58 @@ async function copyInput(el: HTMLInputElement | null) {
       </button>
 
       <div class="collapse" id="collapseExample">
+        <div class="alert alert-warning text-center fw-bold p-2 mt-2" role="alert">
+          Changing these settings may produce undesired results.
+        </div>
+
         <div class="d-grid gap-2 mt-2">
           <!--TODO: Make the input-groups a re-usable component-->
-          <div class="input-group has-validation">
-            <div class="form-floating" :class="{ 'is-invalid': promptInvalid }">
-              <textarea
-                v-model="geoPrompt"
-                class="form-control"
-                :class="{ 'is-invalid': promptInvalid }"
-                placeholder="Leave a comment here"
-                id="floatingTextarea2"
-                style="height: 220px"
-                @change="promptChange"
-                @input="promptInvalid = ''"
-              ></textarea>
-              <label for="floatingTextarea2">Instructions</label>
+          <div>
+            <div class="input-group has-validation">
+              <div class="form-floating" :class="{ 'is-invalid': promptInvalid }">
+                <textarea
+                  v-model.trim="geoPrompt"
+                  class="form-control"
+                  :class="{ 'is-invalid': promptInvalid }"
+                  placeholder="Leave a comment here"
+                  id="floatingTextarea2"
+                  style="height: 220px"
+                  @change="promptChange"
+                  @input="promptInvalid = ''"
+                ></textarea>
+                <label for="floatingTextarea2">Instructions</label>
+              </div>
+              <div class="invalid-feedback">{{ promptInvalid }}</div>
             </div>
-            <div class="invalid-feedback">{{ promptInvalid }}</div>
+            <div class="d-flex justify-content-end">
+              <button type="button" class="btn btn-outline-warning" @click="resetPrompt">
+                <i class="fa-solid fa-rotate-left"></i> Reset Instructions
+              </button>
+            </div>
           </div>
 
-          <div class="input-group has-validation">
-            <div class="form-floating" :class="{ 'is-invalid': jsonInvalid }">
-              <textarea
-                v-model="geoJSON"
-                class="form-control"
-                :class="{ 'is-invalid': jsonInvalid }"
-                placeholder="Leave a comment here"
-                id="floatingTextarea2"
-                style="height: 240px"
-                @change="jsonChange"
-                @input="jsonInvalid = ''"
-              ></textarea>
-              <label for="floatingTextarea2">JSON Object</label>
+          <div>
+            <div class="input-group has-validation">
+              <div class="form-floating" :class="{ 'is-invalid': jsonInvalid }">
+                <textarea
+                  v-model="geoJSON"
+                  class="form-control"
+                  :class="{ 'is-invalid': jsonInvalid }"
+                  placeholder="Leave a comment here"
+                  id="floatingTextarea2"
+                  style="height: 240px"
+                  @change="jsonChange"
+                  @input="jsonInvalid = ''"
+                ></textarea>
+                <label for="floatingTextarea2">JSON Object</label>
+              </div>
+              <div class="invalid-feedback">{{ jsonInvalid }}</div>
             </div>
-            <div class="invalid-feedback">{{ jsonInvalid }}</div>
+            <div class="d-flex justify-content-end">
+              <button type="button" class="btn btn-outline-warning" @click="resetJSON">
+                <i class="fa-solid fa-rotate-left"></i> Reset JSON
+              </button>
+            </div>
           </div>
         </div>
       </div>

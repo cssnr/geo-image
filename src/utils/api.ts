@@ -21,20 +21,16 @@ export interface LocationData {
   [key: string]: unknown
 }
 
-export const geoPrompt = `You are an expert geolocation analyst.
+export const GEO_PROMPT = `You are an expert geolocation analyst.
 Your task is to determine the precise geographic location shown in an image using a systematic, hierarchical chain-of-thought methodology.
 
 Rules:
 - confidence: integer 0–100 (no % symbol, no quotes)
   - Low    = confidence < 70
   - Medium = confidence >= 70 and < 90
-  - High   = confidence >= 90
-`
+  - High   = confidence >= 90`
 
-// TODO: Prepend the requirements to the JSON
-//  You MUST respond with a valid JSON object in the following format:
-
-export const geoJSON = `{
+export const GEO_JSON = `{
   "city": "City or nearest settlement",
   "state": "State/region/province",
   "country": "Country name",
@@ -110,30 +106,31 @@ export async function getData(mimeType: string, base64: string) {
 
   const options = await getOptions()
   console.log('options:', options)
-  console.log('API Key:', options.authToken)
+  console.log('API Key:', options.authToken.slice(0, 8))
   if (!options.authToken) throw new Error('Set API Key in Options!')
+
+  const lang = chrome.i18n.getUILanguage()
+  const instructions = `Always respond in the language with BCP-47 code "${lang}" and with a valid JSON object.`
+  console.log('instructions:', instructions)
+
+  const prompt = `${options.geoPrompt}\n\nYou MUST respond with a valid JSON object in the following format:\n\n${options.geoJSON}`
+  console.log('prompt:', prompt)
+
+  const request = {
+    system_instruction: { parts: [{ text: instructions }] },
+    contents: [
+      {
+        parts: [{ inline_data: { mime_type: mimeType, data: base64 } }, { text: prompt }],
+      },
+    ],
+  }
+  // console.log('request:', request)
 
   const headers = {
     'Content-Type': 'application/json',
     'x-goog-api-key': options.authToken,
   }
   // console.log('headers:', headers)
-
-  const lang = chrome.i18n.getUILanguage()
-  const request = {
-    system_instruction: {
-      parts: [{ text: `Always respond in the language with BCP-47 code: "${lang}".` }],
-    },
-    contents: [
-      {
-        parts: [
-          { inline_data: { mime_type: mimeType, data: base64 } },
-          { text: geoPrompt },
-        ],
-      },
-    ],
-  }
-  // console.log('request:', request)
 
   const response = await fetch(
     'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
