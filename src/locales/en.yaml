@@ -32,7 +32,7 @@ cmd:
 option:
   # OptionsForm.vue
   toggle:
-    contextMenu: Show Extra Right-Click Options
+    contextMenu: Show Right-Click Menu on Pages
     contextMenuTip: Show Additional Items on Right Click Menu.
     showUpdate: Show Release Notes on Update
     showUpdateTip: Show Release Notes on Version Update.
