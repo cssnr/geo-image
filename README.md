@@ -55,7 +55,7 @@ All **Chromium** Based Browsers can install the extension from the
 
 [![Android QR Code](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/geo-image/qr-code-android.png)](https://github.com/cssnr/geo-image/releases/latest/download/geoimage-firefox.xpi)
 
-_Note: To install self-hosted extensions on Android you must enable a hidden menu item:_
+_Note: To install self-hosted extensions on Android you must enable a hidden menu item:_  
 [_https://extensionworkshop.com/documentation/publish/install-self-distributed_](https://extensionworkshop.com/documentation/publish/install-self-distributed/#install-addon-from-file-android)
 
 ## Features
@@ -122,16 +122,13 @@ If you run into any issues or need help getting started, please do one of the fo
 
 See the [CONTRIBUTING.md](#contributing-ov-file) for more details.
 
-## Contributing
-
 > Note: This is the new Vue3 Extension.  
 > For the VanillaJS Extension see: https://github.com/cssnr/geo-image-js
+
+## Contributing
 
 Please consider making a donation to support the development of this project
 and [additional](https://cssnr.com/) open source projects.
-
-> Note: This is the new Vue3 Extension.  
-> For the VanillaJS Extension see: https://github.com/cssnr/geo-image-js
 
 [![Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/cssnr)
 
