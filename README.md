@@ -3,6 +3,8 @@
 [![Chrome Web Store Version](https://img.shields.io/chrome-web-store/v/ipliinigkdddaaeaoncoljmdaoabgjdo?label=chrome&logo=googlechrome&logoColor=white)](https://chromewebstore.google.com/detail/geo-image/ipliinigkdddaaeaoncoljmdaoabgjdo)
 [![GitHub Release Version](https://img.shields.io/github/v/release/cssnr/geo-image?logo=github)](https://github.com/cssnr/geo-image/releases/latest)
 [![GitHub Locales](https://img.shields.io/github/directory-file-count/cssnr/geo-image/src/locales?type=file&extension=yaml&logo=libretranslate&label=locales)](https://github.com/cssnr/geo-image/tree/master/src/locales)
+[![Deployment Chrome](https://img.shields.io/github/deployments/cssnr/geo-image/chrome?logo=googlechrome&logoColor=white&label=chrome)](https://github.com/cssnr/geo-image/deployments/chrome)
+[![Deployment Mozilla](https://img.shields.io/github/deployments/cssnr/geo-image/mozilla?logo=firefox&logoColor=white&label=mozilla)](https://github.com/cssnr/geo-image/deployments/mozilla)
 [![Workflow Release](https://img.shields.io/github/actions/workflow/status/cssnr/geo-image/release.yaml?logo=norton&logoColor=white&label=release)](https://github.com/cssnr/geo-image/actions/workflows/release.yaml)
 [![Workflow Lint](https://img.shields.io/github/actions/workflow/status/cssnr/geo-image/lint.yaml?logo=norton&logoColor=white&label=lint)](https://github.com/cssnr/geo-image/actions/workflows/lint.yaml)
 [![GitHub Last Commit](https://img.shields.io/github/last-commit/cssnr/geo-image?logo=listenhub&label=updated)](https://github.com/cssnr/geo-image/pulse)
@@ -76,6 +78,8 @@ _Note: To install self-hosted extensions on Android you must enable a hidden men
   - Italian (Italiano)
   - Portuguese Brazil (Português Brasil)
 
+_Tip: View or Edit [locales](https://github.com/cssnr/geo-image/tree/master/src/locales)_
+
 ### Upcoming
 
 - Customize Prompts
@@ -144,6 +148,8 @@ Other Web Extensions I have created and published:
 - [ASN Plus](https://github.com/cssnr/asn-plus?tab=readme-ov-file#readme)
 - [Aviation Tools](https://github.com/cssnr/aviation-tools?tab=readme-ov-file#readme)
 - [Text Formatter](https://github.com/cssnr/text-formatter?tab=readme-ov-file#readme)
+- [GeoImage](https://github.com/cssnr/geo-image?tab=readme-ov-file#readme)
+- [New Tab](https://github.com/cssnr/new-tab?tab=readme-ov-file#readme)
 
 For a full list of current projects visit: [https://cssnr.github.io/](https://cssnr.github.io/)
 

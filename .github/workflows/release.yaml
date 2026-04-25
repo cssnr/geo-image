@@ -100,13 +100,13 @@ jobs:
       #      --chrome-deploy-percentage 100 \
       #      --chrome-skip-submit-review
 
-      - name: "Web Store Upload Action"
-        uses: cssnr/webstore-upload-action@master
+      - name: "Web Store Publish"
+        uses: cssnr/webstore-publish-action@master
         with:
-          zip_file: "${{ env.PACKAGE_NAME }}-${{ github.event.release.tag_name }}-chrome.zip"
           extension_id: ${{ env.CHROME_ID }}
           publisher_id: ${{env.PUBLISHER_ID}}
           json_data: ${{ secrets.WEBSTORE_JSON }}
+          zip_file: "${{ env.PACKAGE_NAME }}-${{ github.event.release.tag_name }}-chrome.zip"
           submit: false
 
       # TODO: This only submits for review! Need automation to upload signed release...

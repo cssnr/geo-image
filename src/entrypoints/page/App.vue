@@ -38,11 +38,15 @@ function copyMarkdown() {
   console.debug('copyMarkdown:', data.value)
   if (!data.value) return
   const r = data.value
-  let text = `# ${r.city}, ${r.state}, ${r.country}\n`
-  text += `## ${r.location}\n\n`
-  text += `\`${r.longitude}/${r.latitude}\` [GeoHack](${geoHref.value})\n\n`
-  text += `${r.description}\n\n${r.explanation}`
-  copyText(text)
+  let lines = [
+    `## ${r.city}, ${r.state}, ${r.country}`,
+    `\`${r.longitude}/${r.latitude}\` [Open in GeoHack](${geoHref.value})`,
+    `${r.url}`,
+    `### ${r.location}`,
+    `${r.description}`,
+    `> ${r.explanation}`,
+  ]
+  copyText(lines.join('\n'))
 }
 
 function setErrorIcon() {
