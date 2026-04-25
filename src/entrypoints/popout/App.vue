@@ -15,19 +15,21 @@ useTitle(i18n.t('permissions.title'))
 
 async function windowResize() {
   const size = { panelWidth: window.outerWidth, panelHeight: window.outerHeight }
-  await chrome.storage.local.set(size).catch((e) => console.warn(e))
+  // console.debug('windowResize:', size)
+  await chrome.storage.local.set(size).catch(console.warn)
 }
 
-onMounted(() => {
-  window.addEventListener('resize', debounce(windowResize))
+const debounceWindowResize = debounce(windowResize, 600)
 
+onMounted(() => {
+  window.addEventListener('resize', debounceWindowResize)
   chrome.windows.getCurrent().then((window) => {
     chrome.storage.local.set({ lastPanelID: window.id }).then(() => {
-      console.debug(`%c Set lastPanelID: ${window.id}`, 'color: Aqua')
+      console.debug('%cSet lastPanelID:', 'color: SpringGreen', window.id)
     })
   })
 })
-onUnmounted(() => window.removeEventListener('resize', debounce(windowResize)))
+onUnmounted(() => window.removeEventListener('resize', debounceWindowResize))
 </script>
 
 <template>

@@ -48,10 +48,7 @@ export async function openExtPanel(close = false) {
   const [defaultWidth, defaultHeight] = [390, 600]
   const type = chrome.windows.CreateType.POPUP
 
-  if (!chrome.windows) {
-    console.log('Browser does not support: chrome.windows')
-    return
-  }
+  if (!chrome.windows) return console.log('Browser does not support: chrome.windows')
 
   const local = await chrome.storage.local.get([
     'lastPanelID',
