@@ -36,10 +36,7 @@ GeoImage Web Extension for Chrome and Firefox.
 
 Use Gemini AI to determine the location of an image based on the image data (not metadata).
 
-Works with a Free Gemini API Key: https://aistudio.google.com/app/api-keys
-
-> Note: This is the new Vue3 Extension.
-> For the VanillaJS Extension see: https://github.com/cssnr/geo-image-js
+Works with a **Free** Gemini API Key: https://aistudio.google.com/app/api-keys
 
 ## Install
 
@@ -63,12 +60,13 @@ _Note: To install self-hosted extensions on Android you must enable a hidden men
 
 ## Features
 
-- Uses Gemini API
-- Stores Response Data
+- Uses Gemini API Free Tier
+- Stores Response Data Locally
+- Share Button with Markdown
 - Provides a GeoHack Link
 - Has Panel, Popup, and Side Panel
-- AI Responses are in Browser Language
-- Extension is Localized in 8 Languages
+- AI Responses in Browsers Language
+- Extension Localized in 8 Languages:
   - English (English)
   - Spanish (Español)
   - German (Deutsch)
@@ -78,11 +76,10 @@ _Note: To install self-hosted extensions on Android you must enable a hidden men
   - Italian (Italiano)
   - Portuguese Brazil (Português Brasil)
 
-_Tip: View or Edit [locales](https://github.com/cssnr/geo-image/tree/master/src/locales)_
+_View or Edit the [locales](https://github.com/cssnr/geo-image/tree/master/src/locales)._
 
 ### Upcoming
 
-- Customize Prompts
 - Do More than Geolocate?
 - Tell Us what AI Should Do for You...
 
@@ -127,8 +124,14 @@ See the [CONTRIBUTING.md](#contributing-ov-file) for more details.
 
 ## Contributing
 
+> Note: This is the new Vue3 Extension.  
+> For the VanillaJS Extension see: https://github.com/cssnr/geo-image-js
+
 Please consider making a donation to support the development of this project
 and [additional](https://cssnr.com/) open source projects.
+
+> Note: This is the new Vue3 Extension.  
+> For the VanillaJS Extension see: https://github.com/cssnr/geo-image-js
 
 [![Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/cssnr)
 
