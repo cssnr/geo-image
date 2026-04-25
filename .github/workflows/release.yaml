@@ -109,7 +109,7 @@ jobs:
           zip_file: "${{ env.PACKAGE_NAME }}-${{ github.event.release.tag_name }}-chrome.zip"
           submit: false
 
-      # TODO: This only submits for review! Need automation to upload signed release...
+      # TODO: This only submits for review! But maybe now I can download the crx with the token...
 
   publish-mozilla:
     # https://mozilla.github.io/addons-server/topics/api/index.html
