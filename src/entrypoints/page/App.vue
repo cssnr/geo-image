@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { i18n } from '#imports'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, useTemplateRef } from 'vue'
 import { type LocationData, getGeoUrl, processUrl } from '@/utils/api.ts'
 import { showToast } from '@/composables/useToast.ts'
 import { openOptions } from '@/utils/extension.ts'
@@ -9,7 +9,10 @@ import { isMobile } from '@/utils/system.ts'
 import ToastAlerts from '@/components/ToastAlerts.vue'
 import PanelHeader from '@/components/PanelHeader.vue'
 import ResultsTable from '@/components/ResultsTable.vue'
-import GeoIcon from '@/assets/icon.svg?raw'
+import ShareModal from '@/components/ShareModal.vue'
+
+// const shareModal = ref<InstanceType<typeof ShareModal> | null>(null)
+const shareModal = useTemplateRef<InstanceType<typeof ShareModal>>('shareModal')
 
 const srcUrl = ref<string | null>(null)
 const errorMessage = ref('')
@@ -25,29 +28,6 @@ const toggleHistory = () => (historyShown.value = !historyShown.value)
 const config = useAppConfig()
 const title = `${config.name} ${i18n.t('page.processing')}`
 if (document.title === '') document.title = title
-
-function copyText(text?: string) {
-  if (!text) {
-    showToast(i18n.t('form.nothingToCopy'))
-  } else {
-    navigator.clipboard.writeText(text).then(() => showToast(i18n.t('form.copiedToClipboard')))
-  }
-}
-
-function copyMarkdown() {
-  console.debug('copyMarkdown:', data.value)
-  if (!data.value) return
-  const r = data.value
-  const lines = [
-    `## ${r.city}, ${r.state}, ${r.country}`,
-    `\`${r.longitude}/${r.latitude}\` [Open in GeoHack](${geoHref.value})`,
-    !r.url.startsWith('data:') && `${r.url}`,
-    `### ${r.location}`,
-    `${r.description}`,
-    `> ${r.explanation}`,
-  ].filter(Boolean)
-  copyText(lines.join('\n'))
-}
 
 function setErrorIcon() {
   const href = chrome.runtime.getURL('/images/error128.png')
@@ -77,35 +57,6 @@ async function getLocationData(): Promise<LocationData> {
   }
 }
 
-chrome.runtime.onMessage.addListener(onMessage)
-
-// TODO: This is called directly from the emit handler for same page changes...
-function onMessage(message: any) {
-  console.debug('message:', message)
-  console.debug('srcUrl:', message.srcUrl)
-  if (!message.srcUrl) return console.log('no message.srcUrl')
-
-  const url = chrome.runtime.getURL(`page.html?url=${encodeURIComponent(message.srcUrl)}`)
-  console.debug('window.location.href:', window.location.href)
-  console.debug('url:', url)
-  if (window.location.href === url) {
-    console.log('Already Open')
-    historyShown.value = false
-    return
-  }
-  // TODO: This does not activate history from the popup, but works after activated...
-  console.log(`pushState - length: ${window.history.length} - url:`, url)
-  window.history.pushState(null, '', url)
-  historyShown.value = false
-  processData()
-}
-
-window.addEventListener('popstate', (event) => {
-  console.log('URL changed to:', window.location)
-  console.log('event:', event)
-  processData()
-})
-
 function processData() {
   getLocationData()
     .then((result) => {
@@ -127,7 +78,33 @@ function processData() {
     })
 }
 
+chrome.runtime.onMessage.addListener(onMessage)
+
+// TODO: This is called directly from the emit handler for same page changes...
+function onMessage(message: any) {
+  console.debug('message:', message)
+  if (!message.srcUrl) return console.log('no message.srcUrl')
+  const url = chrome.runtime.getURL(`page.html?url=${encodeURIComponent(message.srcUrl)}`)
+  if (window.location.href === url) {
+    console.log('Already Open')
+    historyShown.value = false
+    return
+  }
+  // TODO: This does not activate history from the popup, but works after activated...
+  console.log(`pushState - length: ${window.history.length} - url:`, url)
+  window.history.pushState(null, '', url)
+  historyShown.value = false
+  processData()
+}
+
+window.addEventListener('popstate', (event) => {
+  console.log('popstate:', event)
+  console.log('window.location:', window.location)
+  processData()
+})
+
 onMounted(() => {
+  console.log(`page/App.vue - onMounted - window.history.length:`, window.history.length)
   processData()
 })
 </script>
@@ -195,7 +172,7 @@ onMounted(() => {
                 <a v-if="geoHref" :href="geoHref" class="btn btn-sm btn-outline-success" target="_blank" rel="noopener">
                   <i class="fa-solid fa-map me-1"></i> GeoHack
                 </a>
-                <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                <button class="btn btn-sm btn-outline-info" @click="shareModal?.show(data)">
                   <i class="fa-solid fa-share-nodes me-1"></i> {{ i18n.t('ui.action.share') }}
                 </button>
               </div>
@@ -231,42 +208,7 @@ onMounted(() => {
     <i class="fa-solid fa-table-list"></i>
   </button>
 
-  <Teleport to="body">
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">
-              <i class="fa-solid fa-share-nodes me-1"></i> {{ i18n.t('ui.action.share') }}
-            </h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div class="d-grid gap-2">
-              <button type="button" class="btn btn-outline-primary" @click="copyMarkdown">
-                <i class="fa-brands fa-markdown me-1"></i> {{ i18n.t('ui.action.copy') }} Markdown Results
-              </button>
-              <button type="button" class="btn btn-outline-success" @click="copyText(geoHref)">
-                <i class="fa-solid fa-map me-1"></i> {{ i18n.t('ui.action.copy') }} GeoHack URL
-              </button>
-              <button type="button" class="btn btn-outline-info" @click="copyText(data?.url)">
-                <i class="fa-regular fa-image me-1"></i>
-                {{ i18n.t('ui.action.copy') }} {{ i18n.t('ui.text.image') }} URL
-              </button>
-              <button type="button" class="btn btn-outline-secondary" @click="copyText(config.homepageUrl)">
-                <span class="icon me-1" v-html="GeoIcon" /> {{ i18n.t('ui.action.share') }} {{ config.name }}
-              </button>
-            </div>
-          </div>
-          <!--<div class="modal-footer">-->
-          <!--  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">-->
-          <!--    {{ i18n.t('ui.action.close') }}-->
-          <!--  </button>-->
-          <!--</div>-->
-        </div>
-      </div>
-    </div>
-  </Teleport>
+  <ShareModal ref="shareModal" />
 
   <!--<OptionsOffscreen />-->
 
