@@ -10,18 +10,14 @@ import { LocationData } from '@/utils/api.ts'
 
 const { getAllLocations, deleteLocation, locationDBChannel } = useLocationsDB()
 
-const props = withDefaults(
-  defineProps<{
-    newTab?: boolean
-    closeWindow?: boolean
-  }>(),
-  {
-    newTab: true,
-    closeWindow: false,
-  },
-)
+const props = defineProps<{
+  isPage?: boolean
+  closeWindow?: boolean
+}>()
 
-console.debug('ResultsTable.vue: props.newTab:', props.newTab)
+const emit = defineEmits(['open'])
+
+console.debug('ResultsTable.vue: props.isPage:', props.isPage)
 
 const locations = ref<LocationData[]>([])
 
@@ -32,17 +28,17 @@ function getPageUrl(srcUrl: string) {
   return chrome.runtime.getURL(`page.html?url=${encodeURIComponent(srcUrl)}`)
 }
 
-function urlClick(e: Event, srcUrl: string) {
-  console.log('urlClick:', srcUrl)
-  if (!props.newTab) {
-    console.debug('props.newTab:', props.newTab)
-    return
-  }
-  e.preventDefault()
-  openPageUrl(srcUrl).then(() => {
-    if (props.closeWindow) window.close()
-  })
-}
+// function urlClick(e: Event, srcUrl: string) {
+//   console.log('urlClick:', srcUrl)
+//   if (!props.newTab) {
+//     console.debug('props.newTab:', props.newTab)
+//     return
+//   }
+//   e.preventDefault()
+//   openPageUrl(srcUrl).then(() => {
+//     if (props.closeWindow) window.close()
+//   })
+// }
 
 function showDeleteModal(hostId: string) {
   hostToDelete.value = hostId
@@ -68,6 +64,45 @@ onMounted(() => {
   updateLocations()
   locationDBChannel.onmessage = updateLocations
 })
+
+async function openResult(srcUrl: string) {
+  console.log('openResult - srcUrl:', srcUrl)
+
+  if (props.isPage) {
+    emit('open', { srcUrl })
+    return console.log('THIS IS A PAGE')
+  }
+
+  // const encoded = encodeURIComponent(srcUrl)
+  // const url = chrome.runtime.getURL(`page.html?url=${encoded}`)
+  // console.log('encoded url:', url)
+
+  const pageUrl = chrome.runtime.getURL('page.html')
+  console.log('pageUrl:', pageUrl)
+
+  // TODO: Make this a reusable function...
+  try {
+    const tabs = await chrome.tabs.query({ currentWindow: true })
+    console.debug('tabs:', tabs)
+    for (const tab of tabs) {
+      console.debug(`tab.url ${tab.id}:`, tab.url)
+      if (tab.id && tab.url?.startsWith(pageUrl)) {
+        console.debug('%cTab found, sendMessage:', 'color: PaleGreen', tab)
+        // TODO: This needs to be handled by the service worker due to the next TODO...
+        await chrome.tabs.update(tab.id, { active: true })
+        // TODO: Popup can NOT be open when history.pushState (sendMessage) is called...
+        await chrome.runtime.sendMessage({ srcUrl })
+        if (props.closeWindow) window.close()
+        return
+      }
+    }
+  } catch (e) {
+    console.error(e)
+  }
+  console.debug('%cTab NOT found, openPageUrl', 'color: Tomato')
+  await openPageUrl(srcUrl)
+  if (props.closeWindow) window.close()
+}
 </script>
 
 <template>
@@ -85,13 +120,7 @@ onMounted(() => {
         <tr v-for="loc of locations" :key="loc.id">
           <td class="text-center">{{ loc.id }}</td>
           <td class="text-truncate">
-            <a
-              @click="urlClick($event, loc.url)"
-              :title="loc.url"
-              :href="getPageUrl(loc.url)"
-              :target="newTab ? '_blank' : undefined"
-              >{{ loc.location }}</a
-            >
+            <a @click.prevent="openResult(loc.url)" :title="loc.url" :href="getPageUrl(loc.url)">{{ loc.location }}</a>
           </td>
           <td class="text-center" :class="getConfidenceClass(loc.confidence)">{{ loc.confidence }}</td>
           <td class="text-center">

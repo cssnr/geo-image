@@ -77,7 +77,48 @@ async function process(): Promise<LocationData> {
   }
 }
 
+chrome.runtime.onMessage.addListener(onMessage)
+
+// TODO: This is called directly from the emit handler for same page changes...
+function onMessage(message: any) {
+  console.debug('message:', message)
+  console.debug('srcUrl:', message.srcUrl)
+  if (!message.srcUrl) return console.log('no message.srcUrl')
+
+  const url = chrome.runtime.getURL(`page.html?url=${encodeURIComponent(message.srcUrl)}`)
+  console.debug('window.location.href:', window.location.href)
+  console.debug('url:', url)
+  if (window.location.href === url) {
+    console.log('Already Open')
+    historyShown.value = false
+    return
+  }
+  console.log('pushState:', url)
+  window.history.pushState(null, '', url)
+  historyShown.value = false
+  // TODO: Use a reusable function - PARTIAL SEE BELOW
+  process().then((result) => {
+    console.debug('result:', result)
+    data.value = result
+    geoHref.value = getGeoUrl(data.value)
+    document.title = `${data.value.location} - ${title}`
+  })
+}
+
+window.addEventListener('popstate', (event) => {
+  console.log('URL changed to:', window.location)
+  console.log('event:', event)
+  // TODO: Use a reusable function - PARTIAL SEE BELOW
+  process().then((result) => {
+    console.debug('result:', result)
+    data.value = result
+    geoHref.value = getGeoUrl(data.value)
+    document.title = `${data.value.location} - ${title}`
+  })
+})
+
 onMounted(() => {
+  // TODO: Use a reusable function - FULL
   process()
     .then((result) => {
       console.debug('result:', result)
@@ -182,7 +223,7 @@ onMounted(() => {
           </div>
         </div>
       </div>
-      <ResultsTable v-else :new-tab="false" class="pb-5" />
+      <ResultsTable v-else :is-page="true" class="pb-5" @open="onMessage" />
     </div>
   </main>
 
