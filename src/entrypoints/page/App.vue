@@ -78,18 +78,6 @@ function processData() {
     })
 }
 
-chrome.runtime.onMessage.addListener(onMessage)
-
-async function onMessage(message: any) {
-  console.debug('%c page/App.vue - onMessage:', 'Color: PaleGreen', message)
-  if (!message.srcUrl) return console.log('no message.srcUrl')
-  if (!message.tabId) return console.log('no message.tabId')
-  const tab = await chrome.tabs.getCurrent()
-  console.debug('tab?.id:', tab?.id)
-  if (message.tabId !== tab?.id) return console.log('wrong TAB')
-  openItem(message.srcUrl)
-}
-
 function openItem(srcUrl: string) {
   console.log('openItem:', srcUrl)
   const url = chrome.runtime.getURL(`page.html?url=${encodeURIComponent(srcUrl)}`)
@@ -104,6 +92,15 @@ function openItem(srcUrl: string) {
   historyShown.value = false
   processData()
 }
+
+chrome.runtime.onMessage.addListener(async (message) => {
+  console.debug('%c page/App.vue - onMessage:', 'Color: PaleGreen', message)
+  if (!message.srcUrl || !message.tabId) return console.log('no message.srcUrl/tabId')
+  const tab = await chrome.tabs.getCurrent()
+  console.debug('tab?.id:', tab?.id)
+  if (message.tabId !== tab?.id) return console.log('WRONG TAB:', tab?.id)
+  openItem(message.srcUrl)
+})
 
 window.addEventListener('popstate', (event) => {
   console.log('popstate:', event)

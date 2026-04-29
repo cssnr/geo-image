@@ -35,7 +35,6 @@ async function onClick(srcUrl: string) {
     console.log('emit:open')
     emit('open', srcUrl)
   } else {
-    console.log('openResult')
     // chrome.runtime.sendMessage({ openResult: srcUrl }).catch(console.error)
     openResult(srcUrl).catch(console.error)
   }
@@ -85,7 +84,7 @@ onMounted(() => {
           <td class="text-center">
             <a
               @click="shareModal?.show(loc)"
-              :title="i18n.t('results.delete')"
+              :title="i18n.t('ui.action.share')"
               :data-id="loc.id"
               :data-url="loc.url"
               class="link-success"
