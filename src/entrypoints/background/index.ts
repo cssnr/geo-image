@@ -110,12 +110,8 @@ async function onClicked(ctx: chrome.contextMenus.OnClickData, tab?: chrome.tabs
   }
 }
 
-function onMessage(
-  message: any,
-  sender: chrome.runtime.MessageSender,
-  _sendResponse: Function, // eslint-disable-line
-) {
-  console.log('onMessage:', message)
+function onMessage(message: any, sender: chrome.runtime.MessageSender) {
+  console.debug('%c background/index.ts - onMessage:', 'Color: Plum', message, sender)
   console.log('sender:', sender)
   if (message.openResult) {
     console.log('message.openResult:', message.openResult)

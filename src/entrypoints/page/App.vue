@@ -80,17 +80,25 @@ function processData() {
 
 chrome.runtime.onMessage.addListener(onMessage)
 
-// TODO: This is called directly from the emit handler for same page changes...
-function onMessage(message: any) {
-  console.debug('message:', message)
+async function onMessage(message: any) {
+  console.debug('%c page/App.vue - onMessage:', 'Color: PaleGreen', message)
   if (!message.srcUrl) return console.log('no message.srcUrl')
-  const url = chrome.runtime.getURL(`page.html?url=${encodeURIComponent(message.srcUrl)}`)
+  if (!message.tabId) return console.log('no message.tabId')
+  const tab = await chrome.tabs.getCurrent()
+  console.debug('tab?.id:', tab?.id)
+  if (message.tabId !== tab?.id) return console.log('wrong TAB')
+  openItem(message.srcUrl)
+}
+
+function openItem(srcUrl: string) {
+  console.log('openItem:', srcUrl)
+  const url = chrome.runtime.getURL(`page.html?url=${encodeURIComponent(srcUrl)}`)
   if (window.location.href === url) {
-    console.log('Already Open')
+    console.log('%c Already Open', 'color: Tan')
     historyShown.value = false
     return
   }
-  // TODO: This does not activate history from the popup, but works after activated...
+  // TODO: This does not activate history from the popup UNLESS history already exists...
   console.log(`pushState - length: ${window.history.length} - url:`, url)
   window.history.pushState(null, '', url)
   historyShown.value = false
@@ -192,7 +200,7 @@ onMounted(() => {
           </div>
         </div>
       </div>
-      <ResultsTable v-else :is-page="true" class="pb-5" @open="onMessage" />
+      <ResultsTable v-else :is-page="true" class="pb-5" @open="openItem" />
     </div>
   </main>
 

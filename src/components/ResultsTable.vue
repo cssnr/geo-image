@@ -2,9 +2,10 @@
 import { i18n } from '#imports'
 import { onMounted, ref, useTemplateRef } from 'vue'
 import { Modal } from 'bootstrap'
+import { getConfidenceClass } from '@/utils/index.ts'
+import { openResult } from '@/utils/extension.ts'
 import { showToast } from '@/composables/useToast.ts'
 import { useLocationsDB } from '@/composables/useLocationsDB'
-import { getConfidenceClass } from '@/utils/index.ts'
 import type { LocationData } from '@/utils/api.ts'
 import ShareModal from '@/components/ShareModal.vue'
 
@@ -42,13 +43,16 @@ function getPageUrl(srcUrl: string) {
 //   })
 // }
 
-async function openResult(srcUrl: string) {
-  console.log('openResult - srcUrl:', srcUrl)
+async function onClick(srcUrl: string) {
+  console.log('onClick - srcUrl:', srcUrl)
   if (props.isPage) {
-    emit('open', { srcUrl })
-    return console.log('return - on page - emit open')
+    console.log('emit:open')
+    emit('open', srcUrl)
+  } else {
+    console.log('openResult')
+    // chrome.runtime.sendMessage({ openResult: srcUrl }).catch(console.error)
+    openResult(srcUrl).catch(console.error)
   }
-  chrome.runtime.sendMessage({ openResult: srcUrl }).catch(console.error)
   if (props.closeWindow) window.close()
 }
 
@@ -105,7 +109,7 @@ onMounted(() => {
           </td>
           <td class="text-center">{{ loc.id }}</td>
           <td class="text-truncate">
-            <a @click.prevent="openResult(loc.url)" :title="loc.url" :href="getPageUrl(loc.url)">{{ loc.location }}</a>
+            <a @click.prevent="onClick(loc.url)" :title="loc.url" :href="getPageUrl(loc.url)">{{ loc.location }}</a>
           </td>
           <td class="text-center" :class="getConfidenceClass(loc.confidence)">{{ loc.confidence }}</td>
           <td class="text-center">

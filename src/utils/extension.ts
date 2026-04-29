@@ -136,29 +136,78 @@ export function clickOpen(e: Event, close = false) {
 export function openPageUrl(srcUrl: string, open = false) {
   const encoded = encodeURIComponent(srcUrl)
   const url = chrome.runtime.getURL(`page.html?url=${encoded}`)
+  console.log('openPageUrl - url:', url)
   if (open) return chrome.tabs.create({ active: true, url })
   return activateOrOpen(url)
 }
 
+// export async function openResult(srcUrl: string) {
+//   console.log('openResult - srcUrl:', srcUrl)
+//   const pageUrl = chrome.runtime.getURL('page.html')
+//   console.log('pageUrl:', pageUrl)
+//   try {
+//     const tabs = await chrome.tabs.query({ currentWindow: true })
+//     console.debug('tabs:', tabs)
+//     for (const tab of tabs) {
+//       console.debug(`tab.url ${tab.id}:`, tab.url)
+//       if (tab.id && tab.url?.startsWith(pageUrl)) {
+//         console.debug('%cTab found, sendMessage:', 'color: PaleGreen', tab)
+//         await chrome.tabs.update(tab.id, { active: true })
+//         await chrome.runtime.sendMessage({ srcUrl })
+//         return
+//       }
+//     }
+//   } catch (e) {
+//     console.error(e)
+//   }
+//   console.debug('%cTab NOT found, openPageUrl', 'color: Tomato')
+//   await openPageUrl(srcUrl, true)
+// }
+
+// export async function openResult(srcUrl: string) {
+//   console.log('openResult - srcUrl:', srcUrl)
+//
+//   const views = chrome.extension.getViews({ type: 'tab' })
+//   console.debug('views:', views)
+//   for (const view of views) {
+//     console.debug('view:', view)
+//     const tab = await view.chrome.tabs.getCurrent()
+//     console.debug('getCurrent:', tab)
+//     if (!tab?.id) continue
+//     await chrome.tabs.update(tab.id, { active: true })
+//     await chrome.runtime.sendMessage({ srcUrl })
+//     return
+//   }
+// }
+
 export async function openResult(srcUrl: string) {
   console.log('openResult - srcUrl:', srcUrl)
+
   const pageUrl = chrome.runtime.getURL('page.html')
-  console.log('pageUrl:', pageUrl)
-  try {
-    const tabs = await chrome.tabs.query({ currentWindow: true })
-    console.debug('tabs:', tabs)
-    for (const tab of tabs) {
-      console.debug(`tab.url ${tab.id}:`, tab.url)
-      if (tab.id && tab.url?.startsWith(pageUrl)) {
-        console.debug('%cTab found, sendMessage:', 'color: PaleGreen', tab)
-        await chrome.tabs.update(tab.id, { active: true })
-        await chrome.runtime.sendMessage({ srcUrl })
-        return
-      }
+  // console.log('pageUrl:', pageUrl)
+  // const contexts = await chrome.runtime.getContexts({
+  //   contextTypes: ['TAB'],
+  //   documentUrls: [pageUrl],
+  // })
+  const contexts = await chrome.runtime.getContexts({ contextTypes: ['TAB'] })
+  console.log('contexts:', contexts)
+  for (const context of contexts) {
+    console.log('context:', context)
+    if (context.documentUrl?.startsWith(pageUrl)) {
+      const tabId = context.tabId
+      console.log('FOUND - tabId:', tabId)
+
+      // const encoded = encodeURIComponent(srcUrl)
+      // const page = chrome.runtime.getURL(`page.html?url=${encoded}`)
+      // console.log('page:', page)
+
+      await chrome.tabs.update(tabId, { active: true })
+      console.log('chrome.runtime.sendMessage:', { srcUrl, tabId })
+      await chrome.runtime.sendMessage({ srcUrl, tabId })
+      return
     }
-  } catch (e) {
-    console.error(e)
   }
-  console.debug('%cTab NOT found, openPageUrl', 'color: Tomato')
+
+  console.debug('%cTab NOT found... await openPageUrl()', 'color: Tomato')
   await openPageUrl(srcUrl, true)
 }
