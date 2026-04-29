@@ -8,7 +8,16 @@ body:
   - type: markdown
     attributes:
       value: |
-        All issues will be responded too.
+        ### All issues will be responded too.
+
+  - type: textarea
+    id: description
+    validations:
+      required: true
+    attributes:
+      label: Description
+      description: Describe the issue you are experiencing.
+      placeholder: Please describe the issue and how to reproduce it.
 
   - type: input
     id: website
@@ -16,26 +25,16 @@ body:
       required: false
     attributes:
       label: Site Link
-      description: Please provide a link to the site you are having issues on if possible.
+      description: Provide a link to a website if applicable.
       placeholder: https://example.com/
 
   - type: textarea
-    id: description
+    id: support
     validations:
       required: true
     attributes:
-      label: Details
-      description: Please describe the issue you are experiencing and how to reproduce.
-      placeholder: Provide as many details as you can...
-
-  - type: textarea
-    id: logs
-    validations:
-      required: false
-    attributes:
-      label: Log Output
-      description: Paste any relevant logs or output in this box.
-      placeholder: Output is automatically wrapped in a code block.
+      label: Support Information
+      description: Open the extension options, scroll to the bottom, click Copy Support Information and paste below.
       render: shell
 
   - type: markdown

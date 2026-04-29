@@ -24,7 +24,7 @@ jobs:
   release:
     name: "Release"
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 15
     needs: [build]
 
     permissions:
@@ -57,7 +57,7 @@ jobs:
     # https://developer.chrome.com/docs/webstore/using-api
     name: "Publish Chrome"
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 15
     needs: [build]
 
     environment:
@@ -132,16 +132,21 @@ jobs:
           name: artifacts
 
       - name: "Generate Release Notes"
-        id: notes
+        env:
+          RELEASE_NOTES: ${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ github.event.release.tag_name }}
         run: |
-          notes="Full Release Notes: ${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ github.event.release.tag_name }}"
-          echo "notes=$notes" >> "$GITHUB_OUTPUT"
-
-      - name: "Write AMO Metadata"
-        uses: jsdaniell/create-json@b8e77fa01397ca39cc4a6198cc29a3be5481afef # v1.2.3
-        with:
-          name: "amo-metadata.json"
-          json: '{"version": {"release_notes": {"en-US": "${{ steps.notes.outputs.notes }}"}}}'
+          cat > amo-metadata.json << EOF
+          {"version": {"release_notes": {
+            "de":    "Vollständige Versionshinweise: $RELEASE_NOTES",
+            "en-US": "Full Release Notes: $RELEASE_NOTES",
+            "es":    "Notas de versión completas: $RELEASE_NOTES",
+            "fr":    "Notes de version complètes : $RELEASE_NOTES",
+            "it":    "Note di rilascio complete : $RELEASE_NOTES",
+            "ja":    "完全なリリースノート: $RELEASE_NOTES",
+            "pt-BR": "Notas de versão completas: $RELEASE_NOTES",
+            "ru":    "Полные примечания к выпуску: $RELEASE_NOTES",
+          }}}
+          EOF
 
       - name: "Validate"
         run: |
@@ -159,10 +164,13 @@ jobs:
           echo -e "\n::endgroup::"
 
       - name: "Sign Mozilla Addon"
+        env:
+          FIREFOX_API_KEY: ${{ secrets.FIREFOX_API_KEY }}
+          FIREFOX_API_SECRET: ${{ secrets.FIREFOX_API_SECRET }}
         run: |
           npx web-ext sign \
-            --api-key="${{ secrets.FIREFOX_API_KEY }}" \
-            --api-secret="${{ secrets.FIREFOX_API_SECRET }}" \
+            --api-key="${FIREFOX_API_KEY}" \
+            --api-secret="${FIREFOX_API_SECRET}" \
             --channel=unlisted \
             --source-dir="firefox-mv3" \
             --amo-metadata="amo-metadata.json" \

@@ -18,7 +18,7 @@ const getContexts = (): chrome.contextMenus.CreateProperties[] =>
       : { title: i18n.t(`ctx.${entry.id}` as any) }),
   }))
 
-export function updateContextMenus(enabled?: boolean) {
+export async function updateContextMenus(enabled?: boolean) {
   console.debug('%cupdateContextMenus:', `color: ${enabled ? 'Lime' : 'Yellow'}`, enabled)
   if (!chrome.contextMenus) return console.debug('Skipping: chrome.contextMenus')
   const contexts = getContexts()
