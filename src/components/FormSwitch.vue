@@ -15,9 +15,7 @@ const props = defineProps<{
 const labelText = computed(() => props.label || i18n.t(`option.toggle.${props.id}` as any))
 const tooltipText = computed(() => props.tooltip || i18n.t(`option.toggle.${props.id}Tip` as any))
 
-function onChange(_event: Event) {
-  saveKeyValue(props.id, model.value)
-}
+const onChange = () => saveKeyValue(props.id, model.value)
 </script>
 
 <template>

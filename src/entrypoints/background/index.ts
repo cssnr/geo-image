@@ -20,7 +20,7 @@ async function onInstalled(details: chrome.runtime.InstalledDetails) {
 
   const options = await setDefaultOptions(defaultOptions)
   console.debug('options:', options)
-  updateContextMenus(options.contextMenu)
+  updateContextMenus(options.contextMenu).catch(console.warn)
   setUninstall().catch(console.warn)
 
   const manifest = chrome.runtime.getManifest()
@@ -51,20 +51,20 @@ async function onStartup() {
     console.log('Firefox Startup Workarounds')
     const options = await getOptions()
     console.debug('options:', options)
-    updateContextMenus(options.contextMenu)
+    updateContextMenus(options.contextMenu).catch(console.warn)
     setUninstall().catch(console.warn)
   }
 }
 
 function onChanged(changes: Record<string, chrome.storage.StorageChange>) {
   // console.log('%c background/index.ts - onChanged:', 'color: Cyan', changes)
-  if ('options' in changes) {
+  if (changes?.options) {
     const oldValue = changes.options?.oldValue as Options | undefined
     const newValue = changes.options?.newValue as Options | undefined
     if (!oldValue || !newValue) return console.log('missing oldValue or newValue')
 
     if (oldValue?.contextMenu !== newValue.contextMenu) {
-      updateContextMenus(newValue.contextMenu)
+      updateContextMenus(newValue.contextMenu).catch(console.warn)
     }
   }
 }
