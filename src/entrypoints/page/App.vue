@@ -38,14 +38,14 @@ function copyMarkdown() {
   console.debug('copyMarkdown:', data.value)
   if (!data.value) return
   const r = data.value
-  let lines = [
+  const lines = [
     `## ${r.city}, ${r.state}, ${r.country}`,
     `\`${r.longitude}/${r.latitude}\` [Open in GeoHack](${geoHref.value})`,
-    `${r.url}`,
+    !r.url.startsWith('data:') && `${r.url}`,
     `### ${r.location}`,
     `${r.description}`,
     `> ${r.explanation}`,
-  ]
+  ].filter(Boolean)
   copyText(lines.join('\n'))
 }
 
