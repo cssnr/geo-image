@@ -1,13 +1,7 @@
 import { getAppConfig } from '#imports'
 import { isFirefox } from '@/utils/system.ts'
 import { defineBackground } from 'wxt/utils/define-background'
-import {
-  openExtPanel,
-  openPageUrl,
-  openPopup,
-  openResult,
-  openSidePanel,
-} from '@/utils/extension.ts'
+import { openExtPanel, openPageUrl, openPopup, openSidePanel } from '@/utils/extension.ts'
 import { type Options, defaultOptions, getOptions } from '@/utils/options.ts'
 import { updateContextMenus } from './menus.ts'
 
@@ -19,8 +13,7 @@ export default defineBackground(() => {
   chrome.storage.sync.onChanged.addListener(onChanged)
   chrome.commands?.onCommand.addListener(onCommand)
   chrome.contextMenus?.onClicked.addListener(onClicked)
-
-  chrome.runtime.onMessage.addListener(onMessage)
+  // chrome.runtime.onMessage.addListener(onMessage)
 })
 
 async function onInstalled(details: chrome.runtime.InstalledDetails) {
@@ -110,14 +103,14 @@ async function onClicked(ctx: chrome.contextMenus.OnClickData, tab?: chrome.tabs
   }
 }
 
-function onMessage(message: any, sender: chrome.runtime.MessageSender) {
-  console.debug('%c background/index.ts - onMessage:', 'Color: Plum', message, sender)
-  console.log('sender:', sender)
-  if (message.openResult) {
-    console.log('message.openResult:', message.openResult)
-    openResult(message.openResult).catch(console.error)
-  }
-}
+// function onMessage(message: any, sender: chrome.runtime.MessageSender) {
+//   console.debug('%c background/index.ts - onMessage:', 'Color: Plum', message, sender)
+//   console.log('sender:', sender)
+//   if (message.openResult) {
+//     console.log('message.openResult:', message.openResult)
+//     openResult(message.openResult).catch(console.error)
+//   }
+// }
 
 async function setDefaultOptions(defaultOptions: object) {
   console.log('setDefaultOptions', defaultOptions)

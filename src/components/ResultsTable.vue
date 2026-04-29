@@ -18,8 +18,6 @@ const props = defineProps<{
 
 const emit = defineEmits(['open'])
 
-console.debug('ResultsTable.vue: props.isPage:', props.isPage)
-
 const locations = ref<LocationData[]>([])
 
 const hostToDelete = ref<string>('')
@@ -30,18 +28,6 @@ const shareModal = useTemplateRef<InstanceType<typeof ShareModal>>('shareModal')
 function getPageUrl(srcUrl: string) {
   return chrome.runtime.getURL(`page.html?url=${encodeURIComponent(srcUrl)}`)
 }
-
-// function urlClick(e: Event, srcUrl: string) {
-//   console.log('urlClick:', srcUrl)
-//   if (!props.newTab) {
-//     console.debug('props.newTab:', props.newTab)
-//     return
-//   }
-//   e.preventDefault()
-//   openPageUrl(srcUrl).then(() => {
-//     if (props.closeWindow) window.close()
-//   })
-// }
 
 async function onClick(srcUrl: string) {
   console.log('onClick - srcUrl:', srcUrl)

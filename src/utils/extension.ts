@@ -141,45 +141,7 @@ export function openPageUrl(srcUrl: string, open = false) {
   return activateOrOpen(url)
 }
 
-// export async function openResult(srcUrl: string) {
-//   console.log('openResult - srcUrl:', srcUrl)
-//   const pageUrl = chrome.runtime.getURL('page.html')
-//   console.log('pageUrl:', pageUrl)
-//   try {
-//     const tabs = await chrome.tabs.query({ currentWindow: true })
-//     console.debug('tabs:', tabs)
-//     for (const tab of tabs) {
-//       console.debug(`tab.url ${tab.id}:`, tab.url)
-//       if (tab.id && tab.url?.startsWith(pageUrl)) {
-//         console.debug('%cTab found, sendMessage:', 'color: PaleGreen', tab)
-//         await chrome.tabs.update(tab.id, { active: true })
-//         await chrome.runtime.sendMessage({ srcUrl })
-//         return
-//       }
-//     }
-//   } catch (e) {
-//     console.error(e)
-//   }
-//   console.debug('%cTab NOT found, openPageUrl', 'color: Tomato')
-//   await openPageUrl(srcUrl, true)
-// }
-
-// export async function openResult(srcUrl: string) {
-//   console.log('openResult - srcUrl:', srcUrl)
-//
-//   const views = chrome.extension.getViews({ type: 'tab' })
-//   console.debug('views:', views)
-//   for (const view of views) {
-//     console.debug('view:', view)
-//     const tab = await view.chrome.tabs.getCurrent()
-//     console.debug('getCurrent:', tab)
-//     if (!tab?.id) continue
-//     await chrome.tabs.update(tab.id, { active: true })
-//     await chrome.runtime.sendMessage({ srcUrl })
-//     return
-//   }
-// }
-
+// NOTE: This is a WIP method to open an existing page...
 export async function openResult(srcUrl: string) {
   console.log('openResult - srcUrl:', srcUrl)
 
@@ -211,3 +173,26 @@ export async function openResult(srcUrl: string) {
   console.debug('%cTab NOT found... await openPageUrl()', 'color: Tomato')
   await openPageUrl(srcUrl, true)
 }
+
+// export async function openResult(srcUrl: string) {
+//   console.log('openResult - srcUrl:', srcUrl)
+//   const pageUrl = chrome.runtime.getURL('page.html')
+//   console.log('pageUrl:', pageUrl)
+//   try {
+//     const tabs = await chrome.tabs.query({ currentWindow: true })
+//     console.debug('tabs:', tabs)
+//     for (const tab of tabs) {
+//       console.debug(`tab.url ${tab.id}:`, tab.url)
+//       if (tab.id && tab.url?.startsWith(pageUrl)) {
+//         console.debug('%cTab found, sendMessage:', 'color: PaleGreen', tab)
+//         await chrome.tabs.update(tab.id, { active: true })
+//         await chrome.runtime.sendMessage({ srcUrl })
+//         return
+//       }
+//     }
+//   } catch (e) {
+//     console.error(e)
+//   }
+//   console.debug('%cTab NOT found, openPageUrl', 'color: Tomato')
+//   await openPageUrl(srcUrl, true)
+// }
