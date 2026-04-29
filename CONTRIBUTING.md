@@ -7,10 +7,10 @@
 
 # Application
 
-Install dependencies:
+To get started clone the project and install the dependencies.
 
 ```shell
-npm i
+npm install
 ```
 
 ## Developing
@@ -24,7 +24,7 @@ See [Browser Opening](#browser-opening) modify the browser or disable this behav
 npm run dev
 ```
 
-**Manually,** open Chrome and navigate to `chrome://extensions/`, enable "Developer mode",
+**To Load Manually,** open Chrome and navigate to `chrome://extensions/`, enable "Developer mode",
 and load the unpacked extension from the `.output` directory.
 
 ### Firefox
@@ -33,7 +33,7 @@ and load the unpacked extension from the `.output` directory.
 npm run dev:ff
 ```
 
-**Manually,** open Firefox and navigate to `about:debugging#/runtime/this-firefox`, then click "Load Temporary Add-on..."
+**To Load Manually,** open Firefox and navigate to `about:debugging#/runtime/this-firefox`, then click "Load Temporary Add-on..."
 and load the unpacked extension from the `.output` directory.
 
 ### Android
