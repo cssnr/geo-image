@@ -22,10 +22,10 @@ function show(location: LocationData) {
 }
 
 function copyText(text?: string) {
-  if (!text) {
-    showToast(i18n.t('form.nothingToCopy'))
-  } else {
+  if (text) {
     navigator.clipboard.writeText(text).then(() => showToast(i18n.t('form.copiedToClipboard')))
+  } else {
+    showToast(i18n.t('form.nothingToCopy'))
   }
 }
 
