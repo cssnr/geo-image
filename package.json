@@ -19,7 +19,7 @@
     "prettier:write": "npx prettier --write .",
     "lint": "npx eslint src",
     "lint:web-ext": "npm run build:ff && npm run web-ext",
-    "web-ext": "npx web-ext lint --source-dir .output/firefox-mv3",
+    "web-ext": "npx web-ext lint --source-dir .output/firefox-mv3 --self-hosted",
     "package": "npm run tsc && npm run zip && npm run zip:ff",
     "postinstall": "wxt prepare"
   },
