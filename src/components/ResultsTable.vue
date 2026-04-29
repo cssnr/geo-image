@@ -4,9 +4,8 @@ import { onMounted, ref } from 'vue'
 import { Modal } from 'bootstrap'
 import { showToast } from '@/composables/useToast.ts'
 import { useLocationsDB } from '@/composables/useLocationsDB'
-import { openPageUrl } from '@/utils/extension.ts'
 import { getConfidenceClass } from '@/utils/index.ts'
-import { LocationData } from '@/utils/api.ts'
+import type { LocationData } from '@/utils/api.ts'
 
 const { getAllLocations, deleteLocation, locationDBChannel } = useLocationsDB()
 
@@ -40,6 +39,16 @@ function getPageUrl(srcUrl: string) {
 //   })
 // }
 
+async function openResult(srcUrl: string) {
+  console.log('openResult - srcUrl:', srcUrl)
+  if (props.isPage) {
+    emit('open', { srcUrl })
+    return console.log('return - on page - emit open')
+  }
+  chrome.runtime.sendMessage({ openResult: srcUrl }).catch(console.error)
+  if (props.closeWindow) window.close()
+}
+
 function showDeleteModal(hostId: string) {
   hostToDelete.value = hostId
   console.log('showDeleteModal - hostToDelete:', hostToDelete.value)
@@ -64,45 +73,6 @@ onMounted(() => {
   updateLocations()
   locationDBChannel.onmessage = updateLocations
 })
-
-async function openResult(srcUrl: string) {
-  console.log('openResult - srcUrl:', srcUrl)
-
-  if (props.isPage) {
-    emit('open', { srcUrl })
-    return console.log('THIS IS A PAGE')
-  }
-
-  // const encoded = encodeURIComponent(srcUrl)
-  // const url = chrome.runtime.getURL(`page.html?url=${encoded}`)
-  // console.log('encoded url:', url)
-
-  const pageUrl = chrome.runtime.getURL('page.html')
-  console.log('pageUrl:', pageUrl)
-
-  // TODO: Make this a reusable function...
-  try {
-    const tabs = await chrome.tabs.query({ currentWindow: true })
-    console.debug('tabs:', tabs)
-    for (const tab of tabs) {
-      console.debug(`tab.url ${tab.id}:`, tab.url)
-      if (tab.id && tab.url?.startsWith(pageUrl)) {
-        console.debug('%cTab found, sendMessage:', 'color: PaleGreen', tab)
-        // TODO: This needs to be handled by the service worker due to the next TODO...
-        await chrome.tabs.update(tab.id, { active: true })
-        // TODO: Popup can NOT be open when history.pushState (sendMessage) is called...
-        await chrome.runtime.sendMessage({ srcUrl })
-        if (props.closeWindow) window.close()
-        return
-      }
-    }
-  } catch (e) {
-    console.error(e)
-  }
-  console.debug('%cTab NOT found, openPageUrl', 'color: Tomato')
-  await openPageUrl(srcUrl)
-  if (props.closeWindow) window.close()
-}
 </script>
 
 <template>

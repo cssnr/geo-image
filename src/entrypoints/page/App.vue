@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { i18n } from '#imports'
 import { onMounted, ref } from 'vue'
-import { getGeoUrl, processUrl, LocationData } from '@/utils/api.ts'
+import { type LocationData, getGeoUrl, processUrl } from '@/utils/api.ts'
 import { showToast } from '@/composables/useToast.ts'
 import { openOptions } from '@/utils/extension.ts'
 import { getConfidenceClass } from '@/utils/index.ts'
@@ -61,7 +61,7 @@ function setErrorIcon() {
   // })
 }
 
-async function process(): Promise<LocationData> {
+async function getLocationData(): Promise<LocationData> {
   const params = new URLSearchParams(window.location.search)
   const url = params.get('url')
   console.debug('url:', url)
@@ -93,33 +93,21 @@ function onMessage(message: any) {
     historyShown.value = false
     return
   }
-  console.log('pushState:', url)
+  // TODO: This does not activate history from the popup, but works after activated...
+  console.log(`pushState - length: ${window.history.length} - url:`, url)
   window.history.pushState(null, '', url)
   historyShown.value = false
-  // TODO: Use a reusable function - PARTIAL SEE BELOW
-  process().then((result) => {
-    console.debug('result:', result)
-    data.value = result
-    geoHref.value = getGeoUrl(data.value)
-    document.title = `${data.value.location} - ${title}`
-  })
+  processData()
 }
 
 window.addEventListener('popstate', (event) => {
   console.log('URL changed to:', window.location)
   console.log('event:', event)
-  // TODO: Use a reusable function - PARTIAL SEE BELOW
-  process().then((result) => {
-    console.debug('result:', result)
-    data.value = result
-    geoHref.value = getGeoUrl(data.value)
-    document.title = `${data.value.location} - ${title}`
-  })
+  processData()
 })
 
-onMounted(() => {
-  // TODO: Use a reusable function - FULL
-  process()
+function processData() {
+  getLocationData()
     .then((result) => {
       console.debug('result:', result)
       data.value = result
@@ -137,6 +125,10 @@ onMounted(() => {
     .finally(() => {
       isProcessing.value = false
     })
+}
+
+onMounted(() => {
+  processData()
 })
 </script>
 

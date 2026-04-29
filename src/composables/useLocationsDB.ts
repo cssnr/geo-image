@@ -1,5 +1,5 @@
 import { openDB } from 'idb'
-import { LocationData } from '@/utils/api.ts'
+import type { LocationData } from '@/utils/api.ts'
 
 const DB_NAME = 'geo-image'
 const DB_VERSION = 1
