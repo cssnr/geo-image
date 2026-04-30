@@ -168,7 +168,7 @@ export async function openResult(srcUrl: string) {
       }
     }
 
-    const context = contexts[0]
+    const context = filtered[0]
     await chrome.tabs.update(context.tabId, { active: true })
     await chrome.runtime.sendMessage({ srcUrl, tabId: context.tabId })
     return
