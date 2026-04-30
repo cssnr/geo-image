@@ -75,12 +75,12 @@ jobs:
           ls -lAh .
           stat "${{ env.PACKAGE_NAME }}-${{ github.event.release.tag_name }}-chrome.zip"
           yq -e '.version | test("${{ github.event.release.tag_name }}")' chrome-mv3/manifest.json
-          echo "::group::ls chrome-mv3"
+          echo "::group::chrome-mv3"
           ls -lAh chrome-mv3
           echo "::endgroup::"
-          echo "::group::cat chrome-mv3/manifest.json"
-          cat chrome-mv3/manifest.json
-          echo -e "\n::endgroup::"
+          echo "::group::chrome-mv3/manifest.json"
+          jq . chrome-mv3/manifest.json
+          echo "::endgroup::"
 
       #- name: "Install PBE"
       #  run: |
@@ -144,7 +144,7 @@ jobs:
             "it":    "Note di rilascio complete : $RELEASE_NOTES",
             "ja":    "完全なリリースノート: $RELEASE_NOTES",
             "pt-BR": "Notas de versão completas: $RELEASE_NOTES",
-            "ru":    "Полные примечания к выпуску: $RELEASE_NOTES",
+            "ru":    "Полные примечания к выпуску: $RELEASE_NOTES"
           }}}
           EOF
 
@@ -153,15 +153,15 @@ jobs:
           ls -lAh .
           stat "${{ env.PACKAGE_NAME }}-${{ github.event.release.tag_name }}-sources.zip"
           yq -e '.version | test("${{ github.event.release.tag_name }}")' firefox-mv3/manifest.json
-          echo "::group::ls firefox-mv3"
+          echo "::group::firefox-mv3"
           ls -lAh firefox-mv3
           echo "::endgroup::"
-          echo "::group::cat firefox-mv3/manifest.json"
-          cat firefox-mv3/manifest.json
-          echo -e "\n::endgroup::"
-          echo "::group::cat amo-metadata.json"
-          cat amo-metadata.json
-          echo -e "\n::endgroup::"
+          echo "::group::firefox-mv3/manifest.json"
+          jq . firefox-mv3/manifest.json
+          echo "::endgroup::"
+          echo "::group::amo-metadata.json"
+          jq . amo-metadata.json
+          echo "::endgroup::"
 
       - name: "Sign Mozilla Addon"
         env:
@@ -256,7 +256,7 @@ jobs:
         uses: re-actors/alls-green@release/v1
         with:
           jobs: ${{ toJSON(needs) }}
-          allowed-skips: update-mozilla
+          allowed-skips: publish-chrome,publish-mozilla,update-mozilla
           #allowed-failures: release
 
       #- name: "Cleanup Release"
