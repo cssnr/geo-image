@@ -8,6 +8,7 @@ import pluginVue from 'eslint-plugin-vue'
 
 const gitignorePath = fileURLToPath(new URL('.gitignore', import.meta.url))
 
+// noinspection JSCheckFunctionSignatures
 export default defineConfig([
   js.configs.recommended,
   tseslint.configs.recommended,
@@ -17,6 +18,7 @@ export default defineConfig([
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
       'no-undef': 'off',
+      'prefer-const': 'error',
     },
     languageOptions: {
       sourceType: 'module',

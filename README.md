@@ -7,6 +7,7 @@
 [![Deployment Mozilla](https://img.shields.io/github/deployments/cssnr/geo-image/mozilla?logo=firefox&logoColor=white&label=mozilla)](https://github.com/cssnr/geo-image/deployments/mozilla)
 [![Workflow Release](https://img.shields.io/github/actions/workflow/status/cssnr/geo-image/release.yaml?logo=norton&logoColor=white&label=release)](https://github.com/cssnr/geo-image/actions/workflows/release.yaml)
 [![Workflow Lint](https://img.shields.io/github/actions/workflow/status/cssnr/geo-image/lint.yaml?logo=norton&logoColor=white&label=lint)](https://github.com/cssnr/geo-image/actions/workflows/lint.yaml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=cssnr_geo-image&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=cssnr_geo-image)
 [![GitHub Last Commit](https://img.shields.io/github/last-commit/cssnr/geo-image?logo=listenhub&label=updated)](https://github.com/cssnr/geo-image/pulse)
 [![GitHub Repo Size](https://img.shields.io/github/repo-size/cssnr/geo-image?logo=buffer&label=repo%20size)](https://github.com/cssnr/geo-image?tab=readme-ov-file#readme)
 [![GitHub Top Language](https://img.shields.io/github/languages/top/cssnr/geo-image?logo=devbox)](https://github.com/cssnr/geo-image?tab=readme-ov-file#readme)

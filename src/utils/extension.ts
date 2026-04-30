@@ -133,8 +133,82 @@ export function clickOpen(e: Event, close = false) {
     .catch(console.log)
 }
 
-export function openPageUrl(srcUrl: string) {
+export function openPageUrl(srcUrl: string, open = false) {
   const encoded = encodeURIComponent(srcUrl)
   const url = chrome.runtime.getURL(`page.html?url=${encoded}`)
+  console.log('openPageUrl - url:', url)
+  if (open) return chrome.tabs.create({ active: true, url })
   return activateOrOpen(url)
 }
+
+// NOTE: This is a WIP method to open an existing page...
+export async function openResult(srcUrl: string) {
+  console.log('openResult - srcUrl:', srcUrl)
+  const pageUrl = chrome.runtime.getURL('page.html')
+  // console.log('pageUrl:', pageUrl)
+  // const contexts = await chrome.runtime.getContexts({
+  //   contextTypes: ['TAB'],
+  //   documentUrls: [pageUrl],
+  // })
+  const contexts = await chrome.runtime.getContexts({ contextTypes: ['TAB'] })
+  console.log('contexts:', contexts)
+  const filtered = contexts.filter((c) => c.documentUrl?.startsWith(pageUrl))
+  console.log('filtered:', filtered)
+  if (filtered.length) {
+    const tabs = await chrome.tabs.query({ active: true, currentWindow: true })
+    if (tabs.length) {
+      const tab = tabs[0]
+      console.log('tab:', tab)
+      const isInFiltered = filtered.some((c) => c.tabId === tab.id)
+      console.log('isInFiltered:', isInFiltered)
+      if (isInFiltered) {
+        await chrome.tabs.update(tab.id, { active: true })
+        await chrome.runtime.sendMessage({ srcUrl, tabId: tab.id })
+        return
+      }
+    }
+
+    const context = filtered[0]
+    await chrome.tabs.update(context.tabId, { active: true })
+    await chrome.runtime.sendMessage({ srcUrl, tabId: context.tabId })
+    return
+
+    // for (const context of filtered) {
+    //   console.log('context:', context)
+    //   if (context.documentUrl?.startsWith(pageUrl)) {
+    //     const tabId = context.tabId
+    //     console.log('FOUND - tabId:', tabId)
+    //     await chrome.tabs.update(tabId, { active: true })
+    //     console.log('chrome.runtime.sendMessage:', { srcUrl, tabId })
+    //     await chrome.runtime.sendMessage({ srcUrl, tabId })
+    //     return
+    //   }
+    // }
+  }
+
+  console.debug('%cTab NOT found... await openPageUrl()', 'color: Tomato')
+  await openPageUrl(srcUrl, true)
+}
+
+// export async function openResult(srcUrl: string) {
+//   console.log('openResult - srcUrl:', srcUrl)
+//   const pageUrl = chrome.runtime.getURL('page.html')
+//   console.log('pageUrl:', pageUrl)
+//   try {
+//     const tabs = await chrome.tabs.query({ currentWindow: true })
+//     console.debug('tabs:', tabs)
+//     for (const tab of tabs) {
+//       console.debug(`tab.url ${tab.id}:`, tab.url)
+//       if (tab.id && tab.url?.startsWith(pageUrl)) {
+//         console.debug('%cTab found, sendMessage:', 'color: PaleGreen', tab)
+//         await chrome.tabs.update(tab.id, { active: true })
+//         await chrome.runtime.sendMessage({ srcUrl })
+//         return
+//       }
+//     }
+//   } catch (e) {
+//     console.error(e)
+//   }
+//   console.debug('%cTab NOT found, openPageUrl', 'color: Tomato')
+//   await openPageUrl(srcUrl, true)
+// }

@@ -1,47 +1,44 @@
 <script setup lang="ts">
 import { i18n } from '#imports'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, useTemplateRef } from 'vue'
 import { Modal } from 'bootstrap'
+import { getConfidenceClass } from '@/utils/index.ts'
+import { openResult } from '@/utils/extension.ts'
 import { showToast } from '@/composables/useToast.ts'
 import { useLocationsDB } from '@/composables/useLocationsDB'
-import { openPageUrl } from '@/utils/extension.ts'
-import { getConfidenceClass } from '@/utils/index.ts'
-import { LocationData } from '@/utils/api.ts'
+import type { LocationData } from '@/utils/api.ts'
+import ShareModal from '@/components/ShareModal.vue'
 
 const { getAllLocations, deleteLocation, locationDBChannel } = useLocationsDB()
 
-const props = withDefaults(
-  defineProps<{
-    newTab?: boolean
-    closeWindow?: boolean
-  }>(),
-  {
-    newTab: true,
-    closeWindow: false,
-  },
-)
+const props = defineProps<{
+  isPage?: boolean
+  closeWindow?: boolean
+}>()
 
-console.debug('ResultsTable.vue: props.newTab:', props.newTab)
+const emit = defineEmits(['open'])
 
 const locations = ref<LocationData[]>([])
 
 const hostToDelete = ref<string>('')
 const deleteModalEl = ref<HTMLElement | null>(null)
 
+const shareModal = useTemplateRef<InstanceType<typeof ShareModal>>('shareModal')
+
 function getPageUrl(srcUrl: string) {
   return chrome.runtime.getURL(`page.html?url=${encodeURIComponent(srcUrl)}`)
 }
 
-function urlClick(e: Event, srcUrl: string) {
-  console.log('urlClick:', srcUrl)
-  if (!props.newTab) {
-    console.debug('props.newTab:', props.newTab)
-    return
+async function onClick(srcUrl: string) {
+  console.log('onClick - srcUrl:', srcUrl)
+  if (props.isPage) {
+    console.log('emit:open')
+    emit('open', srcUrl)
+  } else {
+    // chrome.runtime.sendMessage({ openResult: srcUrl }).catch(console.error)
+    await openResult(srcUrl)
   }
-  e.preventDefault()
-  openPageUrl(srcUrl).then(() => {
-    if (props.closeWindow) window.close()
-  })
+  if (props.closeWindow) window.close()
 }
 
 function showDeleteModal(hostId: string) {
@@ -75,6 +72,7 @@ onMounted(() => {
     <table id="history-table" class="table table-sm table-striped" style="table-layout: fixed">
       <thead>
         <tr>
+          <th class="text-center" style="width: 28px"><i class="fa-solid fa-share-nodes me-1"></i></th>
           <th class="text-center" style="width: 28px"><i class="fa-solid fa-list-ol"></i></th>
           <th>{{ i18n.t('ui.text.location') }}</th>
           <th class="text-center" style="width: 42px"><i class="fa-solid fa-percent"></i></th>
@@ -83,15 +81,20 @@ onMounted(() => {
       </thead>
       <tbody>
         <tr v-for="loc of locations" :key="loc.id">
+          <td class="text-center">
+            <a
+              @click="shareModal?.show(loc)"
+              :title="i18n.t('ui.action.share')"
+              :data-id="loc.id"
+              :data-url="loc.url"
+              class="link-success"
+              role="button"
+              ><i class="fa-solid fa-share-nodes me-1"></i
+            ></a>
+          </td>
           <td class="text-center">{{ loc.id }}</td>
           <td class="text-truncate">
-            <a
-              @click="urlClick($event, loc.url)"
-              :title="loc.url"
-              :href="getPageUrl(loc.url)"
-              :target="newTab ? '_blank' : undefined"
-              >{{ loc.location }}</a
-            >
+            <a @click.prevent="onClick(loc.url)" :title="loc.url" :href="getPageUrl(loc.url)">{{ loc.location }}</a>
           </td>
           <td class="text-center" :class="getConfidenceClass(loc.confidence)">{{ loc.confidence }}</td>
           <td class="text-center">
@@ -145,5 +148,6 @@ onMounted(() => {
         </div>
       </div>
     </div>
+    <ShareModal ref="shareModal" />
   </div>
 </template>

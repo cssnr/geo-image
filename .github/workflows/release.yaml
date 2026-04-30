@@ -101,7 +101,7 @@ jobs:
       #      --chrome-skip-submit-review
 
       - name: "Web Store Publish"
-        uses: cssnr/webstore-publish-action@master
+        uses: cssnr/webstore-publish-action@v1
         with:
           extension_id: ${{ env.CHROME_ID }}
           publisher_id: ${{env.PUBLISHER_ID}}

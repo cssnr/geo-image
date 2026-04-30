@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import { i18n } from '#imports'
-import { onMounted, ref } from 'vue'
-import { getGeoUrl, processUrl, LocationData } from '@/utils/api.ts'
+import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
+import { type LocationData, getGeoUrl, processUrl } from '@/utils/api.ts'
 import { showToast } from '@/composables/useToast.ts'
-import { openOptions } from '@/utils/extension.ts'
+import { openOptions, openPageUrl } from '@/utils/extension.ts'
 import { getConfidenceClass } from '@/utils/index.ts'
 import { isMobile } from '@/utils/system.ts'
 import ToastAlerts from '@/components/ToastAlerts.vue'
 import PanelHeader from '@/components/PanelHeader.vue'
 import ResultsTable from '@/components/ResultsTable.vue'
-import GeoIcon from '@/assets/icon.svg?raw'
+import ShareModal from '@/components/ShareModal.vue'
+
+// const shareModal = ref<InstanceType<typeof ShareModal> | null>(null)
+const shareModal = useTemplateRef<InstanceType<typeof ShareModal>>('shareModal')
 
 const srcUrl = ref<string | null>(null)
 const errorMessage = ref('')
@@ -26,29 +29,6 @@ const config = useAppConfig()
 const title = `${config.name} ${i18n.t('page.processing')}`
 if (document.title === '') document.title = title
 
-function copyText(text?: string) {
-  if (!text) {
-    showToast(i18n.t('form.nothingToCopy'))
-  } else {
-    navigator.clipboard.writeText(text).then(() => showToast(i18n.t('form.copiedToClipboard')))
-  }
-}
-
-function copyMarkdown() {
-  console.debug('copyMarkdown:', data.value)
-  if (!data.value) return
-  const r = data.value
-  let lines = [
-    `## ${r.city}, ${r.state}, ${r.country}`,
-    `\`${r.longitude}/${r.latitude}\` [Open in GeoHack](${geoHref.value})`,
-    `${r.url}`,
-    `### ${r.location}`,
-    `${r.description}`,
-    `> ${r.explanation}`,
-  ]
-  copyText(lines.join('\n'))
-}
-
 function setErrorIcon() {
   const href = chrome.runtime.getURL('/images/error128.png')
   const link = document.querySelector<HTMLLinkElement>('link[rel*="icon"]')
@@ -61,7 +41,7 @@ function setErrorIcon() {
   // })
 }
 
-async function process(): Promise<LocationData> {
+async function getLocationData(): Promise<LocationData> {
   const params = new URLSearchParams(window.location.search)
   const url = params.get('url')
   console.debug('url:', url)
@@ -77,8 +57,8 @@ async function process(): Promise<LocationData> {
   }
 }
 
-onMounted(() => {
-  process()
+function processData() {
+  getLocationData()
     .then((result) => {
       console.debug('result:', result)
       data.value = result
@@ -96,7 +76,48 @@ onMounted(() => {
     .finally(() => {
       isProcessing.value = false
     })
+}
+
+function openItem(srcUrl: string) {
+  console.log('openItem:', srcUrl)
+  const url = chrome.runtime.getURL(`page.html?url=${encodeURIComponent(srcUrl)}`)
+  if (window.location.href === url) {
+    console.log('%c Already Open', 'color: Tan')
+    historyShown.value = false
+    return
+  }
+  // TODO: This does not activate history from the popup UNLESS history already exists...
+  console.log(`pushState - length: ${window.history.length} - url:`, url)
+  window.history.pushState(null, '', url)
+  historyShown.value = false
+  processData()
+}
+
+async function onMessage(message: any) {
+  console.debug('%c page/App.vue - onMessage:', 'Color: PaleGreen', message)
+  if (!message.srcUrl || !message.tabId) return console.log('no message.srcUrl/tabId')
+  const tab = await chrome.tabs.getCurrent()
+  if (message.tabId !== tab?.id) return console.log('WRONG TAB:', tab?.id)
+  if (isProcessing.value) return await openPageUrl(message.srcUrl)
+  openItem(message.srcUrl)
+}
+
+function popState(event: Event) {
+  console.log('popstate:', event)
+  console.log('window.location:', window.location)
+  processData()
+}
+
+onMounted(() => {
+  console.log(`page/App.vue - onMounted - window.history.length:`, window.history.length)
+  processData()
+  if (!chrome.runtime.onMessage.hasListener(onMessage)) {
+    console.log('%c chrome.runtime.onMessage.addListener', 'color: Orange')
+    chrome.runtime.onMessage.addListener(onMessage)
+  }
+  window.addEventListener('popstate', popState)
 })
+onUnmounted(() => window.removeEventListener('popstate', popState))
 </script>
 
 <template>
@@ -162,7 +183,7 @@ onMounted(() => {
                 <a v-if="geoHref" :href="geoHref" class="btn btn-sm btn-outline-success" target="_blank" rel="noopener">
                   <i class="fa-solid fa-map me-1"></i> GeoHack
                 </a>
-                <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                <button class="btn btn-sm btn-outline-info" @click="shareModal?.show(data)">
                   <i class="fa-solid fa-share-nodes me-1"></i> {{ i18n.t('ui.action.share') }}
                 </button>
               </div>
@@ -182,7 +203,7 @@ onMounted(() => {
           </div>
         </div>
       </div>
-      <ResultsTable v-else :new-tab="false" class="pb-5" />
+      <ResultsTable v-else :is-page="true" class="pb-5" @open="openItem" />
     </div>
   </main>
 
@@ -198,42 +219,7 @@ onMounted(() => {
     <i class="fa-solid fa-table-list"></i>
   </button>
 
-  <Teleport to="body">
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">
-              <i class="fa-solid fa-share-nodes me-1"></i> {{ i18n.t('ui.action.share') }}
-            </h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div class="d-grid gap-2">
-              <button type="button" class="btn btn-outline-primary" @click="copyMarkdown">
-                <i class="fa-brands fa-markdown me-1"></i> {{ i18n.t('ui.action.copy') }} Markdown Results
-              </button>
-              <button type="button" class="btn btn-outline-success" @click="copyText(geoHref)">
-                <i class="fa-solid fa-map me-1"></i> {{ i18n.t('ui.action.copy') }} GeoHack URL
-              </button>
-              <button type="button" class="btn btn-outline-info" @click="copyText(data?.url)">
-                <i class="fa-regular fa-image me-1"></i>
-                {{ i18n.t('ui.action.copy') }} {{ i18n.t('ui.text.image') }} URL
-              </button>
-              <button type="button" class="btn btn-outline-secondary" @click="copyText(config.homepageUrl)">
-                <span class="icon me-1" v-html="GeoIcon" /> {{ i18n.t('ui.action.share') }} {{ config.name }}
-              </button>
-            </div>
-          </div>
-          <!--<div class="modal-footer">-->
-          <!--  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">-->
-          <!--    {{ i18n.t('ui.action.close') }}-->
-          <!--  </button>-->
-          <!--</div>-->
-        </div>
-      </div>
-    </div>
-  </Teleport>
+  <ShareModal ref="shareModal" />
 
   <!--<OptionsOffscreen />-->
 

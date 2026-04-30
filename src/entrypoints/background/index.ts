@@ -13,6 +13,7 @@ export default defineBackground(() => {
   chrome.storage.sync.onChanged.addListener(onChanged)
   chrome.commands?.onCommand.addListener(onCommand)
   chrome.contextMenus?.onClicked.addListener(onClicked)
+  // chrome.runtime.onMessage.addListener(onMessage)
 })
 
 async function onInstalled(details: chrome.runtime.InstalledDetails) {
@@ -101,6 +102,15 @@ async function onClicked(ctx: chrome.contextMenus.OnClickData, tab?: chrome.tabs
     console.error(`Unknown ctx.menuItemId: ${ctx.menuItemId}`)
   }
 }
+
+// function onMessage(message: any, sender: chrome.runtime.MessageSender) {
+//   console.debug('%c background/index.ts - onMessage:', 'Color: Plum', message, sender)
+//   console.log('sender:', sender)
+//   if (message.openResult) {
+//     console.log('message.openResult:', message.openResult)
+//     openResult(message.openResult).catch(console.error)
+//   }
+// }
 
 async function setDefaultOptions(defaultOptions: object) {
   console.log('setDefaultOptions', defaultOptions)
