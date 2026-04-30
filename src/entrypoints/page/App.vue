@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { i18n } from '#imports'
-import { onMounted, ref, useTemplateRef } from 'vue'
+import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
 import { type LocationData, getGeoUrl, processUrl } from '@/utils/api.ts'
 import { showToast } from '@/composables/useToast.ts'
 import { openOptions, openPageUrl } from '@/utils/extension.ts'
@@ -93,25 +93,31 @@ function openItem(srcUrl: string) {
   processData()
 }
 
-chrome.runtime.onMessage.addListener(async (message) => {
+async function onMessage(message: any) {
   console.debug('%c page/App.vue - onMessage:', 'Color: PaleGreen', message)
   if (!message.srcUrl || !message.tabId) return console.log('no message.srcUrl/tabId')
   const tab = await chrome.tabs.getCurrent()
   if (message.tabId !== tab?.id) return console.log('WRONG TAB:', tab?.id)
   if (isProcessing.value) return await openPageUrl(message.srcUrl)
   openItem(message.srcUrl)
-})
+}
 
-window.addEventListener('popstate', (event) => {
+function popState(event: Event) {
   console.log('popstate:', event)
   console.log('window.location:', window.location)
   processData()
-})
+}
 
 onMounted(() => {
   console.log(`page/App.vue - onMounted - window.history.length:`, window.history.length)
   processData()
+  if (!chrome.runtime.onMessage.hasListener(onMessage)) {
+    console.log('%c chrome.runtime.onMessage.addListener', 'color: Orange')
+    chrome.runtime.onMessage.addListener(onMessage)
+  }
+  window.addEventListener('popstate', popState)
 })
+onUnmounted(() => window.removeEventListener('popstate', popState))
 </script>
 
 <template>
