@@ -3,7 +3,7 @@ import { i18n } from '#imports'
 import { onMounted, ref, useTemplateRef } from 'vue'
 import { type LocationData, getGeoUrl, processUrl } from '@/utils/api.ts'
 import { showToast } from '@/composables/useToast.ts'
-import { openOptions } from '@/utils/extension.ts'
+import { openOptions, openPageUrl } from '@/utils/extension.ts'
 import { getConfidenceClass } from '@/utils/index.ts'
 import { isMobile } from '@/utils/system.ts'
 import ToastAlerts from '@/components/ToastAlerts.vue'
@@ -97,8 +97,8 @@ chrome.runtime.onMessage.addListener(async (message) => {
   console.debug('%c page/App.vue - onMessage:', 'Color: PaleGreen', message)
   if (!message.srcUrl || !message.tabId) return console.log('no message.srcUrl/tabId')
   const tab = await chrome.tabs.getCurrent()
-  console.debug('tab?.id:', tab?.id)
   if (message.tabId !== tab?.id) return console.log('WRONG TAB:', tab?.id)
+  if (isProcessing.value) return await openPageUrl(message.srcUrl)
   openItem(message.srcUrl)
 })
 

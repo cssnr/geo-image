@@ -145,6 +145,8 @@ export function openPageUrl(srcUrl: string, open = false) {
 export async function openResult(srcUrl: string) {
   console.log('openResult - srcUrl:', srcUrl)
 
+  // TODO: Improve to check active tab first...
+
   const pageUrl = chrome.runtime.getURL('page.html')
   // console.log('pageUrl:', pageUrl)
   // const contexts = await chrome.runtime.getContexts({
