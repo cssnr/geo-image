@@ -36,7 +36,7 @@ async function onClick(srcUrl: string) {
     emit('open', srcUrl)
   } else {
     // chrome.runtime.sendMessage({ openResult: srcUrl }).catch(console.error)
-    openResult(srcUrl).catch(console.error)
+    await openResult(srcUrl)
   }
   if (props.closeWindow) window.close()
 }

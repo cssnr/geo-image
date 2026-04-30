@@ -42,8 +42,8 @@ export async function processUrl(url?: string | null): Promise<LocationData> {
   console.log('data:', data)
 
   // // Fake Data
-  // const cities = ['Austin', 'Harlingen', 'Seattle', 'Elgin']
-  // const locations = ['He Calls this place BFE', 'Somewhere in the Lone Star']
+  // const cities = ['Austin', 'Harlingen', 'Seattle', 'Elgin', 'Cleveland']
+  // const locations = ['BFE Airport', 'Lone Star', 'Tranquility Base', 'Taurus Littrow']
   // const data: LocationData = {
   //   url: url,
   //   city: cities[Math.floor(Math.random() * cities.length)],
@@ -57,7 +57,7 @@ export async function processUrl(url?: string | null): Promise<LocationData> {
   //   confidence: Math.floor(Math.random() * 30) + 69,
   // }
   // console.log('data:', data)
-  // // await new Promise((resolve) => setTimeout(resolve, 5000))
+  // await new Promise((resolve) => setTimeout(resolve, 8000))
 
   // Save data to IDB
   const idbKey = await addLocation(data)
