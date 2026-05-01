@@ -56,6 +56,7 @@ jobs:
   publish-chrome:
     # https://developer.chrome.com/docs/webstore/using-api
     name: "Publish Chrome"
+    if: ${{ !github.event.release.prerelease }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: [build]
@@ -74,31 +75,13 @@ jobs:
         run: |
           ls -lAh .
           stat "${{ env.PACKAGE_NAME }}-${{ github.event.release.tag_name }}-chrome.zip"
-          yq -e '.version | test("${{ github.event.release.tag_name }}")' chrome-mv3/manifest.json
+          jq -e '.version == "${{ github.event.release.tag_name }}"' chrome-mv3/manifest.json
           echo "::group::chrome-mv3"
           ls -lAh chrome-mv3
           echo "::endgroup::"
           echo "::group::chrome-mv3/manifest.json"
           jq . chrome-mv3/manifest.json
           echo "::endgroup::"
-
-      #- name: "Install PBE"
-      #  run: |
-      #    npm i -g publish-browser-extension
-      #    npx publish-extension --version
-      #
-      ## NOTE: This does not support Firefox amo-metadata
-      #- name: "Publish Extension"
-      #  run: |
-      #    npx publish-extension \
-      #      --chrome-zip "${{ env.PACKAGE_NAME }}-${{ github.event.release.tag_name }}-chrome.zip" \
-      #      --chrome-extension-id ${{ env.CHROME_ID }} \
-      #      --chrome-client-id ${{ secrets.WEBSTORE_CLIENT_ID }} \
-      #      --chrome-client-secret ${{ secrets.WEBSTORE_CLIENT_SECRET }} \
-      #      --chrome-refresh-token  ${{ secrets.WEBSTORE_REFRESH_TOKEN }} \
-      #      --chrome-publish-target default \
-      #      --chrome-deploy-percentage 100 \
-      #      --chrome-skip-submit-review
 
       - name: "Web Store Publish"
         uses: cssnr/webstore-publish-action@v1
@@ -114,6 +97,7 @@ jobs:
   publish-mozilla:
     # https://mozilla.github.io/addons-server/topics/api/index.html
     name: "Publish Mozilla"
+    if: ${{ !github.event.release.prerelease }}
     runs-on: ubuntu-latest
     timeout-minutes: 60
     needs: [build, publish-chrome]
@@ -152,7 +136,7 @@ jobs:
         run: |
           ls -lAh .
           stat "${{ env.PACKAGE_NAME }}-${{ github.event.release.tag_name }}-sources.zip"
-          yq -e '.version | test("${{ github.event.release.tag_name }}")' firefox-mv3/manifest.json
+          jq -e '.version == "${{ github.event.release.tag_name }}"' firefox-mv3/manifest.json
           echo "::group::firefox-mv3"
           ls -lAh firefox-mv3
           echo "::endgroup::"
@@ -163,15 +147,18 @@ jobs:
           jq . amo-metadata.json
           echo "::endgroup::"
 
+      # NOTE: This installs web-ext using npx
+
       - name: "Sign Mozilla Addon"
+        # https://extensionworkshop.com/documentation/develop/web-ext-command-reference/#web-ext-sign
         env:
           FIREFOX_API_KEY: ${{ secrets.FIREFOX_API_KEY }}
           FIREFOX_API_SECRET: ${{ secrets.FIREFOX_API_SECRET }}
         run: |
-          npx web-ext sign \
+          npx web-ext sign --no-input \
             --api-key="${FIREFOX_API_KEY}" \
             --api-secret="${FIREFOX_API_SECRET}" \
-            --channel=unlisted \
+            --channel=unlisted --approval-timeout=2700000 \
             --source-dir="firefox-mv3" \
             --amo-metadata="amo-metadata.json" \
             --upload-source-code="${{ env.PACKAGE_NAME }}-${{ github.event.release.tag_name }}-sources.zip"
@@ -200,6 +187,7 @@ jobs:
 
   update-mozilla:
     name: "Update Mozilla"
+    if: ${{ !github.event.release.prerelease }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     needs: [publish-mozilla]
