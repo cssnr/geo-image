@@ -10,6 +10,7 @@ import PageFooter from '@/components/PageFooter.vue'
 import HorizontalRule from '@/components/HorizontalRule.vue'
 import CopySupport from '@/components/CopySupport.vue'
 import PageHeader from '@/components/PageHeader.vue'
+import WebhooksTable from '@/components/WebhooksTable.vue'
 
 useTitle(i18n.t('options.title'))
 </script>
@@ -24,6 +25,9 @@ useTitle(i18n.t('options.title'))
 
         <HorizontalRule class="my-2">{{ i18n.t('options.extension') }}</HorizontalRule>
         <OptionsForm />
+
+        <HorizontalRule>Discord Webhooks</HorizontalRule>
+        <WebhooksTable />
 
         <PermsCheck :show-info="true" class="my-3" />
 
