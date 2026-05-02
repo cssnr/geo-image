@@ -1,4 +1,5 @@
 import { getGeoUrl, LocationData } from '@/utils/api.ts'
+import { showToast } from '@/composables/useToast.ts'
 
 export interface Webhook {
   name: string
@@ -51,9 +52,9 @@ export async function deleteWebhook(url?: string): Promise<void> {
 export async function sendWebhooks(loc: LocationData) {
   console.log('sendWebhooks:', loc)
   const webhooks = await getWebhooks()
-  console.log('webhooks:', webhooks)
-  webhooks.forEach((hook) => {
-    console.log('hook:', hook)
+  console.log(`webhooks: ${webhooks.length}:`, webhooks)
+  for (const [i, hook] of webhooks.entries()) {
+    console.log(`hook - ${i}:`, hook)
     const lines = [
       `### ${loc.city}, ${loc.state}, ${loc.country}`,
       loc.description,
@@ -68,26 +69,43 @@ export async function sendWebhooks(loc: LocationData) {
       description: lines.join('\n'),
       color: 0xee00ff,
       timestamp: new Date().toISOString(),
-      footer: { text: `GeoImage - ${loc.latitude}, ${loc.longitude}`, icon_url: logo },
+      footer: { text: `GeoImage  ${loc.latitude}, ${loc.longitude}`, icon_url: logo },
     }
     const data = { username: 'GeoImage', avatar_url: logo, embeds: [embed] }
     console.log('data:', data)
-    postToDiscord(hook.url, data).catch(console.error)
-  })
+    const seconds = await postToDiscord(hook.url, data)
+    if (i < webhooks.length - 1) {
+      const delay = (seconds || 1) * 1000 + 250 // NOSONAR
+      console.log('Awaiting Delay:', delay)
+      await new Promise((resolve) => setTimeout(resolve, delay))
+    }
+  }
 }
 
-export async function postToDiscord(url: string, data: any) {
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-  })
-  console.log('response.status:', response.status)
-  console.log('response:', response)
-  if (!response.ok) {
-    const error = await response.json()
-    console.log('error:', error)
-    throw new Error(`Discord Error: ${error.message}`)
+export async function postToDiscord(url: string, data: any): Promise<number | undefined> {
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    })
+    console.log('response:', response)
+    console.log('headers:', response.headers)
+    console.log('status:', response.status)
+    console.log('ok:', response.ok)
+    const seconds = response.headers.get('x-ratelimit-reset-after')
+    console.log('x-ratelimit-reset-after:', seconds)
+    if (!response.ok) {
+      const error = await response.json()
+      console.log('error:', error)
+      // throw new Error(`Discord Error: ${error.message}`)
+      showToast(`Error Sending Webhook: ${response.status}`, 'danger')
+    }
+    if (seconds) return Number.parseInt(seconds)
+  } catch (e) {
+    console.error(e)
+    const message = e instanceof Error ? e.message : 'Unknown Error'
+    showToast(`Error Sending Webhook: ${message}`, 'danger')
   }
 }
 
