@@ -1,11 +1,11 @@
 <script setup lang="ts">
-// import { i18n } from '#imports'
-import { ref, useTemplateRef } from 'vue'
-import { addWebhook, deleteWebhook } from '@/utils/webhooks.ts'
+import { onMounted, ref, useTemplateRef } from 'vue'
+import { addWebhook, deleteWebhook, getWebhook, validateWebhook } from '@/utils/webhooks.ts'
 import { showToast } from '@/composables/useToast.ts'
 import { useWebhooks } from '@/composables/useWebhooks.ts'
 import { Modal } from 'bootstrap'
 import DeleteModal from '@/components/DeleteModal.vue'
+import { copyText } from '@/utils/ui.ts'
 
 console.debug('%c WebhooksTable - LOADED', 'color: Orange')
 
@@ -20,17 +20,31 @@ const urlInput = useTemplateRef('urlInput')
 const webhookName = ref('')
 const webhookUrl = ref('')
 
-function onSubmit(e: SubmitEvent) {
+async function onSubmit(e: SubmitEvent) {
   console.log('onSubmit:', e)
-  console.log('name:', webhookName.value)
-  console.log('url:', webhookUrl.value)
+  console.log('name:', webhookName.value.trim())
+  console.log('url:', webhookUrl.value.trim())
 
-  // if (!webhookName.value) {
-  //   showToast('No Webhooks Name Set', 'warning')
-  //   return nameInput.value?.focus()
-  // }
   if (!webhookUrl.value) {
-    showToast('No Webhooks Text Set', 'warning')
+    showToast('Webhook URL Required!', 'warning')
+    return urlInput.value?.focus()
+  }
+
+  try {
+    new URL(webhookUrl.value)
+    const hook = await getWebhook(webhookUrl.value)
+    console.log('hook:', hook)
+    if (hook) {
+      showToast('Webhook Already Exists!', 'warning')
+      return urlInput.value?.focus()
+    }
+    const data = await validateWebhook(webhookUrl.value)
+    console.log('data:', data)
+    webhookName.value = webhookName.value || data.name
+  } catch (e) {
+    console.log(e)
+    const message = e instanceof Error ? e.message : 'Unknown Error'
+    showToast(message, 'warning')
     return urlInput.value?.focus()
   }
 
@@ -56,6 +70,14 @@ async function confirmDelete(name: string) {
   console.log('confirmDelete:', name)
   await deleteWebhook(name)
 }
+
+const printUrl = (url: string) => url.slice(8, 60) + '*****'
+
+onMounted(() => {
+  webhookModal.value!.addEventListener('shown.bs.modal', () => {
+    urlInput.value?.focus()
+  })
+})
 </script>
 
 <template>
@@ -73,16 +95,22 @@ async function confirmDelete(name: string) {
         </caption>
         <thead class="">
           <tr>
-            <th class="bg-transparent">Name</th>
-            <th class="bg-transparent">Webhook URL</th>
+            <th class="bg-transparent text-center" style="width: 28px"><i class="fa-solid fa-copy"></i></th>
+            <th class="bg-transparent" style="width: 30%">Name</th>
+            <th class="bg-transparent" style="width: 70%">Webhook URL</th>
             <th class="bg-transparent text-center" style="width: 28px"><i class="fa-solid fa-trash-can"></i></th>
           </tr>
         </thead>
         <tbody id="links-body">
           <template v-if="items?.length">
             <tr v-for="item of items" :key="item.url">
+              <td class="bg-transparent">
+                <a @click.prevent="copyText(item.url)" title="Copy" class="link-info" role="button" href="#"
+                  ><i class="fa-regular fa-copy"></i
+                ></a>
+              </td>
               <td class="bg-transparent text-truncate">{{ item.name }}</td>
-              <td class="bg-transparent text-truncate">{{ item.url }}</td>
+              <td class="bg-transparent text-truncate">{{ printUrl(item.url) }}</td>
               <td class="bg-transparent">
                 <a @click.prevent="openDeleteModal(item.url)" title="Delete" class="link-danger" role="button" href="#"
                   ><i class="fa-regular fa-trash-can"></i
@@ -91,7 +119,7 @@ async function confirmDelete(name: string) {
             </tr>
           </template>
           <tr v-else>
-            <td class="bg-transparent text-center text-muted fw-bold" colspan="3">No Saved Webhooks</td>
+            <td class="bg-transparent text-center text-muted fw-bold" colspan="4">No Saved Webhooks</td>
           </tr>
         </tbody>
       </table>
@@ -113,25 +141,25 @@ async function confirmDelete(name: string) {
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="webhookModalLabel">
-              <i class="fa-solid fa-indent me-2"></i> Add Webhooks
-            </h1>
+            <h1 class="modal-title fs-5" id="webhookModalLabel"><i class="fa-solid fa-indent me-2"></i> Add Webhook</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <p>Add a Discord Webhook to automatically post results too.</p>
             <form @submit.prevent="onSubmit" id="webhooks-form" class="mb-1">
-              <label class="form-label visually-hidden" for="webhookName">Display Name</label>
-              <input
-                v-model="webhookName"
-                ref="nameInput"
-                id="webhookName"
-                type="text"
-                class="form-control"
-                placeholder="Display Name"
-                aria-label="Display Name"
-                autocomplete="nickname"
-              />
+              <div class="mb-2">
+                <label class="form-label visually-hidden" for="webhookName">Name (Optional)</label>
+                <input
+                  v-model="webhookName"
+                  ref="nameInput"
+                  id="webhookName"
+                  type="text"
+                  class="form-control"
+                  placeholder="Name (Optional)"
+                  aria-label="Name (Optional)"
+                  autocomplete="nickname"
+                />
+              </div>
 
               <div class="form-floating mb-3">
                 <input

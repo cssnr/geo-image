@@ -2,9 +2,9 @@
 import { useAppConfig } from '#imports'
 import GeoIcon from '@/assets/icon.svg?raw'
 import { getGeoUrl, LocationData } from '@/utils/api.ts'
-import { showToast } from '@/composables/useToast.ts'
 import { computed, ref, useTemplateRef } from 'vue'
 import { Modal } from 'bootstrap'
+import { copyText } from '@/utils/ui.ts'
 
 defineExpose({ show })
 
@@ -19,14 +19,6 @@ function show(location: LocationData) {
   console.log('show:', location)
   data.value = location
   if (modalEl.value) Modal.getOrCreateInstance(modalEl.value).show()
-}
-
-function copyText(text?: string) {
-  if (text) {
-    navigator.clipboard.writeText(text).then(() => showToast(i18n.t('form.copiedToClipboard')))
-  } else {
-    showToast(i18n.t('form.nothingToCopy'))
-  }
 }
 
 function copyMarkdown() {

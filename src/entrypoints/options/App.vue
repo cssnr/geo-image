@@ -26,7 +26,7 @@ useTitle(i18n.t('options.title'))
         <HorizontalRule class="my-2">{{ i18n.t('options.extension') }}</HorizontalRule>
         <OptionsForm />
 
-        <HorizontalRule>Discord Webhooks</HorizontalRule>
+        <HorizontalRule class="my-2">Discord Webhooks</HorizontalRule>
         <WebhooksTable />
 
         <PermsCheck :show-info="true" class="my-3" />

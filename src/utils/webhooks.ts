@@ -7,13 +7,12 @@ export interface Webhook {
 
 export const WEBHOOKS_KEY = 'webhooks'
 
-// noinspection JSUnusedGlobalSymbols
-export async function getWebhook(name: string): Promise<Webhook> {
+export async function getWebhook(url: string): Promise<Webhook> {
   const items = await chrome.storage.sync.get([WEBHOOKS_KEY])
   console.log('getWebhook - items:', items)
   const results = (items?.[WEBHOOKS_KEY] || []) as Webhook[]
   console.log('results:', results)
-  const result = results.find((r: Webhook) => r.name === name)
+  const result = results.find((r: Webhook) => r.url === url)
   console.log('result:', result)
   return result as Webhook
 }
@@ -32,7 +31,7 @@ export async function addWebhook(name: string, url: string): Promise<void> {
   const data: Webhook[] = await getWebhooks()
   console.log('data:', data)
   if (data.some((item) => item.url === url)) {
-    throw new Error('Webhooks already exists')
+    throw new Error('Webhook already exists')
   }
   data.push(item)
   console.log('data:', data)
@@ -90,4 +89,14 @@ export async function postToDiscord(url: string, data: any) {
     console.log('error:', error)
     throw new Error(`Discord Error: ${error.message}`)
   }
+}
+
+export async function validateWebhook(url: string) {
+  const response = await fetch(url)
+  console.log('response.status:', response.status)
+  console.log('response:', response)
+  if (!response.ok) throw new Error(`Invalid Response Status: ${response.status}`)
+  const data = await response.json()
+  if (!data.token) throw new Error('Invalid Response Data!')
+  return data
 }

@@ -27,6 +27,8 @@ function onDelete() {
   emit('delete', targetRef.value)
   hide()
 }
+
+const printUrl = (url: string) => url.slice(8, 60) + '*****'
 </script>
 
 <template>
@@ -47,7 +49,7 @@ function onDelete() {
             ></button>
           </div>
           <div class="modal-body p-2 d-flex justify-content-center align-items-baseline gap-1">
-            <kbd class="text-truncate" style="min-width: 0">{{ targetRef }}</kbd>
+            <kbd class="text-truncate" style="min-width: 0">{{ printUrl(targetRef) }}</kbd>
           </div>
           <div class="modal-footer p-2">
             <button type="button" class="btn btn-secondary me-auto" data-bs-dismiss="modal">
