@@ -1,5 +1,6 @@
 import { getOptions } from '@/utils/options.ts'
 import { useLocationsDB } from '@/composables/useLocationsDB'
+import { sendWebhooks } from '@/utils/webhooks.ts'
 
 const { addLocation, getByUrl } = useLocationsDB()
 
@@ -57,13 +58,14 @@ export async function processUrl(url?: string | null): Promise<LocationData> {
   //   confidence: Math.floor(Math.random() * 30) + 69,
   // }
   // console.log('data:', data)
-  // await new Promise((resolve) => setTimeout(resolve, 8000))
+  // await new Promise((resolve) => setTimeout(resolve, 5000))
 
   // Save data to IDB
   const idbKey = await addLocation(data)
   console.log(`%c Added Result ID: ${idbKey as number}`, 'color: Yellow')
 
-  // Retrun data as LocatioNData
+  sendWebhooks(data).catch(console.error)
+
   return data as LocationData
 }
 

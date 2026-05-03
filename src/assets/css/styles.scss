@@ -37,3 +37,38 @@
   width: 1.25em;
   height: 1.25em;
 }
+
+//.btn-discord {
+//  --bs-btn-color: #fff;
+//  --bs-btn-bg: #7289da;
+//  --bs-btn-border-color: #7289da;
+//
+//  --bs-btn-hover-color: #fff;
+//  --bs-btn-hover-bg: #6174b9;
+//  --bs-btn-hover-border-color: #5b6eae;
+//
+//  --bs-btn-active-color: #fff;
+//  --bs-btn-active-bg: #5b6eae;
+//  --bs-btn-active-border-color: #556ba4;
+//
+//  --bs-btn-focus-shadow-rgb: 114, 137, 218;
+//
+//  --bs-btn-disabled-color: #fff;
+//  --bs-btn-disabled-bg: #7289da;
+//  --bs-btn-disabled-border-color: #7289da;
+//}
+
+.btn-discord {
+  --_base: #7289da;
+  --bs-btn-color: #fff;
+  --bs-btn-bg: var(--_base);
+  --bs-btn-border-color: var(--_base);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: color-mix(in srgb, var(--_base), black 15%);
+  --bs-btn-hover-border-color: color-mix(in srgb, var(--_base), black 20%);
+  --bs-btn-active-bg: color-mix(in srgb, var(--_base), black 20%);
+  --bs-btn-active-border-color: color-mix(in srgb, var(--_base), black 25%);
+  --bs-btn-focus-shadow-rgb: 114, 137, 218;
+  --bs-btn-disabled-bg: var(--_base);
+  --bs-btn-disabled-border-color: var(--_base);
+}
