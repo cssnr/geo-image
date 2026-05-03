@@ -212,9 +212,9 @@ jobs:
         continue-on-error: true
         run: |
           git status
-          echo "::group::cat ${{ env.UPDATE_JSON }}"
-          cat "${{ env.UPDATE_JSON }}"
-          echo -e "\n::endgroup::"
+          echo "::group::${{ env.UPDATE_JSON }}"
+          jq . "${{ env.UPDATE_JSON }}"
+          echo "::endgroup::"
 
       - name: "Commit Action"
         id: commit
