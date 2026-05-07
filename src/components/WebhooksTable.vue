@@ -14,7 +14,6 @@ const items = useWebhooks()
 const deleteModal = ref<InstanceType<typeof DeleteModal> | null>(null)
 
 const webhookModal = useTemplateRef('webhookModal')
-const nameInput = useTemplateRef('nameInput')
 const urlInput = useTemplateRef('urlInput')
 
 const webhookName = ref('')
@@ -151,7 +150,6 @@ onMounted(() => {
                 <label class="form-label visually-hidden" for="webhookName">Name (Optional)</label>
                 <input
                   v-model="webhookName"
-                  ref="nameInput"
                   id="webhookName"
                   type="text"
                   class="form-control"
@@ -186,5 +184,3 @@ onMounted(() => {
     </div>
   </Teleport>
 </template>
-
-<!--<style scoped></style>-->

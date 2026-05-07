@@ -209,7 +209,7 @@ async function copyInput(el: HTMLInputElement | null) {
               <div class="invalid-feedback">{{ promptInvalid }}</div>
             </div>
             <div class="d-flex justify-content-end">
-              <button type="button" class="btn btn-outline-warning" @click="resetPrompt">
+              <button type="button" class="btn btn-sm btn-outline-warning" @click="resetPrompt">
                 <i class="fa-solid fa-rotate-left"></i> Reset Instructions
               </button>
             </div>
@@ -233,7 +233,7 @@ async function copyInput(el: HTMLInputElement | null) {
               <div class="invalid-feedback">{{ jsonInvalid }}</div>
             </div>
             <div class="d-flex justify-content-end">
-              <button type="button" class="btn btn-outline-warning" @click="resetJSON">
+              <button type="button" class="btn btn-sm btn-outline-warning" @click="resetJSON">
                 <i class="fa-solid fa-rotate-left"></i> Reset JSON
               </button>
             </div>
