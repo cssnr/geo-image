@@ -28,7 +28,7 @@
     "bootstrap": "^5.3.8",
     "bootswatch": "^5.3.8",
     "idb": "^8.0.3",
-    "vue": "^3.5.33"
+    "vue": "^3.5.34"
   },
   "devDependencies": {
     "@eslint/compat": "^2.0.5",
@@ -43,13 +43,13 @@
     "@wxt-dev/i18n": "^0.2.5",
     "@wxt-dev/module-vue": "^1.0.3",
     "eslint": "^10.3.0",
-    "eslint-plugin-vue": "^10.9.0",
+    "eslint-plugin-vue": "^10.9.1",
     "nodemon": "^3.1.14",
     "prettier": "^3.8.3",
     "sass": "^1.99.0",
     "typescript": "~6.0.3",
-    "typescript-eslint": "^8.59.1",
-    "vue-tsc": "^3.2.7",
+    "typescript-eslint": "^8.59.2",
+    "vue-tsc": "^3.2.8",
     "web-ext": "^10.1.0",
     "wxt": "0.20.25"
   }

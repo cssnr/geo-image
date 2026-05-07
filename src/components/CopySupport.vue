@@ -21,6 +21,9 @@ async function copySupport(event: Event) {
   // options.authToken = options.authToken ? 'SET' : 'NOT SET'
   options.authToken = `length: ${options.authToken?.length}`
 
+  const webhooks = (options as any).webhooks || []
+  delete (options as any).webhooks
+
   const geoJSON = options.geoJSON
   delete (options as any).geoJSON
   const geoPrompt = options.geoPrompt
@@ -38,12 +41,13 @@ async function copySupport(event: Event) {
     `pinned: ${userSettings.isOnToolbar}`,
     `isFirefox: ${isFirefox}`,
     `isMobile: ${isMobile}`,
+    `webhooks: ${webhooks.length}`,
   ]
 
   const commands = await chrome.commands?.getAll()
   if (commands) result.push(`commands: ${JSON.stringify(commands)}`)
 
-  result.push(`geoJSON: ${geoJSON}`, `geoPrompt: ${geoPrompt}`)
+  result.push(`geoJSON: ${geoJSON}`, `geoPrompt:\n${geoPrompt}`)
 
   await navigator.clipboard.writeText(result.join('\n'))
   showToast(props.message)
