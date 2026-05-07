@@ -105,7 +105,7 @@ export async function postToDiscord(url: string, data: any): Promise<number | un
     }
     if (seconds) return Number.parseInt(seconds)
   } catch (e) {
-    console.error(e)
+    debug('catch error:', e)
     const message = e instanceof Error ? e.message : i18n.t('ui.error.unknown')
     showToast(`${i18n.t('ui.error.sendWebhook')}: ${message}`, 'danger')
   }

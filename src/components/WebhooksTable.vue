@@ -43,7 +43,7 @@ async function onSubmit(e: SubmitEvent) {
     debug('data:', data)
     webhookName.value = webhookName.value || data.name
   } catch (e) {
-    console.log(e)
+    debug('catch error:', e)
     const message = e instanceof Error ? e.message : i18n.t('ui.error.unknown')
     showToast(message, 'warning')
     return urlInput.value?.focus()

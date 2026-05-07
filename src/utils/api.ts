@@ -100,7 +100,7 @@ async function getData(mimeType: string, data: string) {
     })
     debug('response:', response)
   } catch (e) {
-    console.error(e)
+    debug('catch error:', e)
     if (e instanceof ApiError) {
       debug('ApiError', e.message)
       const error = JSON.parse(e.message)
