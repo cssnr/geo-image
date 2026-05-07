@@ -1,3 +1,5 @@
+import { i18n } from '#imports'
+import { debug } from '@/utils/logger.ts'
 import { getGeoUrl, LocationData } from '@/utils/api.ts'
 import { showToast } from '@/composables/useToast.ts'
 
@@ -10,51 +12,51 @@ export const WEBHOOKS_KEY = 'webhooks'
 
 export async function getWebhook(url: string): Promise<Webhook> {
   const items = await chrome.storage.sync.get([WEBHOOKS_KEY])
-  console.log('getWebhook - items:', items)
+  debug('getWebhook - items:', items)
   const results = (items?.[WEBHOOKS_KEY] || []) as Webhook[]
-  console.log('results:', results)
+  debug('results:', results)
   const result = results.find((r: Webhook) => r.url === url)
-  console.log('result:', result)
+  debug('result:', result)
   return result as Webhook
 }
 
 export async function getWebhooks(): Promise<Webhook[]> {
   const items = await chrome.storage.sync.get([WEBHOOKS_KEY])
-  console.log('getWebhooks - items:', items)
+  debug('getWebhooks - items:', items)
   const results = items?.[WEBHOOKS_KEY] || []
-  console.log('results:', results)
+  debug('results:', results)
   return results as Webhook[]
 }
 
 export async function addWebhook(name: string, url: string): Promise<void> {
-  console.log(`addWebhook - name: ${name} - url:`, url)
+  debug(`addWebhook - name: ${name} - url:`, url)
   const item = { name, url }
   const data: Webhook[] = await getWebhooks()
-  console.log('data:', data)
+  debug('data:', data)
   if (data.some((item) => item.url === url)) {
     throw new Error('Webhook already exists')
   }
   data.push(item)
-  console.log('data:', data)
+  debug('data:', data)
   await chrome.storage.sync.set({ [WEBHOOKS_KEY]: data })
 }
 
 export async function deleteWebhook(url?: string): Promise<void> {
-  console.log('deleteWebhook:', url)
+  debug('deleteWebhook:', url)
   if (!url) return
   const data: Webhook[] = await getWebhooks()
-  console.log('data:', data)
+  debug('data:', data)
   const filtered = data.filter((s) => s.url !== url)
-  console.log('filtered:', filtered)
+  debug('filtered:', filtered)
   await chrome.storage.sync.set({ [WEBHOOKS_KEY]: filtered })
 }
 
 export async function sendWebhooks(loc: LocationData) {
-  console.log('sendWebhooks:', loc)
+  debug('sendWebhooks:', loc)
   const webhooks = await getWebhooks()
-  console.log(`webhooks: ${webhooks.length}:`, webhooks)
+  debug(`webhooks: ${webhooks.length}:`, webhooks)
   for (const [i, hook] of webhooks.entries()) {
-    console.log(`hook - ${i}:`, hook)
+    debug(`hook - ${i}:`, hook)
     const lines = [
       `### ${loc.city}, ${loc.state}, ${loc.country}`,
       loc.description,
@@ -72,11 +74,11 @@ export async function sendWebhooks(loc: LocationData) {
       footer: { text: `GeoImage  ${loc.latitude}, ${loc.longitude}`, icon_url: logo },
     }
     const data = { username: 'GeoImage', avatar_url: logo, embeds: [embed] }
-    console.log('data:', data)
+    debug('data:', data)
     const seconds = await postToDiscord(hook.url, data)
     if (i < webhooks.length - 1) {
       const delay = (seconds || 1) * 1000 + 250 // NOSONAR
-      console.log('Awaiting Delay:', delay)
+      debug('Awaiting Delay:', delay)
       await new Promise((resolve) => setTimeout(resolve, delay))
     }
   }
@@ -89,32 +91,33 @@ export async function postToDiscord(url: string, data: any): Promise<number | un
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     })
-    console.log('response:', response)
-    console.log('headers:', response.headers)
-    console.log('status:', response.status)
-    console.log('ok:', response.ok)
+    debug('response:', response)
+    debug('headers:', response.headers)
+    debug('status:', response.status)
+    debug('ok:', response.ok)
     const seconds = response.headers.get('x-ratelimit-reset-after')
-    console.log('x-ratelimit-reset-after:', seconds)
+    debug('x-ratelimit-reset-after:', seconds)
     if (!response.ok) {
       const error = await response.json()
-      console.log('error:', error)
+      debug('error:', error)
       // throw new Error(`Discord Error: ${error.message}`)
-      showToast(`Error Sending Webhook: ${response.status}`, 'danger')
+      showToast(`${i18n.t('ui.error.sendWebhook')}: ${response.status}`, 'danger')
     }
     if (seconds) return Number.parseInt(seconds)
   } catch (e) {
     console.error(e)
-    const message = e instanceof Error ? e.message : 'Unknown Error'
-    showToast(`Error Sending Webhook: ${message}`, 'danger')
+    const message = e instanceof Error ? e.message : i18n.t('ui.error.unknown')
+    showToast(`${i18n.t('ui.error.sendWebhook')}: ${message}`, 'danger')
   }
 }
 
 export async function validateWebhook(url: string) {
   const response = await fetch(url)
-  console.log('response.status:', response.status)
-  console.log('response:', response)
-  if (!response.ok) throw new Error(`Invalid Response Status: ${response.status}`)
+  debug('response.status:', response.status)
+  debug('response:', response)
+  if (!response.ok)
+    throw new Error(`${i18n.t('ui.error.invalidResponse')}: ${response.status}`)
   const data = await response.json()
-  if (!data.token) throw new Error('Invalid Response Data!')
+  if (!data.token) throw new Error(`${i18n.t('ui.error.invalidResponse')}!`)
   return data
 }

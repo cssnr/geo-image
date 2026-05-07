@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { isFirefox, isMobile } from '@/utils/system.ts'
+import { debug } from '@/utils/logger.ts'
 import { getOptions } from '@/utils/options.ts'
 import { showToast } from '@/composables/useToast.ts'
+import { getWebhooks } from '@/utils/webhooks.ts'
 
 const props = defineProps<{
   message: string
@@ -9,19 +11,22 @@ const props = defineProps<{
 }>()
 
 async function copySupport(event: Event) {
-  console.debug('copySupport:', event)
+  debug('copySupport:', event)
   event.preventDefault()
   const date = new Date()
   const manifest = chrome.runtime.getManifest()
   const permissions = await chrome.permissions.getAll()
   const userSettings = await chrome.action.getUserSettings()
   const options = await getOptions()
+  debug('options:', options)
   const local = await chrome.storage.local.get()
+  debug('local:', local)
 
   // options.authToken = options.authToken ? 'SET' : 'NOT SET'
   options.authToken = `length: ${options.authToken?.length}`
 
-  const webhooks = (options as any).webhooks || []
+  const webhooks = await getWebhooks()
+  debug('webhooks:', webhooks)
   delete (options as any).webhooks
 
   const geoJSON = options.geoJSON
