@@ -107,7 +107,8 @@ async function getData(mimeType: string, data: string) {
       debug('error', error)
       throw new Error(error.message, { cause: e })
     }
-    throw new Error(i18n.t('ui.error.unknown'), { cause: e })
+    const message = e instanceof Error ? e.message : i18n.t('ui.error.unknown')
+    throw new Error(message, { cause: e })
   }
 
   debug('response.text:', response.text)
