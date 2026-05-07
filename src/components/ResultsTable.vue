@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { i18n } from '#imports'
+import { debug } from '@/utils/logger.ts'
 import { onMounted, ref, useTemplateRef } from 'vue'
-import { Modal } from 'bootstrap'
 import { getConfidenceClass } from '@/utils/index.ts'
 import { openResult } from '@/utils/extension.ts'
 import { showToast } from '@/composables/useToast.ts'
 import { useLocationsDB } from '@/composables/useLocationsDB'
+import { Modal } from 'bootstrap'
 import type { LocationData } from '@/utils/api.ts'
 import ShareModal from '@/components/ShareModal.vue'
 
@@ -30,9 +31,9 @@ function getPageUrl(srcUrl: string) {
 }
 
 async function onClick(srcUrl: string) {
-  console.log('onClick - srcUrl:', srcUrl)
+  debug('onClick - srcUrl:', srcUrl)
   if (props.isPage) {
-    console.log('emit:open')
+    debug('emit:open')
     emit('open', srcUrl)
   } else {
     // chrome.runtime.sendMessage({ openResult: srcUrl }).catch(console.error)
@@ -43,12 +44,12 @@ async function onClick(srcUrl: string) {
 
 function showDeleteModal(hostId: string) {
   hostToDelete.value = hostId
-  console.log('showDeleteModal - hostToDelete:', hostToDelete.value)
+  debug('showDeleteModal - hostToDelete:', hostToDelete.value)
   Modal.getOrCreateInstance(deleteModalEl.value!).show()
 }
 
 async function confirmDelete() {
-  console.log('confirmDelete - hostToDelete:', hostToDelete.value)
+  debug('confirmDelete - hostToDelete:', hostToDelete.value)
 
   await deleteLocation(Number(hostToDelete.value)) // NOTE: can silently delete nothing
   updateLocations()

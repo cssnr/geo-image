@@ -4,15 +4,23 @@ description: GeoImage Web Extension to Locate Images using Gemini AI.
 
 ui:
   text:
+    name: Name # TODO: ADD TRANSLATION
     image: Image
     location: Location
+    optional: Optional # TODO: ADD TRANSLATION
     markdownResults: Markdown Results
+    required: Required # TODO: ADD TRANSLATION
   action:
     close: Close
     copy: Copy
     share: Share
     cancel: Cancel # NOT TRANSLATED / NOT USED / FOR LINTER
     analyze: Analyze # NOT TRANSLATED / NOT USED / FOR LINTER
+  error: # TODO: ADD TRANSLATION
+    invalidResponse: Invalid Response
+    setApiKey: Set API Key in Options!
+    sendWebhook: Error Sending Webhook
+    unknown: Unknown Error
 
 ctx:
   # background/menus.ts
@@ -87,6 +95,17 @@ results:
   deleteAnalysis: Delete Analysis
   deletedAnalysis: Deleted Analysis # TODO: ADD TRANSLATION
   deleteConfirm: Confirm deleting analysis
+
+webhooks: # TODO: ADD TRANSLATION
+  # WebhooksTable.vue
+  addWebhook: Add Webhook
+  addDiscordWebhook: Add Discord Webhook
+  discordAddText: Add a Discord Webhook to automatically post results too.
+  discordUrl: Discord Webhook URL
+  discordWebhooks: Discord Webhooks
+  noSaved: No Saved Webhooks
+  webhookAdded: Webhook Added
+  webhookExists: Webhook Already Exists
 
 options:
   # options/App.vue

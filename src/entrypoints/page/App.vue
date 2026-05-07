@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { i18n } from '#imports'
+import { debug } from '@/utils/logger.ts'
 import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
 import { type LocationData, getGeoUrl, processUrl } from '@/utils/api.ts'
 import { showToast } from '@/composables/useToast.ts'
@@ -34,20 +35,20 @@ function setErrorIcon() {
   const link = document.querySelector<HTMLLinkElement>('link[rel*="icon"]')
   if (!link) return console.warn('favicon link not found')
   link.href = href
-  console.debug('link.href:', link.href)
+  debug('link.href:', link.href)
   // document.querySelectorAll<HTMLLinkElement>('link[rel*="icon"]').forEach((link) => {
   //   link.href = href
-  //   console.debug('link.href:', link.href)
+  //   debug('link.href:', link.href)
   // })
 }
 
 async function getLocationData(): Promise<LocationData> {
   const params = new URLSearchParams(window.location.search)
   const url = params.get('url')
-  console.debug('url:', url)
+  debug('url:', url)
   if (url === 'message') {
     const response = await chrome.runtime.sendMessage('hello')
-    console.log('response:', response)
+    debug('response:', response)
     if (!response.imageData) throw new Error(i18n.t('page.noImageData'))
     srcUrl.value = response.imageData
     throw new Error(i18n.t('page.localNotSupported'))
@@ -60,13 +61,13 @@ async function getLocationData(): Promise<LocationData> {
 function processData() {
   getLocationData()
     .then((result) => {
-      console.debug('result:', result)
+      debug('result:', result)
       data.value = result
       geoHref.value = getGeoUrl(data.value)
       document.title = `${data.value.location} - ${title}`
     })
     .catch((e) => {
-      console.log(e)
+      debug(e)
       errorMessage.value = e.message
       document.title = `${title} - ${i18n.t('page.error')}`
       setErrorIcon()
@@ -79,40 +80,40 @@ function processData() {
 }
 
 function openItem(srcUrl: string) {
-  console.log('openItem:', srcUrl)
+  debug('openItem:', srcUrl)
   const url = chrome.runtime.getURL(`page.html?url=${encodeURIComponent(srcUrl)}`)
   if (window.location.href === url) {
-    console.log('%c Already Open', 'color: Tan')
+    debug('%c Already Open', 'color: Tan')
     historyShown.value = false
     return
   }
   // TODO: This does not activate history from the popup UNLESS history already exists...
-  console.log(`pushState - length: ${window.history.length} - url:`, url)
+  debug(`pushState - length: ${window.history.length} - url:`, url)
   window.history.pushState(null, '', url)
   historyShown.value = false
   processData()
 }
 
 async function onMessage(message: any) {
-  console.debug('%c page/App.vue - onMessage:', 'Color: PaleGreen', message)
-  if (!message.srcUrl || !message.tabId) return console.log('no message.srcUrl/tabId')
+  debug('%c page/App.vue - onMessage:', 'Color: PaleGreen', message)
+  if (!message.srcUrl || !message.tabId) return debug('no message.srcUrl/tabId')
   const tab = await chrome.tabs.getCurrent()
-  if (message.tabId !== tab?.id) return console.log('WRONG TAB:', tab?.id)
+  if (message.tabId !== tab?.id) return debug('WRONG TAB:', tab?.id)
   if (isProcessing.value) return await openPageUrl(message.srcUrl)
   openItem(message.srcUrl)
 }
 
 function popState(event: Event) {
-  console.log('popstate:', event)
-  console.log('window.location:', window.location)
+  debug('popstate:', event)
+  debug('window.location:', window.location)
   processData()
 }
 
 onMounted(() => {
-  console.log(`page/App.vue - onMounted - window.history.length:`, window.history.length)
+  debug(`page/App.vue - onMounted - window.history.length:`, window.history.length)
   processData()
   if (!chrome.runtime.onMessage.hasListener(onMessage)) {
-    console.log('%c chrome.runtime.onMessage.addListener', 'color: Orange')
+    debug('%c chrome.runtime.onMessage.addListener', 'color: Orange')
     chrome.runtime.onMessage.addListener(onMessage)
   }
   window.addEventListener('popstate', popState)

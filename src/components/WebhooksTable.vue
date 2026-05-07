@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { i18n } from '#imports'
+import { debug } from '@/utils/logger.ts'
 import { onMounted, ref, useTemplateRef } from 'vue'
 import { copyText } from '@/utils/ui.ts'
 import { addWebhook, deleteWebhook, getWebhook, validateWebhook } from '@/utils/webhooks.ts'
@@ -8,7 +9,7 @@ import { useWebhooks } from '@/composables/useWebhooks.ts'
 import { Modal } from 'bootstrap'
 import DeleteModal from '@/components/DeleteModal.vue'
 
-console.debug('%c WebhooksTable - LOADED', 'color: Orange')
+debug('%c WebhooksTable - LOADED', 'color: Orange')
 
 const items = useWebhooks()
 
@@ -21,9 +22,9 @@ const webhookName = ref('')
 const webhookUrl = ref('')
 
 async function onSubmit(e: SubmitEvent) {
-  console.log('onSubmit:', e)
-  console.log('name:', webhookName.value.trim())
-  console.log('url:', webhookUrl.value.trim())
+  debug('onSubmit:', e)
+  debug('name:', webhookName.value.trim())
+  debug('url:', webhookUrl.value.trim())
 
   if (!webhookUrl.value) {
     showToast('Webhook URL Required!', 'warning')
@@ -33,24 +34,24 @@ async function onSubmit(e: SubmitEvent) {
   try {
     new URL(webhookUrl.value)
     const hook = await getWebhook(webhookUrl.value)
-    console.log('hook:', hook)
+    debug('hook:', hook)
     if (hook) {
-      showToast('Webhook Already Exists!', 'warning')
+      showToast(i18n.t('webhooks.webhookExists'), 'warning')
       return urlInput.value?.focus()
     }
     const data = await validateWebhook(webhookUrl.value)
-    console.log('data:', data)
+    debug('data:', data)
     webhookName.value = webhookName.value || data.name
   } catch (e) {
-    console.log(e)
-    const message = e instanceof Error ? e.message : 'Unknown Error'
+    debug('catch error:', e)
+    const message = e instanceof Error ? e.message : i18n.t('ui.error.unknown')
     showToast(message, 'warning')
     return urlInput.value?.focus()
   }
 
   addWebhook(webhookName.value, webhookUrl.value)
     .then(() => {
-      showToast(`Webhooks Added: ${webhookName.value}`)
+      showToast(`${i18n.t('webhooks.webhookAdded')}: ${webhookName.value}`)
       webhookName.value = ''
       webhookUrl.value = ''
       Modal.getOrCreateInstance(webhookModal.value!).hide()
@@ -61,13 +62,13 @@ async function onSubmit(e: SubmitEvent) {
 }
 
 function openDeleteModal(value: string) {
-  console.log('openDeleteModal:', value)
+  debug('openDeleteModal:', value)
   if (!deleteModal.value) return
   deleteModal.value.show(value)
 }
 
 async function confirmDelete(name: string) {
-  console.log('confirmDelete:', name)
+  debug('confirmDelete:', name)
   await deleteWebhook(name)
 }
 
@@ -84,20 +85,22 @@ onMounted(() => {
   <div>
     <!-- Button trigger modal -->
     <button type="button" class="btn btn-discord mb-2" data-bs-toggle="modal" data-bs-target="#webhookModal">
-      <i class="fa-brands fa-discord me-2"></i> Add Discord Webhook
+      <i class="fa-brands fa-discord me-2"></i> {{ i18n.t('webhooks.addDiscordWebhook') }}
     </button>
 
     <div class="table-wrapper">
       <table id="webhooks-table" class="table table-sm table-hover small w-100" style="table-layout: fixed">
         <caption>
           <i class="fa-regular fa-cloud me-2"></i>
-          Discord Webhooks
+          {{
+            i18n.t('webhooks.discordWebhooks')
+          }}
         </caption>
         <thead class="">
           <tr>
             <th class="bg-transparent text-center" style="width: 28px"><i class="fa-solid fa-copy"></i></th>
-            <th class="bg-transparent" style="width: 30%">Name</th>
-            <th class="bg-transparent" style="width: 70%">Webhook URL</th>
+            <th class="bg-transparent" style="width: 30%">{{ i18n.t('ui.text.name') }}</th>
+            <th class="bg-transparent" style="width: 70%">{{ i18n.t('webhooks.discordUrl') }}</th>
             <th class="bg-transparent text-center" style="width: 28px"><i class="fa-solid fa-trash-can"></i></th>
           </tr>
         </thead>
@@ -119,7 +122,9 @@ onMounted(() => {
             </tr>
           </template>
           <tr v-else>
-            <td class="bg-transparent text-center text-muted fw-bold" colspan="4">No Saved Webhooks</td>
+            <td class="bg-transparent text-center text-muted fw-bold" colspan="4">
+              {{ i18n.t('webhooks.noSaved') }}
+            </td>
           </tr>
         </tbody>
       </table>
@@ -141,21 +146,25 @@ onMounted(() => {
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="webhookModalLabel"><i class="fa-solid fa-indent me-2"></i> Add Webhook</h1>
+            <h1 class="modal-title fs-5" id="webhookModalLabel">
+              <i class="fa-solid fa-cloud me-2"></i> {{ i18n.t('webhooks.addWebhook') }}
+            </h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <p>Add a Discord Webhook to automatically post results too.</p>
+            <p>{{ i18n.t('webhooks.discordAddText') }}</p>
             <form @submit.prevent="onSubmit" id="webhooks-form" class="mb-1">
               <div class="mb-2">
-                <label class="form-label visually-hidden" for="webhookName">Name (Optional)</label>
+                <label class="form-label visually-hidden" for="webhookName"
+                  >{{ i18n.t('ui.text.name') }} ({{ i18n.t('ui.text.optional') }})</label
+                >
                 <input
                   v-model="webhookName"
                   id="webhookName"
                   type="text"
                   class="form-control"
-                  placeholder="Name (Optional)"
-                  aria-label="Name (Optional)"
+                  :placeholder="i18n.t('ui.text.name')"
+                  :aria-label="i18n.t('ui.text.name')"
                   autocomplete="nickname"
                 />
               </div>
@@ -168,11 +177,11 @@ onMounted(() => {
                   type="text"
                   class="form-control"
                   placeholder="https://discord.com/api/webhooks/123/abc"
-                  aria-label="Discord Webhook URL"
+                  :aria-label="i18n.t('webhooks.discordUrl')"
                   autocomplete="off"
                   required
                 />
-                <label for="floatingInput">Discord Webhook URL</label>
+                <label for="floatingInput">{{ i18n.t('webhooks.discordUrl') }}</label>
               </div>
             </form>
           </div>
@@ -180,7 +189,9 @@ onMounted(() => {
             <button type="button" class="btn btn-secondary me-auto" data-bs-dismiss="modal">
               {{ i18n.t('ui.action.cancel') }}
             </button>
-            <button type="submit" form="webhooks-form" class="btn btn-primary">Add Webhook</button>
+            <button type="submit" form="webhooks-form" class="btn btn-primary">
+              {{ i18n.t('webhooks.addWebhook') }}
+            </button>
           </div>
         </div>
       </div>

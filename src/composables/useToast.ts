@@ -12,7 +12,7 @@ let nextId = 0
 
 export function useToast() {
   function showToast(message: string, type = 'primary') {
-    console.debug(`showToast: ${type}: ${message}`)
+    // console.debug(`showToast: ${type}: ${message}`)
     toasts.value.push({ id: nextId++, message, type })
   }
 
@@ -30,6 +30,6 @@ export function useToast() {
 // Named export so you can call showToast() outside of components
 // (e.g. in a utils file, api handler, etc.) without calling useToast()
 export function showToast(message: string, type = 'primary') {
-  console.debug(`showToast: ${type}: ${message}`)
+  // console.debug(`showToast: ${type}: ${message}`)
   toasts.value.push({ id: nextId++, message, type })
 }

@@ -1,12 +1,39 @@
 import { getAppConfig } from '#imports'
+import { debug } from '@/utils/logger.ts'
 import { isFirefox } from '@/utils/system.ts'
 import { defineBackground } from 'wxt/utils/define-background'
 import { openExtPanel, openPageUrl, openPopup, openSidePanel } from '@/utils/extension.ts'
 import { type Options, defaultOptions, getOptions } from '@/utils/options.ts'
 import { updateContextMenus } from './menus.ts'
 
+const config = getAppConfig()
+const banner = `
+      %cGeo%cImage   %cv${config.version}%c
+        _,--',   _._.--._____
+ .--.--';_'-.', ";_      _.,-'
+.'--'.  _.'    {\`'-;_ .-.>.'
+      '-:_      )  / \`' '=.
+        ) >     {_/,     /~)
+        |/               \`^ .'
+%c${config.githubUrl}`
+
 export default defineBackground(() => {
-  console.log(`Loaded: %c${chrome.runtime.id}`, 'Color: Cyan')
+  // console.log(`Loaded: %c${chrome.runtime.id}`, 'Color: Cyan')
+  console.log(
+    banner,
+    'color: #ee00ff',
+    'color: #0dcaf0',
+    'color: MediumSeaGreen',
+    '',
+    'color: MediumSlateBlue',
+  )
+  if (import.meta.env.DEV) {
+    console.log('%cWARNING: DEV MODE ENABLED', 'color: Tomato')
+  }
+  if (import.meta.env.WXT_FAKE_DATA) {
+    console.log('%cWARNING: FAKE DATA ENABLED', 'color: Tomato')
+    console.log('WXT_FAKE_DELAY:', import.meta.env.WXT_FAKE_DELAY)
+  }
 
   chrome.runtime.onInstalled.addListener(onInstalled)
   chrome.runtime.onStartup.addListener(onStartup)
@@ -17,21 +44,21 @@ export default defineBackground(() => {
 })
 
 async function onInstalled(details: chrome.runtime.InstalledDetails) {
-  console.log('onInstalled:', details)
+  debug('onInstalled:', details)
 
   const options = await setDefaultOptions(defaultOptions)
-  console.debug('options:', options)
+  debug('options:', options)
   updateContextMenus(options.contextMenu).catch(console.warn)
   setUninstall().catch(console.warn)
 
   const manifest = chrome.runtime.getManifest()
-  console.debug('manifest:', manifest)
+  debug('manifest:', manifest)
 
   if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
     const hasPerms = await chrome.permissions.contains({
       origins: manifest.host_permissions,
     })
-    console.debug('hasPerms:', hasPerms)
+    debug('hasPerms:', hasPerms)
     if (hasPerms) {
       await chrome.runtime.openOptionsPage()
     } else {
@@ -47,18 +74,18 @@ async function onInstalled(details: chrome.runtime.InstalledDetails) {
 }
 
 async function onStartup() {
-  console.log('onStartup')
+  debug('onStartup')
   if (isFirefox) {
-    console.log('Firefox Startup Workarounds')
+    debug('Firefox Startup Workarounds')
     const options = await getOptions()
-    console.debug('options:', options)
+    debug('options:', options)
     updateContextMenus(options.contextMenu).catch(console.warn)
     setUninstall().catch(console.warn)
   }
 }
 
 function onChanged(changes: Record<string, chrome.storage.StorageChange>) {
-  // console.log('%c background/index.ts - onChanged:', 'color: Cyan', changes)
+  // debug('%c background/index.ts - onChanged:', 'color: Cyan', changes)
   if (changes?.options) {
     const oldValue = changes.options?.oldValue as Options | undefined
     const newValue = changes.options?.newValue as Options | undefined
@@ -71,7 +98,7 @@ function onChanged(changes: Record<string, chrome.storage.StorageChange>) {
 }
 
 async function onCommand(command: string, tab?: chrome.tabs.Tab) {
-  console.debug('onCommand:', command, tab)
+  debug('onCommand:', command, tab)
   if (command === 'openOptions') {
     await chrome.runtime.openOptionsPage()
   } else if (command === 'openExtPanel') {
@@ -84,7 +111,7 @@ async function onCommand(command: string, tab?: chrome.tabs.Tab) {
 }
 
 async function onClicked(ctx: chrome.contextMenus.OnClickData, tab?: chrome.tabs.Tab) {
-  console.debug('onClicked:', ctx, tab)
+  debug('onClicked:', ctx, tab)
   if (ctx.menuItemId === 'openOptions') {
     await chrome.runtime.openOptionsPage()
   } else if (ctx.menuItemId === 'openPopup') {
@@ -104,40 +131,39 @@ async function onClicked(ctx: chrome.contextMenus.OnClickData, tab?: chrome.tabs
 }
 
 // function onMessage(message: any, sender: chrome.runtime.MessageSender) {
-//   console.debug('%c background/index.ts - onMessage:', 'Color: Plum', message, sender)
-//   console.log('sender:', sender)
+//   debug('%c background/index.ts - onMessage:', 'Color: Plum', message, sender)
+//   debug('sender:', sender)
 //   if (message.openResult) {
-//     console.log('message.openResult:', message.openResult)
+//     debug('message.openResult:', message.openResult)
 //     openResult(message.openResult).catch(console.error)
 //   }
 // }
 
 async function setDefaultOptions(defaultOptions: object) {
-  console.log('setDefaultOptions', defaultOptions)
+  debug('setDefaultOptions', defaultOptions)
   const options = await getOptions()
   let changed = false
   for (const [key, value] of Object.entries(defaultOptions)) {
-    // console.log(`${key}: default: ${value} current: ${options[key]}`)
+    // debug(`${key}: default: ${value} current: ${options[key]}`)
     if (options[key] === undefined) {
       changed = true
       options[key] = value
-      console.log(`Set %c${key}:`, 'color: Khaki', value)
+      debug(`Set %c${key}:`, 'color: Khaki', value)
     }
   }
   if (changed) {
     await chrome.storage.sync.set({ options })
-    console.log('set changed options:', options)
+    debug('set changed options:', options)
   }
   return options
 }
 
 async function setUninstall() {
   // NOTE: Calling this setUninstallURL and using getAppConfig breaks WXT
-  const config = getAppConfig()
-  console.debug('config:', config)
+  // const config = getAppConfig()
   const url = new URL(config.uninstallUrl)
   url.searchParams.append('version', config.version)
   url.searchParams.append('id', chrome.runtime.id)
-  console.log('setUninstallURL:', url.href)
+  debug('setUninstallURL:', url.href)
   await chrome.runtime.setUninstallURL(url.href)
 }
