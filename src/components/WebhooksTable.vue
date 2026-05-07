@@ -151,7 +151,7 @@ onMounted(() => {
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <p>Add a Discord Webhook to automatically post results too.</p>
+            <p>{{ i18n.t('webhooks.discordAddText') }}</p>
             <form @submit.prevent="onSubmit" id="webhooks-form" class="mb-1">
               <div class="mb-2">
                 <label class="form-label visually-hidden" for="webhookName"

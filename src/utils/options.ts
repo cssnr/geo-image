@@ -1,4 +1,5 @@
 import { GEO_JSON, GEO_PROMPT } from '@/utils/constants.ts'
+import { debug } from '@/utils/logger.ts'
 
 export const defaultOptions = {
   authToken: '',
@@ -18,11 +19,11 @@ export async function getOptions(): Promise<Options> {
 
 // NOTE: This is a WIP to replace the VanillaJS saveOptions
 export async function saveKeyValue(key: string, value: any) {
-  console.debug(`saveKeyValue: ${key}:`, value)
+  debug(`saveKeyValue: ${key}:`, value)
   if (!key || value === undefined) return
   const options = await getOptions()
   if (options[key] === value) return
   options[key] = value
-  console.log(`Set %c${key}:`, 'color: Lime', value)
+  debug(`Set %c${key}:`, 'color: Lime', value)
   await chrome.storage.sync.set({ options })
 }

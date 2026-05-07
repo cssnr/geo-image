@@ -112,7 +112,7 @@ async function getData(mimeType: string, data: string) {
 
   debug('response.text:', response.text)
   if (!response?.text) throw new Error('No Response Text')
-  const result = JSON.parse(response.text.replace(/```json|```/g, '').trim())
+  const result = JSON.parse(response.text.replaceAll(/```json|```/g, '').trim())
   debug('result:', result)
   return result
 }

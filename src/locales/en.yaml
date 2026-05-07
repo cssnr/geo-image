@@ -100,6 +100,7 @@ webhooks: # TODO: ADD TRANSLATION
   # WebhooksTable.vue
   addWebhook: Add Webhook
   addDiscordWebhook: Add Discord Webhook
+  discordAddText: Add a Discord Webhook to automatically post results too.
   discordUrl: Discord Webhook URL
   discordWebhooks: Discord Webhooks
   noSaved: No Saved Webhooks
