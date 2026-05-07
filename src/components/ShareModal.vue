@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { useAppConfig } from '#imports'
-import GeoIcon from '@/assets/icon.svg?raw'
+import { debug } from '@/utils/logger.ts'
 import { copyText } from '@/utils/ui.ts'
 import { getGeoUrl, LocationData } from '@/utils/api.ts'
 import { computed, ref, useTemplateRef } from 'vue'
 import { Modal } from 'bootstrap'
+import GeoIcon from '@/assets/icon.svg?raw'
 
 defineExpose({ show })
 
@@ -16,13 +17,13 @@ const geoHref = computed(() => (data.value ? getGeoUrl(data.value) : undefined))
 const config = useAppConfig()
 
 function show(location: LocationData) {
-  console.log('show:', location)
+  debug('show:', location)
   data.value = location
   if (modalEl.value) Modal.getOrCreateInstance(modalEl.value).show()
 }
 
 function copyMarkdown() {
-  console.debug('copyMarkdown:', data.value)
+  debug('copyMarkdown:', data.value)
   if (!data.value) return
   const r = data.value
   const lines = [

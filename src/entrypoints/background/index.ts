@@ -44,7 +44,7 @@ export default defineBackground(() => {
 })
 
 async function onInstalled(details: chrome.runtime.InstalledDetails) {
-  console.debug('onInstalled:', details)
+  debug('onInstalled:', details)
 
   const options = await setDefaultOptions(defaultOptions)
   debug('options:', options)

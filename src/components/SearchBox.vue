@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { i18n } from '#imports'
+import { debug } from '@/utils/logger.ts'
 import { openPageUrl } from '@/utils/extension.ts'
 import { showToast } from '@/composables/useToast.ts'
 
@@ -12,20 +13,20 @@ const props = withDefaults(
   },
 )
 
-// console.debug('SearchBox.vue:', props)
+// debug('SearchBox.vue:', props)
 
 async function processForm(event: Event) {
-  console.debug('processForm:', event)
+  debug('processForm:', event)
   try {
     const target = event.currentTarget as HTMLFormElement
     event.preventDefault()
-    console.debug('target:', target)
+    debug('target:', target)
     const input = target.elements.namedItem('image-input') as HTMLInputElement
-    console.debug('input:', input)
+    debug('input:', input)
     const link = input.value.trim()
-    console.debug('link:', link)
+    debug('link:', link)
     const url = new URL(link)
-    console.debug('url:', url)
+    debug('url:', url)
     // await openPage(url.href)
 
     target.reset()
