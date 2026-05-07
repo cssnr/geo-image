@@ -112,7 +112,7 @@ async function copyInput(el: HTMLInputElement | null) {
 </script>
 
 <template>
-  <form>
+  <form @submit.prevent>
     <div>
       <div class="form-text float-end" id="authTokenHelp">
         <a class="text-decoration-none" href="https://aistudio.google.com/app/api-keys" target="_blank" rel="noopener">

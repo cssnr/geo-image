@@ -13,6 +13,9 @@ ui:
     share: Share
     cancel: Cancel # NOT TRANSLATED / NOT USED / FOR LINTER
     analyze: Analyze # NOT TRANSLATED / NOT USED / FOR LINTER
+  error:
+    setApiKey: Set API Key in Options! # TODO: TRANSLATE
+    unknown: Unknown Error # TODO: TRANSLATE
 
 ctx:
   # background/menus.ts

@@ -8,6 +8,12 @@ import { updateContextMenus } from './menus.ts'
 export default defineBackground(() => {
   console.log(`Loaded: %c${chrome.runtime.id}`, 'Color: Cyan')
 
+  if (import.meta.env.DEV) {
+    console.log('DEV:', import.meta.env.DEV)
+    console.log('WXT_FAKE_DATA:', import.meta.env.WXT_FAKE_DATA)
+    console.log('WXT_FAKE_DELAY:', import.meta.env.WXT_FAKE_DELAY)
+  }
+
   chrome.runtime.onInstalled.addListener(onInstalled)
   chrome.runtime.onStartup.addListener(onStartup)
   chrome.storage.sync.onChanged.addListener(onChanged)

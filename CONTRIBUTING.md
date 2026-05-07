@@ -2,6 +2,7 @@
 
 - [Application](#application)
   - [Developing](#developing)
+    - [Fake Data](#fake-data)
   - [Building](#building)
   - [WXT](#wxt)
 
@@ -17,6 +18,15 @@ npm install
 
 Note: WXT launches a browser by default when you run `dev`.
 See [Browser Opening](#browser-opening) modify the browser or disable this behavior.
+
+### Fake Data
+
+To use Fake Data for testing add a `.env.development.local` with:
+
+```text
+WXT_FAKE_DATA=true  # use fake data
+WXT_FAKE_DELAY=3    # add fake delay
+```
 
 ### Chrome
 
