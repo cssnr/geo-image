@@ -50,7 +50,8 @@ async function revokePerms(event: Event) {
     await updatePerms()
   } catch (e) {
     console.debug(e)
-    if (e instanceof Error) showToast(e.toString(), 'danger')
+    const message = e instanceof Error ? e.message : i18n.t('ui.error.unknown')
+    showToast(message, 'danger')
   }
 }
 

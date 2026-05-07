@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { i18n } from '#imports'
+import { debug } from '@/utils/logger.ts'
 import { onMounted, ref, useTemplateRef } from 'vue'
 import { copyText } from '@/utils/ui.ts'
 import { addWebhook, deleteWebhook, getWebhook, validateWebhook } from '@/utils/webhooks.ts'
@@ -8,7 +9,7 @@ import { useWebhooks } from '@/composables/useWebhooks.ts'
 import { Modal } from 'bootstrap'
 import DeleteModal from '@/components/DeleteModal.vue'
 
-console.debug('%c WebhooksTable - LOADED', 'color: Orange')
+debug('%c WebhooksTable - LOADED', 'color: Orange')
 
 const items = useWebhooks()
 
@@ -21,9 +22,9 @@ const webhookName = ref('')
 const webhookUrl = ref('')
 
 async function onSubmit(e: SubmitEvent) {
-  console.log('onSubmit:', e)
-  console.log('name:', webhookName.value.trim())
-  console.log('url:', webhookUrl.value.trim())
+  debug('onSubmit:', e)
+  debug('name:', webhookName.value.trim())
+  debug('url:', webhookUrl.value.trim())
 
   if (!webhookUrl.value) {
     showToast('Webhook URL Required!', 'warning')
@@ -33,13 +34,13 @@ async function onSubmit(e: SubmitEvent) {
   try {
     new URL(webhookUrl.value)
     const hook = await getWebhook(webhookUrl.value)
-    console.log('hook:', hook)
+    debug('hook:', hook)
     if (hook) {
       showToast(i18n.t('webhooks.webhookExists'), 'warning')
       return urlInput.value?.focus()
     }
     const data = await validateWebhook(webhookUrl.value)
-    console.log('data:', data)
+    debug('data:', data)
     webhookName.value = webhookName.value || data.name
   } catch (e) {
     console.log(e)
@@ -61,13 +62,13 @@ async function onSubmit(e: SubmitEvent) {
 }
 
 function openDeleteModal(value: string) {
-  console.log('openDeleteModal:', value)
+  debug('openDeleteModal:', value)
   if (!deleteModal.value) return
   deleteModal.value.show(value)
 }
 
 async function confirmDelete(name: string) {
-  console.log('confirmDelete:', name)
+  debug('confirmDelete:', name)
   await deleteWebhook(name)
 }
 

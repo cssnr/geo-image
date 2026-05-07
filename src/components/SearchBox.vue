@@ -35,7 +35,8 @@ async function processForm(event: Event) {
     await openPageUrl(url.href)
     if (props.closeWindow) window.close()
   } catch (e) {
-    if (e instanceof Error) showToast(e.message, 'danger')
+    const message = e instanceof Error ? e.message : i18n.t('ui.error.unknown')
+    showToast(message, 'danger')
   }
 }
 </script>

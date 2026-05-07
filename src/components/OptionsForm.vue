@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { i18n } from '#imports'
+import { debug } from '@/utils/logger.ts'
 import { ref, watch } from 'vue'
 import { validateJSON } from '@/utils/index.ts'
 import { defaultOptions, saveKeyValue } from '@/utils/options.ts'
@@ -35,15 +36,15 @@ watch(
 )
 
 function promptChange() {
-  console.debug('promptChange')
+  debug('promptChange')
   const data = geoPrompt.value
-  console.debug('data:', data)
+  debug('data:', data)
   if (!data) {
     promptInvalid.value = 'Prompt must NOT be empty.'
     return
   }
   const isUnder8KB = new Blob([JSON.stringify(data)]).size < 8000
-  console.debug('data:', data, 'under 8KB:', isUnder8KB)
+  debug('data:', data, 'under 8KB:', isUnder8KB)
   if (!isUnder8KB) {
     promptInvalid.value = 'Prompt must be less than 8kb of data.'
     return
@@ -52,26 +53,23 @@ function promptChange() {
 }
 
 function jsonChange() {
-  console.debug('jsonChange')
+  debug('jsonChange')
   try {
     const data = JSON.parse(geoJSON.value)
-    console.debug('data:', data)
+    debug('data:', data)
     const errors = validateJSON(data)
     if (errors.length) {
-      console.debug('errors:', errors)
+      debug('errors:', errors)
       jsonInvalid.value = errors.join(', ')
       return
     }
     const result = JSON.stringify(data, null, 2)
-    console.debug('result:', result)
+    debug('result:', result)
     saveKeyValue('geoJSON', result)
     geoJSON.value = result
   } catch (e) {
-    console.debug('JSON.parse error:', e)
-    // let err = i18n.t('import.errorJson')
-    // if (e instanceof Error) err += `: ${e}`
-    // TODO: Ensure error is shown...
-    if (e instanceof Error) jsonInvalid.value = e.message
+    debug('JSON.parse error:', e)
+    jsonInvalid.value = e instanceof Error ? e.message : i18n.t('ui.error.unknown')
   }
 }
 
@@ -96,13 +94,13 @@ function resetJSON() {
 const authTokenInput = ref<HTMLInputElement | null>(null)
 
 function showHidePassword(el: HTMLInputElement | null) {
-  console.debug('showHidePassword:', el)
+  debug('showHidePassword:', el)
   if (!el) return
   el.type = el.type === 'password' ? 'text' : 'password'
 }
 
 async function copyInput(el: HTMLInputElement | null) {
-  console.debug('copyInput:', el)
+  debug('copyInput:', el)
   if (!el?.value) {
     return showToast(i18n.t('form.nothingToCopy'), 'warning')
   }
