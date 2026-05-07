@@ -25,7 +25,7 @@ const onChange = () => saveKeyValue(props.id, model.value)
       <label class="form-check-label" :for="id">{{ labelText }}</label>
       <i
         v-if="!isMobile && tooltipText"
-        class="fa-solid fa-circle-info ms-2"
+        class="fa-solid fa-circle-info ms-2 d-none d-sm-inline-block"
         data-bs-toggle="tooltip"
         :data-bs-title="tooltipText"
         v-bs
