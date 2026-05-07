@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import { i18n } from '#imports'
 import { onMounted, ref, useTemplateRef } from 'vue'
+import { copyText } from '@/utils/ui.ts'
 import { addWebhook, deleteWebhook, getWebhook, validateWebhook } from '@/utils/webhooks.ts'
 import { showToast } from '@/composables/useToast.ts'
 import { useWebhooks } from '@/composables/useWebhooks.ts'
 import { Modal } from 'bootstrap'
 import DeleteModal from '@/components/DeleteModal.vue'
-import { copyText } from '@/utils/ui.ts'
 
 console.debug('%c WebhooksTable - LOADED', 'color: Orange')
 
@@ -176,7 +177,9 @@ onMounted(() => {
             </form>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary me-auto" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-secondary me-auto" data-bs-dismiss="modal">
+              {{ i18n.t('ui.action.cancel') }}
+            </button>
             <button type="submit" form="webhooks-form" class="btn btn-primary">Add Webhook</button>
           </div>
         </div>

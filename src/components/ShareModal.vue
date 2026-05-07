@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { useAppConfig } from '#imports'
 import GeoIcon from '@/assets/icon.svg?raw'
+import { copyText } from '@/utils/ui.ts'
 import { getGeoUrl, LocationData } from '@/utils/api.ts'
 import { computed, ref, useTemplateRef } from 'vue'
 import { Modal } from 'bootstrap'
-import { copyText } from '@/utils/ui.ts'
 
 defineExpose({ show })
 
