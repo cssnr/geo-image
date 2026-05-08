@@ -7,8 +7,7 @@ import { type Options, defaultOptions, getOptions } from '@/utils/options.ts'
 import { updateContextMenus } from './menus.ts'
 
 const config = getAppConfig()
-const banner = `
-      %cGeo%cImage   %cv${config.version}%c
+const banner = `      %cGeo%cImage   %cv${config.version}%c
         _,--',   _._.--._____
  .--.--';_'-.', ";_      _.,-'
 .'--'.  _.'    {\`'-;_ .-.>.'

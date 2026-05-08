@@ -28,6 +28,10 @@ WXT_FAKE_DATA=true  # use fake data
 WXT_FAKE_DELAY=3    # add fake delay
 ```
 
+Note: you can also enable this in production builds with a `.env.local` file.
+
+Reference: <https://vite.dev/guide/env-and-mode>
+
 ### Chrome
 
 ```shell

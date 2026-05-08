@@ -123,7 +123,7 @@ If you run into any issues or need help getting started, please do one of the fo
 
 See the [CONTRIBUTING.md](#contributing-ov-file) for more details.
 
-> Note: This is the new Vue3 Extension.  
+> Note: This is the new TypeScript Vue Extension.  
 > For the VanillaJS Extension see: https://github.com/cssnr/geo-image-js
 
 ## Contributing
