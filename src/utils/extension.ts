@@ -147,8 +147,8 @@ export function openPageUrl(pageArgs: PageArgs) {
 }
 
 // NOTE: This is a WIP method to open an existing page...
-export async function openResult(pageArgs: PageArgs) {
-  debug('openResult - pageArgs:', pageArgs)
+export async function openResult(id: number) {
+  debug('openResult - id:', id)
   const pageUrl = chrome.runtime.getURL('page.html')
   // debug('pageUrl:', pageUrl)
   // const contexts = await chrome.runtime.getContexts({
@@ -168,14 +168,14 @@ export async function openResult(pageArgs: PageArgs) {
       debug('isInFiltered:', isInFiltered)
       if (isInFiltered) {
         await chrome.tabs.update(tab.id, { active: true })
-        await chrome.runtime.sendMessage({ pageArgs, tabId: tab.id })
+        await chrome.runtime.sendMessage({ id, tabId: tab.id })
         return
       }
     }
 
     const context = filtered[0]
     await chrome.tabs.update(context.tabId, { active: true })
-    await chrome.runtime.sendMessage({ pageArgs, tabId: context.tabId })
+    await chrome.runtime.sendMessage({ id, tabId: context.tabId })
     return
 
     // for (const context of filtered) {
@@ -192,8 +192,16 @@ export async function openResult(pageArgs: PageArgs) {
   }
 
   debug('%cTab NOT found... await openPageUrl()', 'color: Tomato')
-  pageArgs.open = true
-  await openPageUrl(pageArgs)
+  // pageArgs.open = true
+  await openPageNew(id, true)
+}
+
+export function openPageNew(id: number, open = false) {
+  const encoded = encodeURIComponent(id)
+  const url = chrome.runtime.getURL(`page.html?id=${encoded}`)
+  debug('openPageUrl - url:', url)
+  if (open) return chrome.tabs.create({ active: true, url })
+  return activateOrOpen(url)
 }
 
 // export async function openResult(srcUrl: string) {

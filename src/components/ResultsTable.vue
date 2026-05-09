@@ -36,7 +36,7 @@ async function onClick(id: number) {
     emit('open', id)
   } else {
     // chrome.runtime.sendMessage({ openResult: srcUrl }).catch(console.error)
-    await openResult({ id })
+    await openResult(id)
   }
   if (props.closeWindow) window.close()
 }

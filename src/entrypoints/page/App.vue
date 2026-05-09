@@ -94,20 +94,25 @@ if (document.title === '') document.title = title
 //     })
 // }
 
-function openItem(srcUrl: string) {
-  debug('openItem:', srcUrl)
-  const url = chrome.runtime.getURL(`page.html?url=${encodeURIComponent(srcUrl)}`)
-  if (window.location.href === url) {
-    debug('%c Already Open', 'color: Tan')
-    historyShown.value = false
-    return
-  }
-  // TODO: This does not activate history from the popup UNLESS history already exists...
-  debug(`pushState - length: ${window.history.length} - url:`, url)
-  window.history.pushState(null, '', url)
+// function openItem(srcUrl: string) {
+//   debug('openItem:', srcUrl)
+//   const url = chrome.runtime.getURL(`page.html?url=${encodeURIComponent(srcUrl)}`)
+//   if (window.location.href === url) {
+//     debug('%c Already Open', 'color: Tan')
+//     historyShown.value = false
+//     return
+//   }
+//   // TODO: This does not activate history from the popup UNLESS history already exists...
+//   debug(`pushState - length: ${window.history.length} - url:`, url)
+//   window.history.pushState(null, '', url)
+//   historyShown.value = false
+//   debug('%c TODO - DISABLED', 'color: Red')
+//   // processData()
+// }
+
+const openItem = (id: number) => {
+  dataId.value = id
   historyShown.value = false
-  debug('%c TODO - DISABLED', 'color: Red')
-  // processData()
 }
 
 async function onMessage(message: any) {
@@ -118,6 +123,11 @@ async function onMessage(message: any) {
       debug('%c --- UPDATING LOCATION ---', 'color: Tomato')
       await updateLocation(dataId.value)
     }
+  }
+  if (message.id || message.tabId) {
+    debug('%c --- LOAD NEW LOCATION ---', 'color: Yellow')
+    // TODO: ADD CHECK FOR PROCESSING ??
+    dataId.value = message.id
   }
   // if (!message.srcUrl || !message.tabId) return debug('no message.srcUrl/tabId')
   // const tab = await chrome.tabs.getCurrent()
