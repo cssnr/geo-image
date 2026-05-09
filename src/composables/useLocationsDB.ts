@@ -1,25 +1,8 @@
 import { openDB } from 'idb'
-import type { LocationData } from '@/utils/api.ts'
 
 const DB_NAME = 'geo-image'
 const DB_VERSION = 1
 const STORE_NAME = 'results'
-
-// export interface LocationData {
-//   url: string
-//   city: string
-//   state: string
-//   country: string
-//   location: string
-//
-//   confidence: string
-//   description: string
-//   explanation: string
-//   latitude?: number
-//   longitude?: number
-//
-//   [key: string]: unknown
-// }
 
 const dbPromise = openDB(DB_NAME, DB_VERSION, {
   upgrade(db, oldVersion) {
@@ -42,8 +25,38 @@ const dbPromise = openDB(DB_NAME, DB_VERSION, {
   },
 })
 
+type InitialLocation = {
+  url?: string
+  blob?: Blob
+}
+
 export function useLocationsDB() {
   const locationDBChannel = new BroadcastChannel('locationDB')
+
+  async function newLocation(entry: InitialLocation): Promise<IDBValidKey> {
+    const db = await dbPromise
+    const result = db.add(STORE_NAME, entry)
+    // locationDBChannel.postMessage('change')
+    return result
+  }
+
+  async function addBlobById(id: IDBValidKey, blob: Blob): Promise<IDBValidKey> {
+    const db = await dbPromise
+    const existing = await db.get(STORE_NAME, id)
+    const result = db.put(STORE_NAME, { ...existing, blob })
+    // locationDBChannel.postMessage('change')
+    return result
+  }
+
+  // async function addBlobToId(
+  //   id: IDBValidKey,
+  //   entry: InitialLocation & { blob: Blob },
+  // ): Promise<IDBValidKey> {
+  //   const db = await dbPromise
+  //   const result = db.put(STORE_NAME, { ...entry, id })
+  //   locationDBChannel.postMessage('change')
+  //   return result
+  // }
 
   async function addLocation(entry: Omit<LocationData, 'id'>): Promise<IDBValidKey> {
     const db = await dbPromise
@@ -53,6 +66,7 @@ export function useLocationsDB() {
   }
 
   async function getByUrl(url: string): Promise<LocationData | undefined> {
+    if (url.startsWith('data')) return undefined
     const db = await dbPromise
     return db.getFromIndex(STORE_NAME, 'url', url)
   }
@@ -110,6 +124,8 @@ export function useLocationsDB() {
     getByState,
     getByCountry,
     getByLocation,
+    newLocation,
+    addBlobById,
     deleteLocation,
     updateLocation,
     locationDBChannel,

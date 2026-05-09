@@ -135,17 +135,20 @@ export function clickOpen(e: Event, close = false) {
     .catch(console.warn)
 }
 
-export function openPageUrl(srcUrl: string, open = false) {
-  const encoded = encodeURIComponent(srcUrl)
-  const url = chrome.runtime.getURL(`page.html?url=${encoded}`)
+export function openPageUrl(pageArgs: PageArgs) {
+  const component = pageArgs.srcUrl || pageArgs.id // NOSONAR
+  if (!component) throw new Error('Must provide srcUrl or id')
+  const encoded = encodeURIComponent(component)
+  const key = pageArgs.srcUrl ? 'srcUrl' : 'id'
+  const url = chrome.runtime.getURL(`page.html?${key}=${encoded}`)
   debug('openPageUrl - url:', url)
-  if (open) return chrome.tabs.create({ active: true, url })
+  if (pageArgs.open) return chrome.tabs.create({ active: true, url })
   return activateOrOpen(url)
 }
 
 // NOTE: This is a WIP method to open an existing page...
-export async function openResult(srcUrl: string) {
-  debug('openResult - srcUrl:', srcUrl)
+export async function openResult(pageArgs: PageArgs) {
+  debug('openResult - pageArgs:', pageArgs)
   const pageUrl = chrome.runtime.getURL('page.html')
   // debug('pageUrl:', pageUrl)
   // const contexts = await chrome.runtime.getContexts({
@@ -165,14 +168,14 @@ export async function openResult(srcUrl: string) {
       debug('isInFiltered:', isInFiltered)
       if (isInFiltered) {
         await chrome.tabs.update(tab.id, { active: true })
-        await chrome.runtime.sendMessage({ srcUrl, tabId: tab.id })
+        await chrome.runtime.sendMessage({ pageArgs, tabId: tab.id })
         return
       }
     }
 
     const context = filtered[0]
     await chrome.tabs.update(context.tabId, { active: true })
-    await chrome.runtime.sendMessage({ srcUrl, tabId: context.tabId })
+    await chrome.runtime.sendMessage({ pageArgs, tabId: context.tabId })
     return
 
     // for (const context of filtered) {
@@ -189,7 +192,8 @@ export async function openResult(srcUrl: string) {
   }
 
   debug('%cTab NOT found... await openPageUrl()', 'color: Tomato')
-  await openPageUrl(srcUrl, true)
+  pageArgs.open = true
+  await openPageUrl(pageArgs)
 }
 
 // export async function openResult(srcUrl: string) {

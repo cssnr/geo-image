@@ -2,15 +2,18 @@
 import { i18n } from '#imports'
 import { debug } from '@/utils/logger.ts'
 import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
-import { type LocationData, getGeoUrl, processUrl } from '@/utils/api.ts'
+import { getGeoUrl } from '@/utils/api.ts'
 import { showToast } from '@/composables/useToast.ts'
 import { openOptions, openPageUrl } from '@/utils/extension.ts'
 import { getConfidenceClass } from '@/utils/index.ts'
+import { useLocationsDB } from '@/composables/useLocationsDB.ts'
 import { isMobile } from '@/utils/system.ts'
 import ToastAlerts from '@/components/ToastAlerts.vue'
 import PanelHeader from '@/components/PanelHeader.vue'
 import ResultsTable from '@/components/ResultsTable.vue'
 import ShareModal from '@/components/ShareModal.vue'
+
+const { getById } = useLocationsDB()
 
 // const shareModal = ref<InstanceType<typeof ShareModal> | null>(null)
 const shareModal = useTemplateRef<InstanceType<typeof ShareModal>>('shareModal')
@@ -21,8 +24,9 @@ const hasError = ref(false)
 const isProcessing = ref(true)
 const historyShown = ref(false)
 
-const geoHref = ref('')
 const data = ref<LocationData | null>(null)
+const dataId = ref<number>(NaN)
+const geoHref = ref('')
 
 const toggleHistory = () => (historyShown.value = !historyShown.value)
 
@@ -44,18 +48,18 @@ function setErrorIcon() {
 
 async function getLocationData(): Promise<LocationData> {
   const params = new URLSearchParams(window.location.search)
-  const url = params.get('url')
-  debug('url:', url)
-  if (url === 'message') {
-    const response = await chrome.runtime.sendMessage('hello')
-    debug('response:', response)
-    if (!response.imageData) throw new Error(i18n.t('page.noImageData'))
-    srcUrl.value = response.imageData
-    throw new Error(i18n.t('page.localNotSupported'))
-  } else {
-    srcUrl.value = url
-    return await processUrl(url)
-  }
+  const id = params.get('id')
+  debug('id:', id)
+  dataId.value = Number.parseInt(id!)
+  if (!dataId.value) throw new Error('Missing ID')
+  const data = await getById(dataId.value)
+  debug('data:', data)
+  if (!data) throw new Error('Missing Data')
+  return data
+  // const url = params.get('url')
+  // debug('url:', url)
+  // srcUrl.value = url
+  // return await processNewUrl(url)
 }
 
 function processData() {
@@ -109,14 +113,15 @@ function popState(event: Event) {
   processData()
 }
 
+if (!chrome.runtime.onMessage.hasListener(onMessage)) {
+  debug('%c chrome.runtime.onMessage.addListener', 'color: Orange')
+  chrome.runtime.onMessage.addListener(onMessage)
+}
+
 onMounted(() => {
   debug(`page/App.vue - onMounted - window.history.length:`, window.history.length)
-  processData()
-  if (!chrome.runtime.onMessage.hasListener(onMessage)) {
-    debug('%c chrome.runtime.onMessage.addListener', 'color: Orange')
-    chrome.runtime.onMessage.addListener(onMessage)
-  }
   window.addEventListener('popstate', popState)
+  processData()
 })
 onUnmounted(() => window.removeEventListener('popstate', popState))
 </script>

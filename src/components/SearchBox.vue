@@ -33,7 +33,7 @@ async function processForm(event: Event) {
     // const encoded = encodeURIComponent(url.href)
     // const page = chrome.runtime.getURL(`page.html?url=${encoded}`)
     // await activateOrOpen(page)
-    await openPageUrl(url.href)
+    await openPageUrl({ srcUrl: url.href })
     if (props.closeWindow) window.close()
   } catch (e) {
     const message = e instanceof Error ? e.message : i18n.t('ui.error.unknown')

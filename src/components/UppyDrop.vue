@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { i18n } from '#imports'
+import { debug } from '@/utils/logger.ts'
 import { ref, onMounted, onUnmounted } from 'vue'
 import { Modal } from 'bootstrap'
 import Uppy from '@uppy/core'
@@ -15,41 +16,34 @@ let uppy: Uppy
 
 function analyzeImage() {
   modal.hide()
-  console.log('Data to Process:', imageSrc.value)
+  debug('Data to Process:', imageSrc.value?.slice(0, 32))
   const url = chrome.runtime.getURL('page.html') + '?url=message'
-  console.log('url:', url)
-  chrome.tabs
-    .create({ active: true, url })
-    .then(() => {
-      chrome.runtime.onMessage.addListener((message: any, _sender, sendResponse) => {
-        console.log('onMessage:', message)
-        const response = { imageData: imageSrc.value }
-        console.log('response:', response)
-        sendResponse(response)
-      })
-    })
-    .finally(() => {
-      // imageSrc.value = null
-      uppy.clear()
-    })
+  debug('url:', url)
+  chrome.runtime.sendMessage({ imageSrc: imageSrc.value })
+  // chrome.tabs
+  //   .create({ active: true, url })
+  //   .then(() => {
+  //     chrome.runtime.onMessage.addListener((message: any, _sender, sendResponse) => {
+  //       debug('onMessage:', message)
+  //       const response = { imageData: imageSrc.value }
+  //       debug('response:', response)
+  //       sendResponse(response)
+  //     })
+  //   })
+  //   .finally(() => {
+  //     // imageSrc.value = null
+  //     uppy.clear()
+  //   })
 }
 
 onMounted(() => {
   modal = new Modal(imageModal.value!)
-
-  imageModal.value!.addEventListener('hidden.bs.modal', () => {
-    // imageSrc.value = null
-    uppy.clear()
-  })
-
-  uppy = new Uppy().use(DropTarget, {
-    target: document.body,
-  })
-
+  imageModal.value!.addEventListener('hidden.bs.modal', () => uppy.clear())
+  uppy = new Uppy().use(DropTarget, { target: '#app' })
   uppy.on('file-added', (file) => {
     const reader = new FileReader()
     reader.onload = (e: ProgressEvent<FileReader>) => {
-      console.log('File contents:', e.target?.result)
+      debug('File contents:', e.target?.result)
       imageSrc.value = e.target?.result as string
       modal.show()
     }
@@ -57,9 +51,7 @@ onMounted(() => {
   })
 })
 
-onUnmounted(() => {
-  uppy.destroy()
-})
+onUnmounted(() => uppy.destroy())
 </script>
 
 <template>

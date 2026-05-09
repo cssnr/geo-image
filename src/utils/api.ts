@@ -1,80 +1,74 @@
 import { i18n } from '#imports'
 import { debug } from '@/utils/logger.ts'
+import { openPageUrl } from '@/utils/extension.ts'
 import { getOptions } from '@/utils/options.ts'
-import { useLocationsDB } from '@/composables/useLocationsDB'
-import { sendWebhooks } from '@/utils/webhooks.ts'
 import { getFakeData } from '@/utils/fake.ts'
+import { sendWebhooks } from '@/utils/webhooks.ts'
+import { useLocationsDB } from '@/composables/useLocationsDB'
 import { ApiError, createUserContent, GoogleGenAI } from '@google/genai'
 
-const { addLocation, getByUrl } = useLocationsDB()
+const { addBlobById, getByUrl, newLocation, updateLocation } = useLocationsDB()
 
-export interface LocationData {
-  id?: number
+export async function processNewUrl(url?: string) {
+  debug('processNewUrl:', url?.slice(0, 32))
+  if (!url) throw new Error('Missing URL')
+  let idbKey
+  if (!url.startsWith('data')) {
+    debug('%c processNewUrl - URL', 'color: Yellow')
+    const result = await getByUrl(url)
+    debug('result:', result)
+    if (result) {
+      debug(`%c FOUND EXISTING RESULT ID: ${result.id}`, 'color: Lime')
+      await openPageUrl({ id: result.id })
+      return
+    }
+    idbKey = await newLocation({ url })
+  } else {
+    debug('%c processNewUrl - DATA', 'color: Yellow')
+    const response = await fetch(url)
+    const blob = await response.blob()
+    debug('blob:', blob)
+    idbKey = await newLocation({ blob })
+  }
+  const id = idbKey as number
+  debug('idbKey:', id)
 
-  url: string
-  city: string
-  state: string
-  country: string
-  location: string
+  await openPageUrl({ id })
 
-  description: string
-  explanation: string
-  confidence: number
-  latitude?: number
-  longitude?: number
-
-  [key: string]: unknown
+  await processIdUrl(id, url)
 }
 
-// Helper Function to Process a URL
-export async function processUrl(url?: string | null): Promise<LocationData> {
-  if (!url) throw new Error('No URL in Query!')
+async function processIdUrl(id: number, url: string) {
+  debug('processIdUrl:', id, url.slice(0, 32))
+  const [mimeType, base64] = await parseOrDownload(id, url)
+  debug('mimeType:', mimeType)
+  debug('base64:', base64)
 
-  // Get Existing Result
-  const result = await getByUrl(url)
-  debug('result:', result)
-  if (result) {
-    debug(`%c Found Result ID: ${result.id}`, 'color: Lime')
-    return result
-  }
-
-  // Get New Result
-  const data = await downloadAndProcess(url)
-
-  // Save to IDB
-  const idbKey = await addLocation(data)
-  debug(`%c Added Result ID: ${idbKey as number}`, 'color: Yellow')
+  // Get Data
+  const data = await getData(mimeType, base64)
+  debug('data:', data)
+  if (!data) throw new Error('No Data in Response!')
+  data.id = id
+  await updateLocation(data)
+  debug(`%c Added Result ID: ${id}`, 'color: Yellow')
 
   // Send Webhooks
   sendWebhooks(data).catch(console.error)
 
-  return data
+  // TODO: Send message to open tab...
 }
 
-async function downloadAndProcess(url: string): Promise<LocationData> {
-  if (!import.meta.env.WXT_FAKE_DATA) {
-    // Download image
-    const { base64, mimeType } = await downloadImage(url)
-    // Get API data
-    const data = await getData(mimeType, base64)
-    if (!data) throw new Error('No Data in Response!')
-    // Add URL to data
-    data.url = url
-    debug('data:', data)
-    return data
-  } else {
-    // Fake Data
-    const data = await getFakeData(url)
+async function getData(mimeType: string, data: string) {
+  debug('getData:', mimeType, data.slice(0, 32))
+
+  if (import.meta.env.WXT_FAKE_DATA) {
+    debug('%c --- FAKE DATA FAKE DATA FAKE ---', 'color: Lime')
     if (import.meta.env.WXT_FAKE_DELAY) {
       const timeout = Number.parseInt(import.meta.env.WXT_FAKE_DELAY) * 1000
       await new Promise((resolve) => setTimeout(resolve, timeout))
     }
-    return data!
+    return await getFakeData()
   }
-}
-
-async function getData(mimeType: string, data: string) {
-  debug('getData:', mimeType)
 
   const options = await getOptions()
   debug('options:', options)
@@ -118,33 +112,45 @@ async function getData(mimeType: string, data: string) {
   return result
 }
 
-async function downloadImage(url: string) {
+async function parseOrDownload(id: number, url: string) {
+  if (url.startsWith('data:')) {
+    const [meta, base64] = url.split(',')
+    debug('meta:', meta)
+    debug('base64:', base64)
+    const mimeType = meta.split(':')[1].split(';')[0]
+    return [mimeType, base64]
+  } else {
+    const blob = await downloadImage(url)
+    debug('downloadImage - blob:', blob)
+    await addBlobById(id, blob)
+    const mimeType = blob.type
+    const base64 = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve((reader.result as string).split(',')[1])
+      reader.onerror = reject
+      reader.readAsDataURL(blob)
+    })
+    return [mimeType, base64]
+  }
+}
+
+async function downloadImage(url: string): Promise<Blob> {
   debug('downloadImage:', url)
   const response = await fetch(url)
   if (response.status !== 200) {
-    const error = `Download Error: ${response.status}: ${response.statusText}`
-    throw new Error(error)
+    throw new Error(`Download Error: ${response.status}: ${response.statusText}`)
   }
-  const buffer = await response.arrayBuffer()
-  const bytes = new Uint8Array(buffer)
-  const chunkSize = 0x8000 // 32KB
-  let binary = ''
-  for (let i = 0; i < bytes.length; i += chunkSize) {
-    binary += String.fromCharCode.apply(
-      null,
-      Array.from(bytes.subarray(i, i + chunkSize)),
-    )
-  }
-  const base64 = btoa(binary)
 
   const mimeType = response.headers.get('content-type')
   debug('mimeType:', mimeType)
   if (!mimeType?.toLowerCase().startsWith('image')) {
     throw new Error(`Unknown/Unsupported MIME Type: ${mimeType}`)
   }
-  return { base64, mimeType }
+
+  return response.blob()
 }
 
+// TODO: This does not belong here...
 export function getGeoUrl(data: LocationData): string {
   if (!data.latitude || !data.longitude) return ''
 
@@ -157,3 +163,21 @@ export function getGeoUrl(data: LocationData): string {
   const pagename = encodeURIComponent(`${data.country}, ${data.state}, ${data.city}`)
   return `https://geohack.toolforge.org/geohack.php?params=${lat}_${latDir}_${lon}_${lonDir}&pagename=${pagename}`
 }
+
+// function base64ToBlob(base64: string, mimeType: string): Blob {
+//   const bytes = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0))
+//   return new Blob([bytes], { type: mimeType })
+// }
+
+// function dataUrlToBlob(dataUrl: string): Blob {
+//   const [header, base64] = dataUrl.split(',')
+//   const mimeType = header.match(/:(.*?);/)?.[1] ?? 'application/octet-stream'
+//
+//   const bytes = atob(base64)
+//   const buffer = new Uint8Array(bytes.length)
+//   for (let i = 0; i < bytes.length; i++) {
+//     buffer[i] = bytes.charCodeAt(i)
+//   }
+//
+//   return new Blob([buffer], { type: mimeType })
+// }

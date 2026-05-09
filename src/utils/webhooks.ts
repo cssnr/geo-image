@@ -1,6 +1,6 @@
 import { i18n } from '#imports'
 import { debug } from '@/utils/logger.ts'
-import { getGeoUrl, LocationData } from '@/utils/api.ts'
+import { getGeoUrl } from '@/utils/api.ts'
 import { showToast } from '@/composables/useToast.ts'
 
 export interface Webhook {
