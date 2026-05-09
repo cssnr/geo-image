@@ -13,7 +13,7 @@ declare interface LocationData {
   latitude?: number
   longitude?: number
 
-  data?: Blob
+  blob?: Blob
 
   [key: string]: unknown
 }

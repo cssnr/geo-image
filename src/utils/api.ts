@@ -7,7 +7,7 @@ import { sendWebhooks } from '@/utils/webhooks.ts'
 import { useLocationsDB } from '@/composables/useLocationsDB'
 import { ApiError, createUserContent, GoogleGenAI } from '@google/genai'
 
-const { addBlobById, getByUrl, newLocation, updateLocation } = useLocationsDB()
+const { addBlobById, getByUrl, newLocation, updateById } = useLocationsDB()
 
 export async function processNewUrl(url?: string) {
   debug('processNewUrl:', url?.slice(0, 32))
@@ -49,13 +49,14 @@ async function processIdUrl(id: number, url: string) {
   debug('data:', data)
   if (!data) throw new Error('No Data in Response!')
   data.id = id
-  await updateLocation(data)
+  await updateById(id, data)
   debug(`%c Added Result ID: ${id}`, 'color: Yellow')
 
   // Send Webhooks
   sendWebhooks(data).catch(console.error)
 
   // TODO: Send message to open tab...
+  chrome.runtime.sendMessage({ newLocation: id }).catch(console.error)
 }
 
 async function getData(mimeType: string, data: string) {

@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { i18n } from '#imports'
 import { debug } from '@/utils/logger.ts'
-import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
-import { getGeoUrl } from '@/utils/api.ts'
-import { showToast } from '@/composables/useToast.ts'
-import { openOptions, openPageUrl } from '@/utils/extension.ts'
+import { onMounted, ref, useTemplateRef, watch } from 'vue'
+import { openOptions } from '@/utils/extension.ts'
 import { getConfidenceClass } from '@/utils/index.ts'
 import { useLocationsDB } from '@/composables/useLocationsDB.ts'
 import { isMobile } from '@/utils/system.ts'
@@ -12,6 +10,9 @@ import ToastAlerts from '@/components/ToastAlerts.vue'
 import PanelHeader from '@/components/PanelHeader.vue'
 import ResultsTable from '@/components/ResultsTable.vue'
 import ShareModal from '@/components/ShareModal.vue'
+
+// import { getGeoUrl } from '@/utils/api.ts'
+// import { showToast } from '@/composables/useToast.ts'
 
 const { getById } = useLocationsDB()
 
@@ -21,12 +22,22 @@ const shareModal = useTemplateRef<InstanceType<typeof ShareModal>>('shareModal')
 const srcUrl = ref<string | null>(null)
 const errorMessage = ref('')
 const hasError = ref(false)
-const isProcessing = ref(true)
+// const isProcessing = ref(true)
 const historyShown = ref(false)
 
 const data = ref<LocationData | null>(null)
 const dataId = ref<number>(NaN)
 const geoHref = ref('')
+
+watch(dataId, updateLocation)
+
+async function updateLocation(id: number) {
+  console.log('%c --- WATCH:', 'color: MediumSeaGreen', id)
+  const location = await getById(id)
+  debug('location:', location)
+  data.value = location || null
+  if (data.value?.blob) srcUrl.value = URL.createObjectURL(data.value.blob)
+}
 
 const toggleHistory = () => (historyShown.value = !historyShown.value)
 
@@ -34,54 +45,54 @@ const config = useAppConfig()
 const title = `${config.name} ${i18n.t('page.processing')}`
 if (document.title === '') document.title = title
 
-function setErrorIcon() {
-  const href = chrome.runtime.getURL('/images/error128.png')
-  const link = document.querySelector<HTMLLinkElement>('link[rel*="icon"]')
-  if (!link) return console.warn('favicon link not found')
-  link.href = href
-  debug('link.href:', link.href)
-  // document.querySelectorAll<HTMLLinkElement>('link[rel*="icon"]').forEach((link) => {
-  //   link.href = href
-  //   debug('link.href:', link.href)
-  // })
-}
+// function setErrorIcon() {
+//   const href = chrome.runtime.getURL('/images/error128.png')
+//   const link = document.querySelector<HTMLLinkElement>('link[rel*="icon"]')
+//   if (!link) return console.warn('favicon link not found')
+//   link.href = href
+//   debug('link.href:', link.href)
+//   // document.querySelectorAll<HTMLLinkElement>('link[rel*="icon"]').forEach((link) => {
+//   //   link.href = href
+//   //   debug('link.href:', link.href)
+//   // })
+// }
 
-async function getLocationData(): Promise<LocationData> {
-  const params = new URLSearchParams(window.location.search)
-  const id = params.get('id')
-  debug('id:', id)
-  dataId.value = Number.parseInt(id!)
-  if (!dataId.value) throw new Error('Missing ID')
-  const data = await getById(dataId.value)
-  debug('data:', data)
-  if (!data) throw new Error('Missing Data')
-  return data
-  // const url = params.get('url')
-  // debug('url:', url)
-  // srcUrl.value = url
-  // return await processNewUrl(url)
-}
+// async function getLocationData(): Promise<LocationData> {
+//   const params = new URLSearchParams(window.location.search)
+//   const id = params.get('id')
+//   debug('id:', id)
+//   dataId.value = Number.parseInt(id!)
+//   if (!dataId.value) throw new Error('Missing ID')
+//   const data = await getById(dataId.value)
+//   debug('data:', data)
+//   if (!data) throw new Error('Missing Data')
+//   return data
+//   // const url = params.get('url')
+//   // debug('url:', url)
+//   // srcUrl.value = url
+//   // return await processNewUrl(url)
+// }
 
-function processData() {
-  getLocationData()
-    .then((result) => {
-      debug('result:', result)
-      data.value = result
-      geoHref.value = getGeoUrl(data.value)
-      document.title = `${data.value.location} - ${title}`
-    })
-    .catch((e) => {
-      debug(e)
-      errorMessage.value = e.message
-      document.title = `${title} - ${i18n.t('page.error')}`
-      setErrorIcon()
-      showToast(e.message, 'danger')
-      hasError.value = true
-    })
-    .finally(() => {
-      isProcessing.value = false
-    })
-}
+// function processData() {
+//   getLocationData()
+//     .then((result) => {
+//       debug('result:', result)
+//       data.value = result
+//       geoHref.value = getGeoUrl(data.value)
+//       document.title = `${data.value.location} - ${title}`
+//     })
+//     .catch((e) => {
+//       debug(e)
+//       errorMessage.value = e.message
+//       document.title = `${title} - ${i18n.t('page.error')}`
+//       setErrorIcon()
+//       showToast(e.message, 'danger')
+//       hasError.value = true
+//     })
+//     .finally(() => {
+//       isProcessing.value = false
+//     })
+// }
 
 function openItem(srcUrl: string) {
   debug('openItem:', srcUrl)
@@ -95,23 +106,31 @@ function openItem(srcUrl: string) {
   debug(`pushState - length: ${window.history.length} - url:`, url)
   window.history.pushState(null, '', url)
   historyShown.value = false
-  processData()
+  debug('%c TODO - DISABLED', 'color: Red')
+  // processData()
 }
 
 async function onMessage(message: any) {
   debug('%c page/App.vue - onMessage:', 'Color: PaleGreen', message)
-  if (!message.srcUrl || !message.tabId) return debug('no message.srcUrl/tabId')
-  const tab = await chrome.tabs.getCurrent()
-  if (message.tabId !== tab?.id) return debug('WRONG TAB:', tab?.id)
-  if (isProcessing.value) return await openPageUrl(message.srcUrl)
-  openItem(message.srcUrl)
+  if (message.newLocation) {
+    debug('%c NEW LOCATION:', 'color: Lime', message.newLocation)
+    if (message.newLocation === dataId.value) {
+      debug('%c --- UPDATING LOCATION ---', 'color: Tomato')
+      await updateLocation(dataId.value)
+    }
+  }
+  // if (!message.srcUrl || !message.tabId) return debug('no message.srcUrl/tabId')
+  // const tab = await chrome.tabs.getCurrent()
+  // if (message.tabId !== tab?.id) return debug('WRONG TAB:', tab?.id)
+  // if (isProcessing.value) return await openPageUrl(message.srcUrl)
+  // openItem(message.srcUrl)
 }
 
-function popState(event: Event) {
-  debug('popstate:', event)
-  debug('window.location:', window.location)
-  processData()
-}
+// function popState(event: Event) {
+//   debug('popstate:', event)
+//   debug('window.location:', window.location)
+//   processData()
+// }
 
 if (!chrome.runtime.onMessage.hasListener(onMessage)) {
   debug('%c chrome.runtime.onMessage.addListener', 'color: Orange')
@@ -120,10 +139,15 @@ if (!chrome.runtime.onMessage.hasListener(onMessage)) {
 
 onMounted(() => {
   debug(`page/App.vue - onMounted - window.history.length:`, window.history.length)
-  window.addEventListener('popstate', popState)
-  processData()
+  // window.addEventListener('popstate', popState)
+  // processData()
+
+  const params = new URLSearchParams(window.location.search)
+  const id = params.get('id')
+  debug('id:', id)
+  dataId.value = Number.parseInt(id!)
 })
-onUnmounted(() => window.removeEventListener('popstate', popState))
+// onUnmounted(() => window.removeEventListener('popstate', popState))
 </script>
 
 <template>
@@ -135,7 +159,7 @@ onUnmounted(() => window.removeEventListener('popstate', popState))
     <div class="container-fluid p-3 h-100">
       <div v-if="!historyShown" class="pb-5">
         <div
-          v-if="isProcessing"
+          v-if="!data?.location"
           id="processing"
           class="fs-1 text-center py-5 h-100 img-thumbnail"
           :style="{ backgroundImage: 'url(' + srcUrl + ')' }"
@@ -157,7 +181,7 @@ onUnmounted(() => window.removeEventListener('popstate', popState))
           <img v-if="srcUrl" :src="srcUrl" alt="Image" class="img-thumbnail" />
         </div>
 
-        <div v-if="data">
+        <div v-if="data?.location">
           <div class="row g-4">
             <div class="col-12 col-md-7 col-lg-8 d-flex flex-column gap-2">
               <div>
@@ -216,7 +240,7 @@ onUnmounted(() => window.removeEventListener('popstate', popState))
   <!--<footer class="flex-shrink-0"></footer>-->
 
   <button
-    v-if="!isProcessing"
+    v-if="data?.location"
     id="toggle-history"
     type="button"
     :class="['btn', historyShown ? 'btn-primary' : 'btn-link']"

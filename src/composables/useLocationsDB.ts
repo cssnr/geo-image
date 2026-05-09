@@ -48,6 +48,15 @@ export function useLocationsDB() {
     return result
   }
 
+  async function updateById(id: IDBValidKey, entry: LocationData): Promise<IDBValidKey> {
+    const db = await dbPromise
+    const existing = await db.get(STORE_NAME, id)
+    if (!existing) throw new Error(`No entry for ID: ${String(id)}`)
+    const result = await db.put(STORE_NAME, { ...existing, ...entry })
+    locationDBChannel.postMessage('change')
+    return result
+  }
+
   // async function addBlobToId(
   //   id: IDBValidKey,
   //   entry: InitialLocation & { blob: Blob },
@@ -60,7 +69,7 @@ export function useLocationsDB() {
 
   async function addLocation(entry: Omit<LocationData, 'id'>): Promise<IDBValidKey> {
     const db = await dbPromise
-    const result = db.add(STORE_NAME, entry)
+    const result = await db.add(STORE_NAME, entry)
     locationDBChannel.postMessage('change')
     return result
   }
@@ -103,14 +112,14 @@ export function useLocationsDB() {
 
   async function deleteLocation(id: number): Promise<void> {
     const db = await dbPromise
-    const result = db.delete(STORE_NAME, id)
+    const result = await db.delete(STORE_NAME, id)
     locationDBChannel.postMessage('change')
     return result
   }
 
   async function updateLocation(entry: LocationData): Promise<IDBValidKey> {
     const db = await dbPromise
-    const result = db.put(STORE_NAME, entry)
+    const result = await db.put(STORE_NAME, entry)
     locationDBChannel.postMessage('change')
     return result
   }
@@ -126,6 +135,7 @@ export function useLocationsDB() {
     getByLocation,
     newLocation,
     addBlobById,
+    updateById,
     deleteLocation,
     updateLocation,
     locationDBChannel,
