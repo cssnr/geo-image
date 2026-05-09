@@ -16,6 +16,8 @@ import ShareModal from '@/components/ShareModal.vue'
 
 const { getById } = useLocationsDB()
 
+const config = useAppConfig()
+
 // const shareModal = ref<InstanceType<typeof ShareModal> | null>(null)
 const shareModal = useTemplateRef<InstanceType<typeof ShareModal>>('shareModal')
 
@@ -37,13 +39,12 @@ async function updateLocation(id: number) {
   debug('location:', location)
   data.value = location || null
   if (data.value?.blob) srcUrl.value = URL.createObjectURL(data.value.blob)
+  document.title = data.value?.location
+    ? `${data.value?.location} - ${config.name}`
+    : `${config.name} ${i18n.t('page.processing')}`
 }
 
 const toggleHistory = () => (historyShown.value = !historyShown.value)
-
-const config = useAppConfig()
-const title = `${config.name} ${i18n.t('page.processing')}`
-if (document.title === '') document.title = title
 
 // function setErrorIcon() {
 //   const href = chrome.runtime.getURL('/images/error128.png')
