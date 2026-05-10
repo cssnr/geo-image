@@ -56,6 +56,8 @@ async function onMessage(message: any) {
   }
   if (message.id || message.tabId) {
     debug('%c --- LOAD NEW LOCATION ---', 'color: Yellow')
+    const tab = await chrome.tabs.getCurrent()
+    if (message.tabId !== tab?.id) return debug('WRONG TAB:', 'color: Tomato', tab?.id)
     // TODO: ADD CHECK FOR PROCESSING ??
     dataId.value = message.id
   }
