@@ -41,7 +41,11 @@ async function updateLocation(id: number) {
     return
   }
   data.value = location
-  if (data.value?.blob) srcUrl.value = URL.createObjectURL(data.value.blob)
+  if (data.value?.blob) {
+    srcUrl.value = URL.createObjectURL(data.value.blob)
+  } else if (data.value?.url) {
+    srcUrl.value = data.value.url
+  }
   document.title = data.value?.location
     ? `${data.value?.location} - ${config.name}`
     : `${config.name} ${i18n.t('page.processing')}`
