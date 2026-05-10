@@ -77,7 +77,7 @@ onUnmounted(() => uppy.destroy())
         </div>
         <div class="modal-body text-center p-2">
           <div class="modal-body text-center p-2">
-            <img v-if="imageSrc" :src="imageSrc" alt="Image" class="img-fluid img-thumbnail" />
+            <img v-if="imageSrc" :src="imageSrc" alt="Image" class="img-fluid img-thumbnail image" />
           </div>
         </div>
         <div class="modal-footer p-2">
@@ -92,3 +92,9 @@ onUnmounted(() => uppy.destroy())
     </div>
   </div>
 </template>
+
+<style scoped>
+.image {
+  max-height: 50vh;
+}
+</style>

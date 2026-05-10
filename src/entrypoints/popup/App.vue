@@ -30,7 +30,7 @@ const gutter = computed(() => (isFirefox ? 'stable' : undefined))
 <style scoped>
 #popupContainer {
   width: v-bind(width);
-  min-height: 320px;
+  min-height: 360px;
   overflow-y: auto;
   scrollbar-gutter: v-bind(gutter);
 }
