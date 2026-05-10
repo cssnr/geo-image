@@ -11,6 +11,7 @@ import ToastAlerts from '@/components/ToastAlerts.vue'
 import PanelHeader from '@/components/PanelHeader.vue'
 import ResultsTable from '@/components/ResultsTable.vue'
 import ShareModal from '@/components/ShareModal.vue'
+import UppyDrop from '@/components/UppyDrop.vue'
 
 const { getById } = useLocationsDB()
 
@@ -182,8 +183,9 @@ onUnmounted(() => chrome.runtime.onMessage.removeListener(onMessage))
 
   <ShareModal ref="shareModal" />
 
-  <!--<OptionsOffscreen />-->
+  <UppyDrop />
 
+  <!--<OptionsOffscreen />-->
   <ToastAlerts />
   <!--<BackToTop />-->
 </template>

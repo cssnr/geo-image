@@ -26,7 +26,7 @@ import UppyDrop from '@/components/UppyDrop.vue'
     <PanelFooter />
   </footer>
 
+  <UppyDrop />
   <ToastAlerts />
   <BackToTop />
-  <UppyDrop />
 </template>
