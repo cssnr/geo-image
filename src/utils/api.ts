@@ -7,12 +7,23 @@ import { sendWebhooks } from '@/utils/webhooks.ts'
 import { useLocationsDB } from '@/composables/useLocationsDB'
 import { ApiError, createUserContent, GoogleGenAI } from '@google/genai'
 
-const { addBlobById, getByUrl, newLocation, updateById } = useLocationsDB()
+const { addBlobById, deleteLocation, getByUrl, newLocation, updateById } =
+  useLocationsDB()
 
 // TODO: Error Handling
 
 export async function processNewUrl(url?: string) {
   debug('processNewUrl:', url?.slice(0, 32))
+
+  // TODO: Temporary Stop-Gap Check
+  const options = await getOptions()
+  debug('options:', options)
+  if (!options.authToken) {
+    await chrome.storage.local.set({ lastError: i18n.t('ui.error.setApiKey') })
+    await openPage(0)
+    return
+  }
+
   if (!url) throw new Error('Missing URL')
   let idbKey
   if (!url.startsWith('data')) {
@@ -35,9 +46,23 @@ export async function processNewUrl(url?: string) {
   const id = idbKey as number
   debug('idbKey:', id)
 
-  await openPage(id)
-
-  await processIdUrl(id, url)
+  openPage(id).catch(console.error)
+  let error: string
+  processIdUrl(id, url)
+    .then(() => {
+      debug('SUCCESS')
+    })
+    .catch(async (e) => {
+      debug('ERROR', e)
+      error = e.message
+      chrome.storage.local.set({ lastError: error }).catch(console.debug)
+      await deleteLocation(id) // TODO: Handle Errors
+    })
+    .finally(() => {
+      debug('FINALLY')
+      const message = { newLocation: id, error }
+      chrome.runtime.sendMessage(message).catch(console.debug)
+    })
 }
 
 async function processIdUrl(id: number, url: string) {
@@ -57,8 +82,8 @@ async function processIdUrl(id: number, url: string) {
   // Send Webhooks
   sendWebhooks(data).catch(console.error)
 
-  // TODO: Send message to open tab...
-  chrome.runtime.sendMessage({ newLocation: id }).catch(console.error)
+  // // NOTE: This is done in the outer method now...
+  // chrome.runtime.sendMessage({ newLocation: id }).catch(console.error)
 }
 
 async function getData(mimeType: string, data: string) {
@@ -123,6 +148,7 @@ async function parseOrDownload(id: number, url: string) {
     const mimeType = meta.split(':')[1].split(';')[0]
     return [mimeType, base64]
   } else {
+    // await new Promise((resolve) => setTimeout(resolve, 1000))
     const blob = await downloadImage(url)
     debug('downloadImage - blob:', blob)
     await addBlobById(id, blob)

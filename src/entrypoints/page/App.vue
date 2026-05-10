@@ -23,7 +23,6 @@ const srcUrl = ref<string | null>(null)
 const historyShown = ref(false)
 
 const errorMessage = ref('')
-const hasError = ref(false)
 
 const data = ref<LocationData | null>(null)
 const dataId = ref<number>(NaN)
@@ -31,10 +30,17 @@ const dataId = ref<number>(NaN)
 watch(dataId, updateLocation)
 
 async function updateLocation(id: number) {
-  console.log('%c --- WATCH:', 'color: PaleGreen', id)
+  debug('%c --- WATCH:', 'color: PaleGreen', id)
   const location = await getById(id)
   debug('location:', location)
-  data.value = location || null
+  if (!location) {
+    // TODO: Error on Loading
+    debug('%c --- ERROR updateLocation ---', 'color: Tomato')
+    const { lastError } = await chrome.storage.local.get(['lastError'])
+    if (lastError) errorMessage.value = lastError as string
+    return
+  }
+  data.value = location
   if (data.value?.blob) srcUrl.value = URL.createObjectURL(data.value.blob)
   document.title = data.value?.location
     ? `${data.value?.location} - ${config.name}`
@@ -44,23 +50,52 @@ async function updateLocation(id: number) {
 const toggleHistory = () => (historyShown.value = !historyShown.value)
 
 const openItem = (id: number) => {
-  dataId.value = id
-  historyShown.value = false
+  // dataId.value = id
+  pushState(id)
+  // historyShown.value = false
 }
 
 async function onMessage(message: any) {
   debug('%c page/App.vue - onMessage:', 'Color: MediumSeaGreen', message)
   if (message.newLocation === dataId.value) {
     debug('%c --- UPDATING LOCATION ---', 'color: Yellow')
+    if (message.error) {
+      // TODO: Error on Message
+      debug('%c --- ERROR onMessage ---', 'color: Tomato')
+      errorMessage.value = message.error
+      return
+    }
     await updateLocation(dataId.value)
   }
   if (message.id || message.tabId) {
     debug('%c --- LOAD NEW LOCATION ---', 'color: Yellow')
     const tab = await chrome.tabs.getCurrent()
-    if (message.tabId !== tab?.id) return debug('WRONG TAB:', 'color: Tomato', tab?.id)
-    // TODO: ADD CHECK FOR PROCESSING ??
-    dataId.value = message.id
+    if (message.tabId !== tab?.id) return debug('%c WRONG TAB:', 'color: Tomato', tab?.id)
+    // dataId.value = message.id
+    pushState(message.id)
   }
+}
+
+function pushState(id: number | string) {
+  debug('pushState - dataId.value:', dataId.value, 'id:', id)
+  historyShown.value = false
+  if (dataId.value === id) return debug('%c ID Not Changed', 'color: Orange')
+  dataId.value = Number(id)
+  // const href = chrome.runtime.getURL(`page.html?id=${encodeURIComponent(message.id)}`)
+  const url = new URL(window.location.href)
+  url.searchParams.set('id', String(id))
+  debug('pushState:', url.href)
+  window.history.pushState(null, '', url.href)
+}
+
+function popState(event?: Event) {
+  debug('popstate:', event)
+  debug('window.location:', window.location)
+  const params = new URLSearchParams(window.location.search)
+  const id = Number.parseInt(params.get('id') || '')
+  debug('id:', id, 'dataId.value:', dataId.value)
+  if (dataId?.value !== id) dataId.value = id
+  // processData()
 }
 
 if (!chrome.runtime.onMessage.hasListener(onMessage)) {
@@ -68,14 +103,15 @@ if (!chrome.runtime.onMessage.hasListener(onMessage)) {
 }
 
 onMounted(() => {
-  debug('--- %cGeo%cImage%c ---', 'color: #ee00ff', 'color: #0dcaf0')
-  const params = new URLSearchParams(window.location.search)
-  const id = params.get('id')
-  debug('id:', id)
-  dataId.value = Number.parseInt(id!)
+  debug('--- %cGeo%cImage%c---', 'color: #ee00ff', 'color: #0dcaf0')
+  popState()
+  window.addEventListener('popstate', popState)
 })
 
-onUnmounted(() => chrome.runtime.onMessage.removeListener(onMessage))
+onUnmounted(() => {
+  window.removeEventListener('popstate', popState)
+  chrome.runtime.onMessage.removeListener(onMessage)
+})
 </script>
 
 <template>
@@ -87,7 +123,7 @@ onUnmounted(() => chrome.runtime.onMessage.removeListener(onMessage))
     <div class="container-fluid p-3 h-100">
       <div v-if="!historyShown" class="pb-5">
         <div
-          v-if="!data?.location"
+          v-if="!data?.location && !errorMessage"
           id="processing"
           class="fs-1 text-center py-5 h-100 img-thumbnail"
           :style="{ backgroundImage: 'url(' + srcUrl + ')' }"
@@ -96,10 +132,9 @@ onUnmounted(() => chrome.runtime.onMessage.removeListener(onMessage))
           <p><i class="fa-solid fa-sync fa-spin fa-xl"></i></p>
         </div>
 
-        <div v-if="hasError">
+        <div v-if="errorMessage">
           <h1>{{ i18n.t('page.errorMsg') }}</h1>
           <div class="alert alert-danger my-3" role="alert">{{ errorMessage }}</div>
-          <p class="fst-italic">{{ i18n.t('page.errorTip') }}</p>
           <div class="d-flex gap-2">
             <button type="button" class="btn btn-outline-primary" @click="openOptions()">
               <i class="fa-solid fa-cog me-1"></i> {{ i18n.t('ctx.openOptions') }}

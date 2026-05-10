@@ -48,7 +48,10 @@ export function useLocationsDB() {
     return result
   }
 
-  async function updateById(id: IDBValidKey, entry: LocationData): Promise<IDBValidKey> {
+  async function updateById(
+    id: IDBValidKey,
+    entry: Partial<LocationData>,
+  ): Promise<IDBValidKey> {
     const db = await dbPromise
     const existing = await db.get(STORE_NAME, id)
     if (!existing) throw new Error(`No entry for ID: ${String(id)}`)

@@ -129,7 +129,6 @@ page:
   processingMsg: Processing Image...
   error: Error
   errorMsg: GeoImage Analysis Error
-  errorTip: "Tip: once the error is resolved you can refresh this page..."
   noImageData: No Image Data
   localNotSupported: Local Analysis Not Yet Supported!
   imageAlt: Image

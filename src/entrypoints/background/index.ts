@@ -89,7 +89,7 @@ function onChanged(changes: Record<string, chrome.storage.StorageChange>) {
   if (changes?.options) {
     const oldValue = changes.options?.oldValue as Options | undefined
     const newValue = changes.options?.newValue as Options | undefined
-    if (!oldValue || !newValue) return console.log('missing oldValue or newValue')
+    if (!oldValue || !newValue) return debug('missing oldValue or newValue')
 
     if (oldValue?.contextMenu !== newValue.contextMenu) {
       updateContextMenus(newValue.contextMenu).catch(console.warn)
