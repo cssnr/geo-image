@@ -1,6 +1,6 @@
 import { i18n } from '#imports'
 import { debug } from '@/utils/logger.ts'
-import { openPageUrl } from '@/utils/extension.ts'
+import { openPage } from '@/utils/extension.ts'
 import { getOptions } from '@/utils/options.ts'
 import { getFakeData } from '@/utils/fake.ts'
 import { sendWebhooks } from '@/utils/webhooks.ts'
@@ -8,6 +8,8 @@ import { useLocationsDB } from '@/composables/useLocationsDB'
 import { ApiError, createUserContent, GoogleGenAI } from '@google/genai'
 
 const { addBlobById, getByUrl, newLocation, updateById } = useLocationsDB()
+
+// TODO: Error Handling
 
 export async function processNewUrl(url?: string) {
   debug('processNewUrl:', url?.slice(0, 32))
@@ -17,9 +19,9 @@ export async function processNewUrl(url?: string) {
     debug('%c processNewUrl - URL', 'color: Yellow')
     const result = await getByUrl(url)
     debug('result:', result)
-    if (result) {
+    if (result?.id) {
       debug(`%c FOUND EXISTING RESULT ID: ${result.id}`, 'color: Lime')
-      await openPageUrl({ id: result.id })
+      await openPage(result.id)
       return
     }
     idbKey = await newLocation({ url })
@@ -33,7 +35,7 @@ export async function processNewUrl(url?: string) {
   const id = idbKey as number
   debug('idbKey:', id)
 
-  await openPageUrl({ id })
+  await openPage(id)
 
   await processIdUrl(id, url)
 }

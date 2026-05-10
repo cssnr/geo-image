@@ -121,14 +121,9 @@ async function onClicked(ctx: chrome.contextMenus.OnClickData, tab?: chrome.tabs
   } else if (ctx.menuItemId === 'openSidePanel') {
     openSidePanel()
   } else if (ctx.menuItemId === 'analyzeImage') {
-    // const encoded = encodeURIComponent(ctx.srcUrl ?? '')
-    // const url = chrome.runtime.getURL(`page.html?url=${encoded}`)
-    // return activateOrOpen(url)
-    // return openPageUrl({ srcUrl: ctx.srcUrl ?? '' })
-    debug('%c TODO - HANDLE IMAGE CLICK HERE - URL', 'color: Orange')
-    // TODO: Work Here
+    debug('%c IMAGE CLICK - URL', 'color: Orange')
     debug('ctx.srcUrl:', ctx.srcUrl)
-    processNewUrl(ctx.srcUrl).catch(console.error) // send notification
+    processNewUrl(ctx.srcUrl).catch(console.error)
   } else {
     console.error(`Unknown ctx.menuItemId: ${ctx.menuItemId}`)
   }
@@ -137,10 +132,9 @@ async function onClicked(ctx: chrome.contextMenus.OnClickData, tab?: chrome.tabs
 function onMessage(message: any, sender: chrome.runtime.MessageSender) {
   debug('%c background/index.ts - onMessage:', 'Color: Plum', message, sender)
   if (message.imageSrc) {
-    debug('%c TODO - HANDLE IMAGE UPLOAD HERE - DATA', 'color: Orange')
-    // TODO: Work Here
+    debug('%c IMAGE UPLOAD - DATA', 'color: Orange')
     debug('message.imageSrc:', message.imageSrc)
-    processNewUrl(message.imageSrc).catch(console.error) // send notification
+    processNewUrl(message.imageSrc).catch(console.error)
   }
 }
 

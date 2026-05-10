@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { i18n } from '#imports'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
 import { debug } from '@/utils/logger.ts'
-import { onMounted, ref, useTemplateRef, watch } from 'vue'
+import { getGeoUrl } from '@/utils/api.ts'
 import { openOptions } from '@/utils/extension.ts'
 import { getConfidenceClass } from '@/utils/index.ts'
 import { useLocationsDB } from '@/composables/useLocationsDB.ts'
@@ -11,30 +12,25 @@ import PanelHeader from '@/components/PanelHeader.vue'
 import ResultsTable from '@/components/ResultsTable.vue'
 import ShareModal from '@/components/ShareModal.vue'
 
-// import { getGeoUrl } from '@/utils/api.ts'
-// import { showToast } from '@/composables/useToast.ts'
-
 const { getById } = useLocationsDB()
 
 const config = useAppConfig()
 
-// const shareModal = ref<InstanceType<typeof ShareModal> | null>(null)
-const shareModal = useTemplateRef<InstanceType<typeof ShareModal>>('shareModal')
+const shareModal = ref<InstanceType<typeof ShareModal> | null>(null)
 
 const srcUrl = ref<string | null>(null)
+const historyShown = ref(false)
+
 const errorMessage = ref('')
 const hasError = ref(false)
-// const isProcessing = ref(true)
-const historyShown = ref(false)
 
 const data = ref<LocationData | null>(null)
 const dataId = ref<number>(NaN)
-const geoHref = ref('')
 
 watch(dataId, updateLocation)
 
 async function updateLocation(id: number) {
-  console.log('%c --- WATCH:', 'color: MediumSeaGreen', id)
+  console.log('%c --- WATCH:', 'color: PaleGreen', id)
   const location = await getById(id)
   debug('location:', location)
   data.value = location || null
@@ -46,119 +42,37 @@ async function updateLocation(id: number) {
 
 const toggleHistory = () => (historyShown.value = !historyShown.value)
 
-// function setErrorIcon() {
-//   const href = chrome.runtime.getURL('/images/error128.png')
-//   const link = document.querySelector<HTMLLinkElement>('link[rel*="icon"]')
-//   if (!link) return console.warn('favicon link not found')
-//   link.href = href
-//   debug('link.href:', link.href)
-//   // document.querySelectorAll<HTMLLinkElement>('link[rel*="icon"]').forEach((link) => {
-//   //   link.href = href
-//   //   debug('link.href:', link.href)
-//   // })
-// }
-
-// async function getLocationData(): Promise<LocationData> {
-//   const params = new URLSearchParams(window.location.search)
-//   const id = params.get('id')
-//   debug('id:', id)
-//   dataId.value = Number.parseInt(id!)
-//   if (!dataId.value) throw new Error('Missing ID')
-//   const data = await getById(dataId.value)
-//   debug('data:', data)
-//   if (!data) throw new Error('Missing Data')
-//   return data
-//   // const url = params.get('url')
-//   // debug('url:', url)
-//   // srcUrl.value = url
-//   // return await processNewUrl(url)
-// }
-
-// function processData() {
-//   getLocationData()
-//     .then((result) => {
-//       debug('result:', result)
-//       data.value = result
-//       geoHref.value = getGeoUrl(data.value)
-//       document.title = `${data.value.location} - ${title}`
-//     })
-//     .catch((e) => {
-//       debug(e)
-//       errorMessage.value = e.message
-//       document.title = `${title} - ${i18n.t('page.error')}`
-//       setErrorIcon()
-//       showToast(e.message, 'danger')
-//       hasError.value = true
-//     })
-//     .finally(() => {
-//       isProcessing.value = false
-//     })
-// }
-
-// function openItem(srcUrl: string) {
-//   debug('openItem:', srcUrl)
-//   const url = chrome.runtime.getURL(`page.html?url=${encodeURIComponent(srcUrl)}`)
-//   if (window.location.href === url) {
-//     debug('%c Already Open', 'color: Tan')
-//     historyShown.value = false
-//     return
-//   }
-//   // TODO: This does not activate history from the popup UNLESS history already exists...
-//   debug(`pushState - length: ${window.history.length} - url:`, url)
-//   window.history.pushState(null, '', url)
-//   historyShown.value = false
-//   debug('%c TODO - DISABLED', 'color: Red')
-//   // processData()
-// }
-
 const openItem = (id: number) => {
   dataId.value = id
   historyShown.value = false
 }
 
 async function onMessage(message: any) {
-  debug('%c page/App.vue - onMessage:', 'Color: PaleGreen', message)
-  if (message.newLocation) {
-    debug('%c NEW LOCATION:', 'color: Lime', message.newLocation)
-    if (message.newLocation === dataId.value) {
-      debug('%c --- UPDATING LOCATION ---', 'color: Tomato')
-      await updateLocation(dataId.value)
-    }
+  debug('%c page/App.vue - onMessage:', 'Color: MediumSeaGreen', message)
+  if (message.newLocation === dataId.value) {
+    debug('%c --- UPDATING LOCATION ---', 'color: Yellow')
+    await updateLocation(dataId.value)
   }
   if (message.id || message.tabId) {
     debug('%c --- LOAD NEW LOCATION ---', 'color: Yellow')
     // TODO: ADD CHECK FOR PROCESSING ??
     dataId.value = message.id
   }
-  // if (!message.srcUrl || !message.tabId) return debug('no message.srcUrl/tabId')
-  // const tab = await chrome.tabs.getCurrent()
-  // if (message.tabId !== tab?.id) return debug('WRONG TAB:', tab?.id)
-  // if (isProcessing.value) return await openPageUrl(message.srcUrl)
-  // openItem(message.srcUrl)
 }
 
-// function popState(event: Event) {
-//   debug('popstate:', event)
-//   debug('window.location:', window.location)
-//   processData()
-// }
-
 if (!chrome.runtime.onMessage.hasListener(onMessage)) {
-  debug('%c chrome.runtime.onMessage.addListener', 'color: Orange')
   chrome.runtime.onMessage.addListener(onMessage)
 }
 
 onMounted(() => {
-  debug(`page/App.vue - onMounted - window.history.length:`, window.history.length)
-  // window.addEventListener('popstate', popState)
-  // processData()
-
+  debug('--- %cGeo%cImage%c ---', 'color: #ee00ff', 'color: #0dcaf0')
   const params = new URLSearchParams(window.location.search)
   const id = params.get('id')
   debug('id:', id)
   dataId.value = Number.parseInt(id!)
 })
-// onUnmounted(() => window.removeEventListener('popstate', popState))
+
+onUnmounted(() => chrome.runtime.onMessage.removeListener(onMessage))
 </script>
 
 <template>
@@ -221,7 +135,13 @@ onMounted(() => {
                     data.confidence || 'N/A'
                   }}</span>
                 </div>
-                <a v-if="geoHref" :href="geoHref" class="btn btn-sm btn-outline-success" target="_blank" rel="noopener">
+                <a
+                  v-if="data.longitude && data.latitude"
+                  :href="getGeoUrl(data)"
+                  class="btn btn-sm btn-outline-success"
+                  target="_blank"
+                  rel="noopener"
+                >
                   <i class="fa-solid fa-map me-1"></i> GeoHack
                 </a>
                 <button class="btn btn-sm btn-outline-info" @click="shareModal?.show(data)">

@@ -135,18 +135,7 @@ export function clickOpen(e: Event, close = false) {
     .catch(console.warn)
 }
 
-export function openPageUrl(pageArgs: PageArgs) {
-  const component = pageArgs.srcUrl || pageArgs.id // NOSONAR
-  if (!component) throw new Error('Must provide srcUrl or id')
-  const encoded = encodeURIComponent(component)
-  const key = pageArgs.srcUrl ? 'srcUrl' : 'id'
-  const url = chrome.runtime.getURL(`page.html?${key}=${encoded}`)
-  debug('openPageUrl - url:', url)
-  if (pageArgs.open) return chrome.tabs.create({ active: true, url })
-  return activateOrOpen(url)
-}
-
-// NOTE: This is a WIP method to open an existing page...
+// NOTE: This is ONLY used in ResultsTable.vue
 export async function openResult(id: number) {
   debug('openResult - id:', id)
   const pageUrl = chrome.runtime.getURL('page.html')
@@ -168,6 +157,7 @@ export async function openResult(id: number) {
       debug('isInFiltered:', isInFiltered)
       if (isInFiltered) {
         await chrome.tabs.update(tab.id, { active: true })
+        debug('%c --- SEND MESSAGE ---', 'color: Lime')
         await chrome.runtime.sendMessage({ id, tabId: tab.id })
         return
       }
@@ -175,6 +165,7 @@ export async function openResult(id: number) {
 
     const context = filtered[0]
     await chrome.tabs.update(context.tabId, { active: true })
+    debug('%c --- SEND MESSAGE ---', 'color: Lime')
     await chrome.runtime.sendMessage({ id, tabId: context.tabId })
     return
 
@@ -193,13 +184,13 @@ export async function openResult(id: number) {
 
   debug('%cTab NOT found... await openPageUrl()', 'color: Tomato')
   // pageArgs.open = true
-  await openPageNew(id, true)
+  await openPage(id, true)
 }
 
-export function openPageNew(id: number, open = false) {
+export function openPage(id: number, open = false) {
   const encoded = encodeURIComponent(id)
   const url = chrome.runtime.getURL(`page.html?id=${encoded}`)
-  debug('openPageUrl - url:', url)
+  debug('openPage - url:', url)
   if (open) return chrome.tabs.create({ active: true, url })
   return activateOrOpen(url)
 }
