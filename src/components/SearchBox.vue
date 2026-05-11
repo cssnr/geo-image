@@ -2,7 +2,7 @@
 import { i18n } from '#imports'
 import { debug } from '@/utils/logger.ts'
 import { showToast } from '@/composables/useToast.ts'
-import { processNewUrl } from '@/utils/api.ts'
+import { processNewItem } from '@/utils/api.ts'
 
 const props = defineProps<{
   closeWindow?: boolean
@@ -21,7 +21,9 @@ async function processForm(event: Event) {
     const url = new URL(link)
     debug('url:', url)
     target.reset()
-    processNewUrl(url.href).catch(console.error)
+    const id = await processNewItem({ url: url.href })
+    console.debug('id:', id)
+    await chrome.runtime.sendMessage({ processNewItem: id })
     if (props.closeWindow) window.close()
   } catch (e) {
     const message = e instanceof Error ? e.message : i18n.t('ui.error.unknown')

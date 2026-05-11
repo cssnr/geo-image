@@ -2,6 +2,7 @@
 import { i18n } from '#imports'
 import { ref, onMounted, onUnmounted } from 'vue'
 import { debug } from '@/utils/logger.ts'
+import { processNewItem } from '@/utils/api.ts'
 import { Modal } from 'bootstrap'
 import Uppy from '@uppy/core'
 import DropTarget from '@uppy/drop-target'
@@ -14,27 +15,13 @@ let modal: Modal
 const imageSrc = ref<string | null>(null)
 let uppy: Uppy
 
-function analyzeImage() {
+async function analyzeImage() {
   modal.hide()
   debug('Data to Process:', imageSrc.value?.slice(0, 32))
-  const url = chrome.runtime.getURL('page.html') + '?url=message'
-  debug('url:', url)
-  // TODO: Save to IDB then sendMessage
-  chrome.runtime.sendMessage({ imageSrc: imageSrc.value })
-  // chrome.tabs
-  //   .create({ active: true, url })
-  //   .then(() => {
-  //     chrome.runtime.onMessage.addListener((message: any, _sender, sendResponse) => {
-  //       debug('onMessage:', message)
-  //       const response = { imageData: imageSrc.value }
-  //       debug('response:', response)
-  //       sendResponse(response)
-  //     })
-  //   })
-  //   .finally(() => {
-  //     // imageSrc.value = null
-  //     uppy.clear()
-  //   })
+  if (!imageSrc.value) return
+  const id = await processNewItem({ url: imageSrc.value })
+  console.debug('id:', id)
+  await chrome.runtime.sendMessage({ processNewItem: id })
 }
 
 onMounted(() => {

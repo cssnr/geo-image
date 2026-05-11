@@ -10,45 +10,51 @@ import { ApiError, createUserContent, GoogleGenAI } from '@google/genai'
 const { deleteLocation, getById, getByUrl, newLocation, updateById, updateLocation } =
   useLocationsDB()
 
-// TODO: Save to IDB then sendMessage
-export async function processNewUrl(url?: string, blob?: Blob) {
-  debug('processNewUrl:', url?.slice(0, 32))
+type NewItem = {
+  url?: string
+  blob?: Blob
+}
 
-  // TODO: Temporary Stop-Gap Check
-  const options = await getOptions()
-  debug('options:', options)
-  if (!options.authToken) {
-    await chrome.storage.local.set({ lastError: i18n.t('ui.error.setApiKey') })
-    await openPage(0)
-    return
-  }
+export async function processNewItem(newItem: NewItem): Promise<number | undefined> {
+  debug('processNewItem:', newItem)
 
-  if (!url) throw new Error('Missing URL')
+  // const options = await getOptions()
+  // debug('options:', options)
+  // if (!options.authToken) {
+  //   await chrome.storage.local.set({ lastError: i18n.t('ui.error.setApiKey') })
+  //   await openPage(0)
+  //   return
+  // }
+
   let idbKey
-  if (url === 'blob') {
-    debug('%c processNewUrl - BLOB', 'color: Yellow')
-    debug('blob:', blob)
-    idbKey = await newLocation({ blob })
-  } else if (url.startsWith('data')) {
-    debug('%c processNewUrl - DATA', 'color: Yellow')
-    const response = await fetch(url)
+  if (newItem.blob) {
+    debug('%c processNewItem - BLOB', 'color: Yellow')
+    debug('blob:', newItem.blob)
+    idbKey = await newLocation({ blob: newItem.blob })
+  } else if (newItem.url?.startsWith('data')) {
+    debug('%c processNewItem - DATA', 'color: Yellow')
+    const response = await fetch(newItem.url)
     const blob = await response.blob()
     debug('blob:', blob)
     idbKey = await newLocation({ blob })
-  } else {
-    debug('%c processNewUrl - URL', 'color: Yellow')
-    const result = await getByUrl(url)
+  } else if (newItem.url) {
+    debug('%c processNewItem - URL', 'color: Yellow')
+    const result = await getByUrl(newItem.url)
     debug('result:', result)
     if (result?.id) {
       debug(`%c FOUND EXISTING RESULT ID: ${result.id}`, 'color: Lime')
       await openPage(result.id)
       return
     }
-    idbKey = await newLocation({ url })
+    idbKey = await newLocation({ url: newItem.url })
   }
+  // TODO: Handle else or undefined idbKey
   const id = idbKey as number
   debug('idbKey:', id)
+  return id
+}
 
+export async function runProcess(id: number) {
   openPage(id).catch(console.error)
   let error: string
   processIdUrl(id)
