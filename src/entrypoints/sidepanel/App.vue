@@ -7,12 +7,14 @@ import SearchBox from '@/components/SearchBox.vue'
 import PanelFooter from '@/components/PanelFooter.vue'
 import PermsCheck from '@/components/PermsCheck.vue'
 import UppyDrop from '@/components/UppyDrop.vue'
+import FileInput from '@/components/FileInput.vue'
 </script>
 
 <template>
   <header class="flex-shrink-0">
     <PanelHeader :side-button="false" />
-    <SearchBox class="mt-2" />
+    <SearchBox class="m-1" />
+    <FileInput class="m-1 mx-2" />
   </header>
 
   <main class="flex-grow-1 overflow-auto p-1">

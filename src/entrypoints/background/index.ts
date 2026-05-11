@@ -28,11 +28,11 @@ export default defineBackground(() => {
     'color: MediumSlateBlue',
   )
   if (import.meta.env.DEV) {
-    console.log('%cWARNING: DEV MODE ENABLED', 'color: Tomato')
+    console.log('%cWARNING: DEV Mode Enabled', 'color: Tomato')
   }
   if (import.meta.env.WXT_FAKE_DATA) {
-    console.log('%cWARNING: FAKE DATA ENABLED', 'color: Tomato')
-    console.log('WXT_FAKE_DELAY:', import.meta.env.WXT_FAKE_DELAY)
+    console.log('%cWARNING: FAKE DATA Enabled', 'color: DarkOrange')
+    console.log('%cWXT_FAKE_DELAY:', 'color: Gold', import.meta.env.WXT_FAKE_DELAY)
   }
 
   chrome.runtime.onInstalled.addListener(onInstalled)

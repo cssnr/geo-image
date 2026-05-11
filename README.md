@@ -63,6 +63,8 @@ _Note: To install self-hosted extensions on Android you must enable a hidden men
 
 - Uses Gemini API Free Tier
 - Stores Response Data Locally
+- Analyze URL's or Local Files
+- Drag and Drop or Right Click Images
 - Share Button with Markdown
 - Provides a GeoHack Link
 - Has Panel, Popup, and Side Panel

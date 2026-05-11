@@ -66,7 +66,7 @@ export async function sendWebhooks(loc: LocationData) {
       'https://raw.githubusercontent.com/smashedr/repo-images/master/geo-image/logo512.png'
     const embed = {
       url: getGeoUrl(loc),
-      image: { url: loc.url },
+      ...(loc.url && { image: { url: loc.url } }),
       title: loc.location,
       description: lines.join('\n'),
       color: 0xee00ff,

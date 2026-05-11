@@ -11,6 +11,7 @@ import SearchBox from '@/components/SearchBox.vue'
 import PanelFooter from '@/components/PanelFooter.vue'
 import PermsCheck from '@/components/PermsCheck.vue'
 import UppyDrop from '@/components/UppyDrop.vue'
+import FileInput from '@/components/FileInput.vue'
 
 useTitle(i18n.t('permissions.title'))
 
@@ -42,6 +43,7 @@ onUnmounted(() => window.removeEventListener('resize', debounceWindowResize))
   <main class="flex-grow-1 overflow-auto p-1">
     <div class="d-grid gap-2">
       <PermsCheck />
+      <FileInput class="mx-1" />
       <ResultsTable />
     </div>
   </main>
