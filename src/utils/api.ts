@@ -7,52 +7,57 @@ import { sendWebhooks } from '@/utils/webhooks.ts'
 import { useLocationsDB } from '@/composables/useLocationsDB'
 import { ApiError, createUserContent, GoogleGenAI } from '@google/genai'
 
-const { addBlobById, deleteLocation, getByUrl, newLocation, updateById } =
+const { deleteLocation, getById, getByUrl, newLocation, updateById, updateLocation } =
   useLocationsDB()
 
-// TODO: Error Handling
+type NewItem = {
+  url?: string
+  blob?: Blob
+}
 
-export async function processNewUrl(url?: string, blob?: Blob) {
-  debug('processNewUrl:', url?.slice(0, 32))
+export async function processNewItem(newItem: NewItem): Promise<number | undefined> {
+  debug('processNewItem:', newItem)
 
-  // TODO: Temporary Stop-Gap Check
-  const options = await getOptions()
-  debug('options:', options)
-  if (!options.authToken) {
-    await chrome.storage.local.set({ lastError: i18n.t('ui.error.setApiKey') })
-    await openPage(0)
-    return
-  }
+  // const options = await getOptions()
+  // debug('options:', options)
+  // if (!options.authToken) {
+  //   await chrome.storage.local.set({ lastError: i18n.t('ui.error.setApiKey') })
+  //   await openPage(0)
+  //   return
+  // }
 
-  if (!url) throw new Error('Missing URL')
   let idbKey
-  if (url === 'blob') {
-    debug('%c processNewUrl - BLOB', 'color: Yellow')
-    debug('blob:', blob)
-    idbKey = await newLocation({ blob })
-  } else if (url.startsWith('data')) {
-    debug('%c processNewUrl - DATA', 'color: Yellow')
-    const response = await fetch(url)
+  if (newItem.blob) {
+    debug('%c processNewItem - BLOB', 'color: Yellow')
+    debug('blob:', newItem.blob)
+    idbKey = await newLocation({ blob: newItem.blob })
+  } else if (newItem.url?.startsWith('data')) {
+    debug('%c processNewItem - DATA', 'color: Yellow')
+    const response = await fetch(newItem.url)
     const blob = await response.blob()
     debug('blob:', blob)
     idbKey = await newLocation({ blob })
-  } else {
-    debug('%c processNewUrl - URL', 'color: Yellow')
-    const result = await getByUrl(url)
+  } else if (newItem.url) {
+    debug('%c processNewItem - URL', 'color: Yellow')
+    const result = await getByUrl(newItem.url)
     debug('result:', result)
     if (result?.id) {
       debug(`%c FOUND EXISTING RESULT ID: ${result.id}`, 'color: Lime')
       await openPage(result.id)
       return
     }
-    idbKey = await newLocation({ url })
+    idbKey = await newLocation({ url: newItem.url })
   }
+  // TODO: Handle else or undefined idbKey
   const id = idbKey as number
   debug('idbKey:', id)
+  return id
+}
 
+export async function runProcess(id: number) {
   openPage(id).catch(console.error)
   let error: string
-  processIdUrl(id, url, blob)
+  processIdUrl(id)
     .then(() => {
       debug('SUCCESS')
     })
@@ -69,9 +74,11 @@ export async function processNewUrl(url?: string, blob?: Blob) {
     })
 }
 
-async function processIdUrl(id: number, url: string, blob: Blob | undefined) {
-  debug('processIdUrl:', id, url.slice(0, 32))
-  const [mimeType, base64] = await parseOrDownload(id, url, blob)
+async function processIdUrl(id: number) {
+  debug('processIdUrl:', id)
+  const location = await getById(id)
+  if (!location) throw new Error(`Missing Location ID: ${id}`)
+  const [mimeType, base64] = await downloadParse(location)
   debug('mimeType:', mimeType)
   debug('base64:', base64)
 
@@ -144,29 +151,20 @@ async function getData(mimeType: string, data: string) {
   return result
 }
 
-async function parseOrDownload(id: number, url: string, blob: Blob | undefined) {
-  if (url.startsWith('data:')) {
-    const [meta, base64] = url.split(',')
-    debug('meta:', meta)
-    debug('base64:', base64)
-    const mimeType = meta.split(':')[1].split(';')[0]
-    return [mimeType, base64]
-  } else {
-    // await new Promise((resolve) => setTimeout(resolve, 1000))
-    if (!blob) {
-      blob = await downloadImage(url)
-      await addBlobById(id, blob)
-    }
-    debug('blob:', blob)
-    const mimeType = blob.type
-    const base64 = await new Promise<string>((resolve, reject) => {
-      const reader = new FileReader()
-      reader.onload = () => resolve((reader.result as string).split(',')[1])
-      reader.onerror = reject
-      reader.readAsDataURL(blob as Blob)
-    })
-    return [mimeType, base64]
+async function downloadParse(location: LocationData) {
+  if (!location.blob) {
+    location.blob = await downloadImage(location.url)
+    await updateLocation(location)
   }
+  debug('blob:', location.blob)
+  const mimeType = location.blob.type
+  const base64 = await new Promise<string>((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve((reader.result as string).split(',')[1])
+    reader.onerror = reject
+    reader.readAsDataURL(location.blob as Blob)
+  })
+  return [mimeType, base64]
 }
 
 async function downloadImage(url: string): Promise<Blob> {

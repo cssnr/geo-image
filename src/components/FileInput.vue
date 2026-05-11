@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useTemplateRef } from 'vue'
 import { showToast } from '@/composables/useToast.ts'
-import { processNewUrl } from '@/utils/api.ts'
+import { processNewItem } from '@/utils/api.ts'
 
 const fileInput = useTemplateRef('fileInput')
 
@@ -19,12 +19,22 @@ async function fileInputChange(event: Event) {
     const file = target.files?.item(0)
     if (!file) return showToast('File Not Found', 'error')
     console.debug('file:', file)
-    await processNewUrl('blob', file)
+    const id = await processNewItem({ blob: file })
+    console.debug('id:', id)
+    await chrome.runtime.sendMessage({ processNewItem: id })
   } catch (e) {
     const message = e instanceof Error ? e.message : i18n.t('ui.error.unknown')
     showToast(message, 'danger')
   }
 }
+
+// const blobToDataUrl = (blob: Blob): Promise<string> =>
+//   new Promise((resolve, reject) => {
+//     const reader = new FileReader()
+//     reader.onload = () => resolve(reader.result as string)
+//     reader.onerror = () => reject(reader.error)
+//     reader.readAsDataURL(blob)
+//   })
 </script>
 
 <template>

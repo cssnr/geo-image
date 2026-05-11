@@ -2,7 +2,7 @@ import { getAppConfig } from '#imports'
 import { debug } from '@/utils/logger.ts'
 import { isFirefox } from '@/utils/system.ts'
 import { defineBackground } from 'wxt/utils/define-background'
-import { processNewUrl } from '@/utils/api.ts'
+import { runProcess, processNewItem } from '@/utils/api.ts'
 import { openExtPanel, openPopup, openSidePanel } from '@/utils/extension.ts'
 import { type Options, defaultOptions, getOptions } from '@/utils/options.ts'
 import { updateContextMenus } from './menus.ts'
@@ -123,7 +123,8 @@ async function onClicked(ctx: chrome.contextMenus.OnClickData, tab?: chrome.tabs
   } else if (ctx.menuItemId === 'analyzeImage') {
     debug('%c IMAGE CLICK - URL', 'color: Orange')
     debug('ctx.srcUrl:', ctx.srcUrl)
-    processNewUrl(ctx.srcUrl).catch(console.error)
+    const id = await processNewItem({ url: ctx.srcUrl })
+    if (id) runProcess(id).catch(console.error)
   } else {
     console.error(`Unknown ctx.menuItemId: ${ctx.menuItemId}`)
   }
@@ -131,10 +132,9 @@ async function onClicked(ctx: chrome.contextMenus.OnClickData, tab?: chrome.tabs
 
 function onMessage(message: any, sender: chrome.runtime.MessageSender) {
   debug('%c background/index.ts - onMessage:', 'Color: Plum', message, sender)
-  if (message.imageSrc) {
-    debug('%c IMAGE UPLOAD - DATA', 'color: Orange')
-    debug('message.imageSrc:', message.imageSrc)
-    processNewUrl(message.imageSrc).catch(console.error)
+  if (message.processNewItem) {
+    debug('%c PROCESS NEW ITEM:', 'color: :Lime', message.processNewItem)
+    runProcess(message.processNewItem).catch(console.error)
   }
 }
 
