@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { i18n } from '#imports'
-import { debug } from '@/utils/logger.ts'
 import { onMounted, ref, useTemplateRef } from 'vue'
+import { debug } from '@/utils/logger.ts'
 import { getConfidenceClass } from '@/utils/index.ts'
 import { openResult } from '@/utils/extension.ts'
 import { showToast } from '@/composables/useToast.ts'

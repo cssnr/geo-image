@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useAppConfig } from '#imports'
+import { computed, ref, useTemplateRef } from 'vue'
 import { debug } from '@/utils/logger.ts'
 import { copyText } from '@/utils/ui.ts'
 import { getGeoUrl } from '@/utils/api.ts'
-import { computed, ref, useTemplateRef } from 'vue'
 import { Modal } from 'bootstrap'
 import GeoIcon from '@/assets/icon.svg?raw'
 

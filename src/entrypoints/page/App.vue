@@ -27,17 +27,29 @@ const errorMessage = ref('')
 const data = ref<LocationData | null>(null)
 const dataId = ref<number>(NaN)
 
+document.title = `${config.name} - ${i18n.t('page.processing')}`
+
 watch(dataId, updateLocation)
 
+function setError(error: string) {
+  debug('%c --- ERROR ---', 'color: Tomato')
+  errorMessage.value = error
+  document.title = `${config.name} Error - ${error.substring(0, 60)}`
+  const href = chrome.runtime.getURL('/images/error128.png')
+  const link = document.querySelector<HTMLLinkElement>('link[rel*="icon"]')
+  if (!link) return console.warn('favicon link not found')
+  link.href = href
+  debug('link.href:', link.href)
+}
+
 async function updateLocation(id: number) {
-  debug('%c --- WATCH:', 'color: PaleGreen', id)
+  debug('%c --- WATCH --- ', 'color: PaleGreen', 'id:', id)
   const location = await getById(id)
   debug('location:', location)
   if (!location) {
-    // TODO: Error on Loading
-    debug('%c --- ERROR updateLocation ---', 'color: Tomato')
     const { lastError } = await chrome.storage.local.get(['lastError'])
-    if (lastError) errorMessage.value = lastError as string
+    const error = lastError || 'Location Not Found or Error in Processing...'
+    setError(error as string)
     return
   }
   data.value = location
@@ -63,12 +75,7 @@ async function onMessage(message: any) {
   debug('%c page/App.vue - onMessage:', 'Color: MediumSeaGreen', message)
   if (message.newLocation === dataId.value) {
     debug('%c --- UPDATING LOCATION ---', 'color: Yellow')
-    if (message.error) {
-      // TODO: Error on Message
-      debug('%c --- ERROR onMessage ---', 'color: Tomato')
-      errorMessage.value = message.error
-      return
-    }
+    if (message.error) return setError(message.error)
     await updateLocation(dataId.value)
   }
   if (message.id || message.tabId) {
@@ -107,7 +114,7 @@ if (!chrome.runtime.onMessage.hasListener(onMessage)) {
 }
 
 onMounted(() => {
-  debug('--- %cGeo%cImage%c---', 'color: #ee00ff', 'color: #0dcaf0')
+  console.log(`%cGeo%cImage%cv${config.version}`, 'color: #ee00ff', 'color: #0dcaf0')
   popState()
   window.addEventListener('popstate', popState)
 })

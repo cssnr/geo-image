@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { i18n } from '#imports'
-import { debug } from '@/utils/logger.ts'
 import { ref, onMounted, onUnmounted } from 'vue'
+import { debug } from '@/utils/logger.ts'
 import { Modal } from 'bootstrap'
 import Uppy from '@uppy/core'
 import DropTarget from '@uppy/drop-target'

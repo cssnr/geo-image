@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { i18n } from '#imports'
-import { debug } from '@/utils/logger.ts'
 import { ref, watch } from 'vue'
+import { debug } from '@/utils/logger.ts'
 import { validateJSON } from '@/utils/index.ts'
 import { defaultOptions, saveKeyValue } from '@/utils/options.ts'
 import { useOptions } from '@/composables/useOptions.ts'
