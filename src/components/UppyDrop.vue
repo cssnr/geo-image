@@ -19,6 +19,7 @@ function analyzeImage() {
   debug('Data to Process:', imageSrc.value?.slice(0, 32))
   const url = chrome.runtime.getURL('page.html') + '?url=message'
   debug('url:', url)
+  // TODO: Save to IDB then sendMessage
   chrome.runtime.sendMessage({ imageSrc: imageSrc.value })
   // chrome.tabs
   //   .create({ active: true, url })

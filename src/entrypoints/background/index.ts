@@ -133,8 +133,9 @@ function onMessage(message: any, sender: chrome.runtime.MessageSender) {
   debug('%c background/index.ts - onMessage:', 'Color: Plum', message, sender)
   if (message.imageSrc) {
     debug('%c IMAGE UPLOAD - DATA', 'color: Orange')
-    debug('message.imageSrc:', message.imageSrc)
-    processNewUrl(message.imageSrc).catch(console.error)
+    debug('message:', message)
+    // TODO: Save to IDB then sendMessage
+    processNewUrl(message.imageSrc, message.blob).catch(console.error)
   }
 }
 

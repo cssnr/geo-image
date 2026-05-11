@@ -40,13 +40,13 @@ export function useLocationsDB() {
     return result
   }
 
-  async function addBlobById(id: IDBValidKey, blob: Blob): Promise<IDBValidKey> {
-    const db = await dbPromise
-    const existing = await db.get(STORE_NAME, id)
-    const result = db.put(STORE_NAME, { ...existing, blob })
-    locationDBChannel.postMessage('change')
-    return result
-  }
+  // async function addBlobById(id: IDBValidKey, blob: Blob): Promise<IDBValidKey> {
+  //   const db = await dbPromise
+  //   const existing = await db.get(STORE_NAME, id)
+  //   const result = db.put(STORE_NAME, { ...existing, blob })
+  //   locationDBChannel.postMessage('change')
+  //   return result
+  // }
 
   async function updateById(
     id: IDBValidKey,
@@ -121,17 +121,17 @@ export function useLocationsDB() {
     return result
   }
 
-  // async function updateLocation(entry: LocationData): Promise<IDBValidKey> {
-  //   const db = await dbPromise
-  //   const result = await db.put(STORE_NAME, entry)
-  //   locationDBChannel.postMessage('change')
-  //   return result
-  // }
+  async function updateLocation(entry: LocationData): Promise<IDBValidKey> {
+    const db = await dbPromise
+    const result = await db.put(STORE_NAME, entry)
+    locationDBChannel.postMessage('change')
+    return result
+  }
 
   return {
     locationDBChannel,
     newLocation,
-    addBlobById,
+    // addBlobById,
     updateById,
     // addLocation,
     getById,
@@ -142,6 +142,6 @@ export function useLocationsDB() {
     // getByCountry,
     // getByLocation,
     deleteLocation,
-    // updateLocation,
+    updateLocation,
   }
 }
