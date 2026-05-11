@@ -35,7 +35,7 @@ async function fileInputChange(event: Event) {
       @click="uploadClick"
     >
       Drag and Drop an
-      <i class="fa-regular fa-file-image"></i> Image or Click Here...
+      <i class="fa-regular fa-file-image"></i> Image or <i class="fa-solid fa-arrow-pointer"></i> Click Here...
     </div>
 
     <input ref="fileInput" type="file" style="display: none" @change.prevent="fileInputChange" />
