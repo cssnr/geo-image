@@ -20,7 +20,7 @@ const gutter = computed(() => (isFirefox ? 'stable' : undefined))
     <div class="d-grid gap-2 p-1">
       <PermsCheck :close-window="true" />
       <SearchBox :close-window="true" />
-      <FileInput class="mx-1" />
+      <FileInput v-if="!isFirefox || isMobile" class="mx-1" />
       <ResultsTable :close-window="true" />
     </div>
 
