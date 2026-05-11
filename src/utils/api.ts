@@ -18,13 +18,13 @@ type NewItem = {
 export async function processNewItem(newItem: NewItem): Promise<number | undefined> {
   debug('processNewItem:', newItem)
 
-  // const options = await getOptions()
-  // debug('options:', options)
-  // if (!options.authToken) {
-  //   await chrome.storage.local.set({ lastError: i18n.t('ui.error.setApiKey') })
-  //   await openPage(0)
-  //   return
-  // }
+  const options = await getOptions()
+  debug('options:', options)
+  if (!options.authToken) {
+    await chrome.storage.local.set({ lastError: i18n.t('ui.error.setApiKey') })
+    await openPage(0)
+    return
+  }
 
   let idbKey
   if (newItem.blob) {
