@@ -80,11 +80,11 @@ async function processIdUrl(id: number, url: string, blob: Blob | undefined) {
   debug('data:', data)
   if (!data) throw new Error('No Data in Response!')
   data.id = id
-  await updateById(id, data)
+  const result = await updateById(id, data)
   debug(`%c Added Result ID: ${id}`, 'color: Yellow')
 
   // Send Webhooks
-  sendWebhooks(data).catch(console.error)
+  sendWebhooks(result).catch(console.error)
 
   // // NOTE: This is done in the outer method now...
   // chrome.runtime.sendMessage({ newLocation: id }).catch(console.error)

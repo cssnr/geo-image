@@ -51,13 +51,14 @@ export function useLocationsDB() {
   async function updateById(
     id: IDBValidKey,
     entry: Partial<LocationData>,
-  ): Promise<IDBValidKey> {
+  ): Promise<LocationData> {
     const db = await dbPromise
     const existing = await db.get(STORE_NAME, id)
     if (!existing) throw new Error(`No entry for ID: ${String(id)}`)
-    const result = await db.put(STORE_NAME, { ...existing, ...entry })
+    const value = { ...existing, ...entry }
+    await db.put(STORE_NAME, value)
     locationDBChannel.postMessage('change')
-    return result
+    return value
   }
 
   // async function addBlobToId(
