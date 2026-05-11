@@ -26,7 +26,13 @@ export async function processNewUrl(url?: string) {
 
   if (!url) throw new Error('Missing URL')
   let idbKey
-  if (!url.startsWith('data')) {
+  if (url.startsWith('data')) {
+    debug('%c processNewUrl - DATA', 'color: Yellow')
+    const response = await fetch(url)
+    const blob = await response.blob()
+    debug('blob:', blob)
+    idbKey = await newLocation({ blob })
+  } else {
     debug('%c processNewUrl - URL', 'color: Yellow')
     const result = await getByUrl(url)
     debug('result:', result)
@@ -36,12 +42,6 @@ export async function processNewUrl(url?: string) {
       return
     }
     idbKey = await newLocation({ url })
-  } else {
-    debug('%c processNewUrl - DATA', 'color: Yellow')
-    const response = await fetch(url)
-    const blob = await response.blob()
-    debug('blob:', blob)
-    idbKey = await newLocation({ blob })
   }
   const id = idbKey as number
   debug('idbKey:', id)

@@ -25,7 +25,7 @@ const historyShown = ref(false)
 const errorMessage = ref('')
 
 const data = ref<LocationData | null>(null)
-const dataId = ref<number>(NaN)
+const dataId = ref<number>(Number.NaN)
 
 document.title = `${config.name} - ${i18n.t('page.processing')}`
 
