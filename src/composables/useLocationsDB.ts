@@ -36,7 +36,7 @@ export function useLocationsDB() {
   async function newLocation(entry: InitialLocation): Promise<IDBValidKey> {
     const db = await dbPromise
     const result = db.add(STORE_NAME, entry)
-    // locationDBChannel.postMessage('change')
+    locationDBChannel.postMessage('change')
     return result
   }
 
