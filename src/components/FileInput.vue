@@ -1,0 +1,49 @@
+<script setup lang="ts">
+import { useTemplateRef } from 'vue'
+import { showToast } from '@/composables/useToast.ts'
+import { processNewUrl } from '@/utils/api.ts'
+
+const fileInput = useTemplateRef('fileInput')
+
+async function uploadClick() {
+  console.log('uploadClick')
+  console.debug('fileInput.value:', fileInput.value)
+  fileInput.value?.click()
+}
+
+async function fileInputChange(event: Event) {
+  console.debug('fileInputChange:', event)
+  try {
+    const target = event.currentTarget as HTMLInputElement
+    console.debug('target:', target)
+    const file = target.files?.item(0)
+    if (!file) return showToast('File Not Found', 'error')
+    console.debug('file:', file)
+    await processNewUrl('blob', file)
+  } catch (e) {
+    const message = e instanceof Error ? e.message : i18n.t('ui.error.unknown')
+    showToast(message, 'danger')
+  }
+}
+</script>
+
+<template>
+  <div>
+    <div
+      class="border border-2 border-primary rounded rounded-2 border-dashed text-center text-truncate p-1"
+      role="button"
+      @click="uploadClick"
+    >
+      Drag and Drop an
+      <i class="fa-regular fa-file-image"></i> Image or Click Here...
+    </div>
+
+    <input ref="fileInput" type="file" style="display: none" @change.prevent="fileInputChange" />
+  </div>
+</template>
+
+<style scoped>
+.border-dashed {
+  border-style: dashed !important;
+}
+</style>

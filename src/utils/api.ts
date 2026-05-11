@@ -12,7 +12,7 @@ const { addBlobById, deleteLocation, getByUrl, newLocation, updateById } =
 
 // TODO: Error Handling
 
-export async function processNewUrl(url?: string) {
+export async function processNewUrl(url?: string, blob?: Blob) {
   debug('processNewUrl:', url?.slice(0, 32))
 
   // TODO: Temporary Stop-Gap Check
@@ -26,7 +26,11 @@ export async function processNewUrl(url?: string) {
 
   if (!url) throw new Error('Missing URL')
   let idbKey
-  if (url.startsWith('data')) {
+  if (url === 'blob') {
+    debug('%c processNewUrl - BLOB', 'color: Yellow')
+    debug('blob:', blob)
+    idbKey = await newLocation({ blob })
+  } else if (url.startsWith('data')) {
     debug('%c processNewUrl - DATA', 'color: Yellow')
     const response = await fetch(url)
     const blob = await response.blob()
@@ -48,7 +52,7 @@ export async function processNewUrl(url?: string) {
 
   openPage(id).catch(console.error)
   let error: string
-  processIdUrl(id, url)
+  processIdUrl(id, url, blob)
     .then(() => {
       debug('SUCCESS')
     })
@@ -65,9 +69,9 @@ export async function processNewUrl(url?: string) {
     })
 }
 
-async function processIdUrl(id: number, url: string) {
+async function processIdUrl(id: number, url: string, blob: Blob | undefined) {
   debug('processIdUrl:', id, url.slice(0, 32))
-  const [mimeType, base64] = await parseOrDownload(id, url)
+  const [mimeType, base64] = await parseOrDownload(id, url, blob)
   debug('mimeType:', mimeType)
   debug('base64:', base64)
 
@@ -140,7 +144,7 @@ async function getData(mimeType: string, data: string) {
   return result
 }
 
-async function parseOrDownload(id: number, url: string) {
+async function parseOrDownload(id: number, url: string, blob: Blob | undefined) {
   if (url.startsWith('data:')) {
     const [meta, base64] = url.split(',')
     debug('meta:', meta)
@@ -149,15 +153,17 @@ async function parseOrDownload(id: number, url: string) {
     return [mimeType, base64]
   } else {
     // await new Promise((resolve) => setTimeout(resolve, 1000))
-    const blob = await downloadImage(url)
-    debug('downloadImage - blob:', blob)
-    await addBlobById(id, blob)
+    if (!blob) {
+      blob = await downloadImage(url)
+      await addBlobById(id, blob)
+    }
+    debug('blob:', blob)
     const mimeType = blob.type
     const base64 = await new Promise<string>((resolve, reject) => {
       const reader = new FileReader()
       reader.onload = () => resolve((reader.result as string).split(',')[1])
       reader.onerror = reject
-      reader.readAsDataURL(blob)
+      reader.readAsDataURL(blob as Blob)
     })
     return [mimeType, base64]
   }

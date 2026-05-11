@@ -7,6 +7,7 @@ import PanelHeader from '@/components/PanelHeader.vue'
 import SearchBox from '@/components/SearchBox.vue'
 import PermsCheck from '@/components/PermsCheck.vue'
 import UppyDrop from '@/components/UppyDrop.vue'
+import FileInput from '@/components/FileInput.vue'
 
 const width = computed(() => (isMobile ? '100%' : '390px'))
 const gutter = computed(() => (isFirefox ? 'stable' : undefined))
@@ -19,6 +20,7 @@ const gutter = computed(() => (isFirefox ? 'stable' : undefined))
     <div class="d-grid gap-2 p-1">
       <PermsCheck :close-window="true" />
       <SearchBox :close-window="true" />
+      <FileInput class="mx-1" />
       <ResultsTable :close-window="true" />
     </div>
 
