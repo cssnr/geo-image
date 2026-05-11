@@ -94,7 +94,9 @@ onMounted(() => {
           </td>
           <td class="text-center">{{ loc.id }}</td>
           <td class="text-truncate">
-            <a @click.prevent="onClick(loc.id!)" :title="loc.url" :href="getPageUrl(loc.id!)">{{ loc.location }}</a>
+            <a @click.prevent="onClick(loc.id!)" :title="loc.url" :href="getPageUrl(loc.id!)">{{
+              loc.location || i18n.t('page.processing')
+            }}</a>
           </td>
           <td class="text-center" :class="getConfidenceClass(loc.confidence)">{{ loc.confidence }}</td>
           <td class="text-center">

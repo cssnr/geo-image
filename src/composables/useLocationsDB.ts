@@ -44,7 +44,7 @@ export function useLocationsDB() {
     const db = await dbPromise
     const existing = await db.get(STORE_NAME, id)
     const result = db.put(STORE_NAME, { ...existing, blob })
-    // locationDBChannel.postMessage('change')
+    locationDBChannel.postMessage('change')
     return result
   }
 

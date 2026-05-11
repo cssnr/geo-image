@@ -12,6 +12,7 @@ import PanelHeader from '@/components/PanelHeader.vue'
 import ResultsTable from '@/components/ResultsTable.vue'
 import ShareModal from '@/components/ShareModal.vue'
 import UppyDrop from '@/components/UppyDrop.vue'
+import iconUrl from '@/assets/icon.svg'
 
 const { getById } = useLocationsDB()
 
@@ -46,6 +47,7 @@ async function updateLocation(id: number) {
   debug('%c --- WATCH --- ', 'color: PaleGreen', 'id:', id)
   const location = await getById(id)
   debug('location:', location)
+  errorMessage.value = ''
   if (!location) {
     const { lastError } = await chrome.storage.local.get(['lastError'])
     const error = lastError || 'Location Not Found or Error in Processing...'
@@ -61,6 +63,9 @@ async function updateLocation(id: number) {
   document.title = data.value?.location
     ? `${data.value?.location} - ${config.name}`
     : `${config.name} ${i18n.t('page.processing')}`
+  const link = document.querySelector<HTMLLinkElement>('link[rel*="icon"]')
+  if (!link) return console.warn('favicon link not found')
+  link.href = iconUrl
 }
 
 const toggleHistory = () => (historyShown.value = !historyShown.value)
