@@ -1,8 +1,7 @@
-export async function getFakeData(url: string) {
+export async function getFakeData() {
   if (!import.meta.env.WXT_FAKE_DATA) return null
   const { faker } = await import('@faker-js/faker')
   return {
-    url: url,
     city: faker.location.city(),
     state: faker.location.state(),
     country: faker.location.country(),
@@ -12,5 +11,5 @@ export async function getFakeData(url: string) {
     latitude: faker.location.latitude(),
     longitude: faker.location.longitude(),
     confidence: faker.number.int({ max: 100 }),
-  } as LocationData
+  } as Omit<LocationData, 'url'>
 }

@@ -6,6 +6,7 @@ import ToastAlerts from '@/components/ToastAlerts.vue'
 import PanelHeader from '@/components/PanelHeader.vue'
 import SearchBox from '@/components/SearchBox.vue'
 import PermsCheck from '@/components/PermsCheck.vue'
+import UppyDrop from '@/components/UppyDrop.vue'
 
 const width = computed(() => (isMobile ? '100%' : '390px'))
 const gutter = computed(() => (isFirefox ? 'stable' : undefined))
@@ -21,6 +22,7 @@ const gutter = computed(() => (isFirefox ? 'stable' : undefined))
       <ResultsTable :close-window="true" />
     </div>
 
+    <UppyDrop />
     <ToastAlerts />
   </div>
 </template>
@@ -28,7 +30,7 @@ const gutter = computed(() => (isFirefox ? 'stable' : undefined))
 <style scoped>
 #popupContainer {
   width: v-bind(width);
-  min-height: 320px;
+  min-height: 360px;
   overflow-y: auto;
   scrollbar-gutter: v-bind(gutter);
 }

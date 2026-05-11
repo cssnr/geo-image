@@ -1,124 +1,128 @@
 <script setup lang="ts">
 import { i18n } from '#imports'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
 import { debug } from '@/utils/logger.ts'
-import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
-import { type LocationData, getGeoUrl, processUrl } from '@/utils/api.ts'
-import { showToast } from '@/composables/useToast.ts'
-import { openOptions, openPageUrl } from '@/utils/extension.ts'
+import { getGeoUrl } from '@/utils/api.ts'
+import { openOptions } from '@/utils/extension.ts'
 import { getConfidenceClass } from '@/utils/index.ts'
+import { useLocationsDB } from '@/composables/useLocationsDB.ts'
 import { isMobile } from '@/utils/system.ts'
 import ToastAlerts from '@/components/ToastAlerts.vue'
 import PanelHeader from '@/components/PanelHeader.vue'
 import ResultsTable from '@/components/ResultsTable.vue'
 import ShareModal from '@/components/ShareModal.vue'
+import UppyDrop from '@/components/UppyDrop.vue'
 
-// const shareModal = ref<InstanceType<typeof ShareModal> | null>(null)
-const shareModal = useTemplateRef<InstanceType<typeof ShareModal>>('shareModal')
-
-const srcUrl = ref<string | null>(null)
-const errorMessage = ref('')
-const hasError = ref(false)
-const isProcessing = ref(true)
-const historyShown = ref(false)
-
-const geoHref = ref('')
-const data = ref<LocationData | null>(null)
-
-const toggleHistory = () => (historyShown.value = !historyShown.value)
+const { getById } = useLocationsDB()
 
 const config = useAppConfig()
-const title = `${config.name} ${i18n.t('page.processing')}`
-if (document.title === '') document.title = title
 
-function setErrorIcon() {
+const shareModal = ref<InstanceType<typeof ShareModal> | null>(null)
+
+const srcUrl = ref<string | null>(null)
+const historyShown = ref(false)
+
+const errorMessage = ref('')
+
+const data = ref<LocationData | null>(null)
+const dataId = ref<number>(Number.NaN)
+
+document.title = `${config.name} - ${i18n.t('page.processing')}`
+
+watch(dataId, updateLocation)
+
+function setError(error: string) {
+  debug('%c --- ERROR ---', 'color: Tomato')
+  errorMessage.value = error
+  document.title = `${config.name} Error - ${error.substring(0, 60)}`
   const href = chrome.runtime.getURL('/images/error128.png')
   const link = document.querySelector<HTMLLinkElement>('link[rel*="icon"]')
   if (!link) return console.warn('favicon link not found')
   link.href = href
   debug('link.href:', link.href)
-  // document.querySelectorAll<HTMLLinkElement>('link[rel*="icon"]').forEach((link) => {
-  //   link.href = href
-  //   debug('link.href:', link.href)
-  // })
 }
 
-async function getLocationData(): Promise<LocationData> {
-  const params = new URLSearchParams(window.location.search)
-  const url = params.get('url')
-  debug('url:', url)
-  if (url === 'message') {
-    const response = await chrome.runtime.sendMessage('hello')
-    debug('response:', response)
-    if (!response.imageData) throw new Error(i18n.t('page.noImageData'))
-    srcUrl.value = response.imageData
-    throw new Error(i18n.t('page.localNotSupported'))
-  } else {
-    srcUrl.value = url
-    return await processUrl(url)
-  }
-}
-
-function processData() {
-  getLocationData()
-    .then((result) => {
-      debug('result:', result)
-      data.value = result
-      geoHref.value = getGeoUrl(data.value)
-      document.title = `${data.value.location} - ${title}`
-    })
-    .catch((e) => {
-      debug(e)
-      errorMessage.value = e.message
-      document.title = `${title} - ${i18n.t('page.error')}`
-      setErrorIcon()
-      showToast(e.message, 'danger')
-      hasError.value = true
-    })
-    .finally(() => {
-      isProcessing.value = false
-    })
-}
-
-function openItem(srcUrl: string) {
-  debug('openItem:', srcUrl)
-  const url = chrome.runtime.getURL(`page.html?url=${encodeURIComponent(srcUrl)}`)
-  if (window.location.href === url) {
-    debug('%c Already Open', 'color: Tan')
-    historyShown.value = false
+async function updateLocation(id: number) {
+  debug('%c --- WATCH --- ', 'color: PaleGreen', 'id:', id)
+  const location = await getById(id)
+  debug('location:', location)
+  if (!location) {
+    const { lastError } = await chrome.storage.local.get(['lastError'])
+    const error = lastError || 'Location Not Found or Error in Processing...'
+    setError(error as string)
     return
   }
-  // TODO: This does not activate history from the popup UNLESS history already exists...
-  debug(`pushState - length: ${window.history.length} - url:`, url)
-  window.history.pushState(null, '', url)
-  historyShown.value = false
-  processData()
+  data.value = location
+  if (data.value?.blob) {
+    srcUrl.value = URL.createObjectURL(data.value.blob)
+  } else if (data.value?.url) {
+    srcUrl.value = data.value.url
+  }
+  document.title = data.value?.location
+    ? `${data.value?.location} - ${config.name}`
+    : `${config.name} ${i18n.t('page.processing')}`
+}
+
+const toggleHistory = () => (historyShown.value = !historyShown.value)
+
+const openItem = (id: number) => {
+  // dataId.value = id
+  pushState(id)
+  // historyShown.value = false
 }
 
 async function onMessage(message: any) {
-  debug('%c page/App.vue - onMessage:', 'Color: PaleGreen', message)
-  if (!message.srcUrl || !message.tabId) return debug('no message.srcUrl/tabId')
-  const tab = await chrome.tabs.getCurrent()
-  if (message.tabId !== tab?.id) return debug('WRONG TAB:', tab?.id)
-  if (isProcessing.value) return await openPageUrl(message.srcUrl)
-  openItem(message.srcUrl)
+  debug('%c page/App.vue - onMessage:', 'Color: MediumSeaGreen', message)
+  if (message.newLocation === dataId.value) {
+    debug('%c --- UPDATING LOCATION ---', 'color: Yellow')
+    if (message.error) return setError(message.error)
+    await updateLocation(dataId.value)
+  }
+  if (message.id || message.tabId) {
+    debug('%c --- LOAD NEW LOCATION ---', 'color: Yellow')
+    const tab = await chrome.tabs.getCurrent()
+    if (message.tabId !== tab?.id) return debug('%c WRONG TAB:', 'color: Tomato', tab?.id)
+    // dataId.value = message.id
+    pushState(message.id)
+  }
 }
 
-function popState(event: Event) {
+function pushState(id: number | string) {
+  debug('pushState - dataId.value:', dataId.value, 'id:', id)
+  historyShown.value = false
+  if (dataId.value === id) return debug('%c ID Not Changed', 'color: Orange')
+  dataId.value = Number(id)
+  // const href = chrome.runtime.getURL(`page.html?id=${encodeURIComponent(message.id)}`)
+  const url = new URL(window.location.href)
+  url.searchParams.set('id', String(id))
+  debug('pushState:', url.href)
+  window.history.pushState(null, '', url.href)
+}
+
+function popState(event?: Event) {
   debug('popstate:', event)
   debug('window.location:', window.location)
-  processData()
+  const params = new URLSearchParams(window.location.search)
+  const id = Number.parseInt(params.get('id') || '')
+  debug('id:', id, 'dataId.value:', dataId.value)
+  if (dataId?.value !== id) dataId.value = id
+  // processData()
+}
+
+if (!chrome.runtime.onMessage.hasListener(onMessage)) {
+  chrome.runtime.onMessage.addListener(onMessage)
 }
 
 onMounted(() => {
-  debug(`page/App.vue - onMounted - window.history.length:`, window.history.length)
-  processData()
-  if (!chrome.runtime.onMessage.hasListener(onMessage)) {
-    debug('%c chrome.runtime.onMessage.addListener', 'color: Orange')
-    chrome.runtime.onMessage.addListener(onMessage)
-  }
+  console.log(`%cGeo%cImage%cv${config.version}`, 'color: #ee00ff', 'color: #0dcaf0')
+  popState()
   window.addEventListener('popstate', popState)
 })
-onUnmounted(() => window.removeEventListener('popstate', popState))
+
+onUnmounted(() => {
+  window.removeEventListener('popstate', popState)
+  chrome.runtime.onMessage.removeListener(onMessage)
+})
 </script>
 
 <template>
@@ -130,7 +134,7 @@ onUnmounted(() => window.removeEventListener('popstate', popState))
     <div class="container-fluid p-3 h-100">
       <div v-if="!historyShown" class="pb-5">
         <div
-          v-if="isProcessing"
+          v-if="!data?.location && !errorMessage"
           id="processing"
           class="fs-1 text-center py-5 h-100 img-thumbnail"
           :style="{ backgroundImage: 'url(' + srcUrl + ')' }"
@@ -139,10 +143,9 @@ onUnmounted(() => window.removeEventListener('popstate', popState))
           <p><i class="fa-solid fa-sync fa-spin fa-xl"></i></p>
         </div>
 
-        <div v-if="hasError">
+        <div v-if="errorMessage">
           <h1>{{ i18n.t('page.errorMsg') }}</h1>
           <div class="alert alert-danger my-3" role="alert">{{ errorMessage }}</div>
-          <p class="fst-italic">{{ i18n.t('page.errorTip') }}</p>
           <div class="d-flex gap-2">
             <button type="button" class="btn btn-outline-primary" @click="openOptions()">
               <i class="fa-solid fa-cog me-1"></i> {{ i18n.t('ctx.openOptions') }}
@@ -152,7 +155,7 @@ onUnmounted(() => window.removeEventListener('popstate', popState))
           <img v-if="srcUrl" :src="srcUrl" alt="Image" class="img-thumbnail" />
         </div>
 
-        <div v-if="data">
+        <div v-if="data?.location">
           <div class="row g-4">
             <div class="col-12 col-md-7 col-lg-8 d-flex flex-column gap-2">
               <div>
@@ -181,7 +184,13 @@ onUnmounted(() => window.removeEventListener('popstate', popState))
                     data.confidence || 'N/A'
                   }}</span>
                 </div>
-                <a v-if="geoHref" :href="geoHref" class="btn btn-sm btn-outline-success" target="_blank" rel="noopener">
+                <a
+                  v-if="data.longitude && data.latitude"
+                  :href="getGeoUrl(data)"
+                  class="btn btn-sm btn-outline-success"
+                  target="_blank"
+                  rel="noopener"
+                >
                   <i class="fa-solid fa-map me-1"></i> GeoHack
                 </a>
                 <button class="btn btn-sm btn-outline-info" @click="shareModal?.show(data)">
@@ -211,7 +220,7 @@ onUnmounted(() => window.removeEventListener('popstate', popState))
   <!--<footer class="flex-shrink-0"></footer>-->
 
   <button
-    v-if="!isProcessing"
+    v-if="data?.location"
     id="toggle-history"
     type="button"
     :class="['btn', historyShown ? 'btn-primary' : 'btn-link']"
@@ -222,8 +231,9 @@ onUnmounted(() => window.removeEventListener('popstate', popState))
 
   <ShareModal ref="shareModal" />
 
-  <!--<OptionsOffscreen />-->
+  <UppyDrop />
 
+  <!--<OptionsOffscreen />-->
   <ToastAlerts />
   <!--<BackToTop />-->
 </template>

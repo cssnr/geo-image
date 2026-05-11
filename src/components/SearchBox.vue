@@ -1,19 +1,12 @@
 <script setup lang="ts">
 import { i18n } from '#imports'
 import { debug } from '@/utils/logger.ts'
-import { openPageUrl } from '@/utils/extension.ts'
 import { showToast } from '@/composables/useToast.ts'
+import { processNewUrl } from '@/utils/api.ts'
 
-const props = withDefaults(
-  defineProps<{
-    closeWindow?: boolean
-  }>(),
-  {
-    closeWindow: false,
-  },
-)
-
-// debug('SearchBox.vue:', props)
+const props = defineProps<{
+  closeWindow?: boolean
+}>()
 
 async function processForm(event: Event) {
   debug('processForm:', event)
@@ -27,13 +20,8 @@ async function processForm(event: Event) {
     debug('link:', link)
     const url = new URL(link)
     debug('url:', url)
-    // await openPage(url.href)
-
     target.reset()
-    // const encoded = encodeURIComponent(url.href)
-    // const page = chrome.runtime.getURL(`page.html?url=${encoded}`)
-    // await activateOrOpen(page)
-    await openPageUrl(url.href)
+    processNewUrl(url.href).catch(console.error)
     if (props.closeWindow) window.close()
   } catch (e) {
     const message = e instanceof Error ? e.message : i18n.t('ui.error.unknown')

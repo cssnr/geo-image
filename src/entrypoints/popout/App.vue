@@ -10,6 +10,7 @@ import PanelHeader from '@/components/PanelHeader.vue'
 import SearchBox from '@/components/SearchBox.vue'
 import PanelFooter from '@/components/PanelFooter.vue'
 import PermsCheck from '@/components/PermsCheck.vue'
+import UppyDrop from '@/components/UppyDrop.vue'
 
 useTitle(i18n.t('permissions.title'))
 
@@ -49,6 +50,7 @@ onUnmounted(() => window.removeEventListener('resize', debounceWindowResize))
     <PanelFooter />
   </footer>
 
+  <UppyDrop />
   <ToastAlerts />
   <BackToTop />
 </template>

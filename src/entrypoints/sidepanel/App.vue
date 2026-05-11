@@ -6,7 +6,7 @@ import PanelHeader from '@/components/PanelHeader.vue'
 import SearchBox from '@/components/SearchBox.vue'
 import PanelFooter from '@/components/PanelFooter.vue'
 import PermsCheck from '@/components/PermsCheck.vue'
-// import UppyDrop from '@/components/UppyDrop.vue'
+import UppyDrop from '@/components/UppyDrop.vue'
 </script>
 
 <template>
@@ -26,7 +26,7 @@ import PermsCheck from '@/components/PermsCheck.vue'
     <PanelFooter />
   </footer>
 
+  <UppyDrop />
   <ToastAlerts />
   <BackToTop />
-  <!--<UppyDrop />-->
 </template>

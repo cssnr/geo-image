@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { i18n } from '#imports'
-import { debug } from '@/utils/logger.ts'
 import { onMounted, ref, useTemplateRef } from 'vue'
+import { debug } from '@/utils/logger.ts'
 import { copyText } from '@/utils/ui.ts'
 import { addWebhook, deleteWebhook, getWebhook, validateWebhook } from '@/utils/webhooks.ts'
 import { showToast } from '@/composables/useToast.ts'

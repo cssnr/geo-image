@@ -2,7 +2,8 @@ import { getAppConfig } from '#imports'
 import { debug } from '@/utils/logger.ts'
 import { isFirefox } from '@/utils/system.ts'
 import { defineBackground } from 'wxt/utils/define-background'
-import { openExtPanel, openPageUrl, openPopup, openSidePanel } from '@/utils/extension.ts'
+import { processNewUrl } from '@/utils/api.ts'
+import { openExtPanel, openPopup, openSidePanel } from '@/utils/extension.ts'
 import { type Options, defaultOptions, getOptions } from '@/utils/options.ts'
 import { updateContextMenus } from './menus.ts'
 
@@ -39,7 +40,7 @@ export default defineBackground(() => {
   chrome.storage.sync.onChanged.addListener(onChanged)
   chrome.commands?.onCommand.addListener(onCommand)
   chrome.contextMenus?.onClicked.addListener(onClicked)
-  // chrome.runtime.onMessage.addListener(onMessage)
+  chrome.runtime.onMessage.addListener(onMessage)
 })
 
 async function onInstalled(details: chrome.runtime.InstalledDetails) {
@@ -88,7 +89,7 @@ function onChanged(changes: Record<string, chrome.storage.StorageChange>) {
   if (changes?.options) {
     const oldValue = changes.options?.oldValue as Options | undefined
     const newValue = changes.options?.newValue as Options | undefined
-    if (!oldValue || !newValue) return console.log('missing oldValue or newValue')
+    if (!oldValue || !newValue) return debug('missing oldValue or newValue')
 
     if (oldValue?.contextMenu !== newValue.contextMenu) {
       updateContextMenus(newValue.contextMenu).catch(console.warn)
@@ -120,23 +121,22 @@ async function onClicked(ctx: chrome.contextMenus.OnClickData, tab?: chrome.tabs
   } else if (ctx.menuItemId === 'openSidePanel') {
     openSidePanel()
   } else if (ctx.menuItemId === 'analyzeImage') {
-    // const encoded = encodeURIComponent(ctx.srcUrl ?? '')
-    // const url = chrome.runtime.getURL(`page.html?url=${encoded}`)
-    // return activateOrOpen(url)
-    return openPageUrl(ctx.srcUrl ?? '')
+    debug('%c IMAGE CLICK - URL', 'color: Orange')
+    debug('ctx.srcUrl:', ctx.srcUrl)
+    processNewUrl(ctx.srcUrl).catch(console.error)
   } else {
     console.error(`Unknown ctx.menuItemId: ${ctx.menuItemId}`)
   }
 }
 
-// function onMessage(message: any, sender: chrome.runtime.MessageSender) {
-//   debug('%c background/index.ts - onMessage:', 'Color: Plum', message, sender)
-//   debug('sender:', sender)
-//   if (message.openResult) {
-//     debug('message.openResult:', message.openResult)
-//     openResult(message.openResult).catch(console.error)
-//   }
-// }
+function onMessage(message: any, sender: chrome.runtime.MessageSender) {
+  debug('%c background/index.ts - onMessage:', 'Color: Plum', message, sender)
+  if (message.imageSrc) {
+    debug('%c IMAGE UPLOAD - DATA', 'color: Orange')
+    debug('message.imageSrc:', message.imageSrc)
+    processNewUrl(message.imageSrc).catch(console.error)
+  }
+}
 
 async function setDefaultOptions(defaultOptions: object) {
   debug('setDefaultOptions', defaultOptions)

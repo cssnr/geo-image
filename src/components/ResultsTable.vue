@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { i18n } from '#imports'
-import { debug } from '@/utils/logger.ts'
 import { onMounted, ref, useTemplateRef } from 'vue'
+import { debug } from '@/utils/logger.ts'
 import { getConfidenceClass } from '@/utils/index.ts'
 import { openResult } from '@/utils/extension.ts'
 import { showToast } from '@/composables/useToast.ts'
 import { useLocationsDB } from '@/composables/useLocationsDB'
 import { Modal } from 'bootstrap'
-import type { LocationData } from '@/utils/api.ts'
 import ShareModal from '@/components/ShareModal.vue'
 
 const { getAllLocations, deleteLocation, locationDBChannel } = useLocationsDB()
@@ -26,18 +25,18 @@ const deleteModalEl = ref<HTMLElement | null>(null)
 
 const shareModal = useTemplateRef<InstanceType<typeof ShareModal>>('shareModal')
 
-function getPageUrl(srcUrl: string) {
-  return chrome.runtime.getURL(`page.html?url=${encodeURIComponent(srcUrl)}`)
+function getPageUrl(id: number) {
+  return chrome.runtime.getURL(`page.html?id=${encodeURIComponent(id)}`)
 }
 
-async function onClick(srcUrl: string) {
-  debug('onClick - srcUrl:', srcUrl)
+async function onClick(id: number) {
+  debug('onClick - id:', id)
   if (props.isPage) {
     debug('emit:open')
-    emit('open', srcUrl)
+    emit('open', id)
   } else {
     // chrome.runtime.sendMessage({ openResult: srcUrl }).catch(console.error)
-    await openResult(srcUrl)
+    await openResult(id)
   }
   if (props.closeWindow) window.close()
 }
@@ -95,7 +94,7 @@ onMounted(() => {
           </td>
           <td class="text-center">{{ loc.id }}</td>
           <td class="text-truncate">
-            <a @click.prevent="onClick(loc.url)" :title="loc.url" :href="getPageUrl(loc.url)">{{ loc.location }}</a>
+            <a @click.prevent="onClick(loc.id!)" :title="loc.url" :href="getPageUrl(loc.id!)">{{ loc.location }}</a>
           </td>
           <td class="text-center" :class="getConfidenceClass(loc.confidence)">{{ loc.confidence }}</td>
           <td class="text-center">

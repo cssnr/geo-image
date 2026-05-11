@@ -106,7 +106,6 @@ page:
   processingMsg: Bild wird verarbeitet...
   error: Fehler
   errorMsg: GeoImage-Analysefehler
-  errorTip: "Tipp: Sobald der Fehler behoben ist, können Sie diese Seite neu laden..."
   noImageData: Keine Bilddaten
   localNotSupported: Lokale Analyse noch nicht unterstützt!
   imageAlt: Bild

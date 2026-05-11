@@ -1,25 +1,8 @@
 import { openDB } from 'idb'
-import type { LocationData } from '@/utils/api.ts'
 
 const DB_NAME = 'geo-image'
 const DB_VERSION = 1
 const STORE_NAME = 'results'
-
-// export interface LocationData {
-//   url: string
-//   city: string
-//   state: string
-//   country: string
-//   location: string
-//
-//   confidence: string
-//   description: string
-//   explanation: string
-//   latitude?: number
-//   longitude?: number
-//
-//   [key: string]: unknown
-// }
 
 const dbPromise = openDB(DB_NAME, DB_VERSION, {
   upgrade(db, oldVersion) {
@@ -42,24 +25,67 @@ const dbPromise = openDB(DB_NAME, DB_VERSION, {
   },
 })
 
+type InitialLocation = {
+  url?: string
+  blob?: Blob
+}
+
 export function useLocationsDB() {
   const locationDBChannel = new BroadcastChannel('locationDB')
 
-  async function addLocation(entry: Omit<LocationData, 'id'>): Promise<IDBValidKey> {
+  async function newLocation(entry: InitialLocation): Promise<IDBValidKey> {
     const db = await dbPromise
     const result = db.add(STORE_NAME, entry)
+    // locationDBChannel.postMessage('change')
+    return result
+  }
+
+  async function addBlobById(id: IDBValidKey, blob: Blob): Promise<IDBValidKey> {
+    const db = await dbPromise
+    const existing = await db.get(STORE_NAME, id)
+    const result = db.put(STORE_NAME, { ...existing, blob })
+    // locationDBChannel.postMessage('change')
+    return result
+  }
+
+  async function updateById(
+    id: IDBValidKey,
+    entry: Partial<LocationData>,
+  ): Promise<IDBValidKey> {
+    const db = await dbPromise
+    const existing = await db.get(STORE_NAME, id)
+    if (!existing) throw new Error(`No entry for ID: ${String(id)}`)
+    const result = await db.put(STORE_NAME, { ...existing, ...entry })
     locationDBChannel.postMessage('change')
     return result
   }
 
-  async function getByUrl(url: string): Promise<LocationData | undefined> {
-    const db = await dbPromise
-    return db.getFromIndex(STORE_NAME, 'url', url)
-  }
+  // async function addBlobToId(
+  //   id: IDBValidKey,
+  //   entry: InitialLocation & { blob: Blob },
+  // ): Promise<IDBValidKey> {
+  //   const db = await dbPromise
+  //   const result = db.put(STORE_NAME, { ...entry, id })
+  //   locationDBChannel.postMessage('change')
+  //   return result
+  // }
+
+  // async function addLocation(entry: Omit<LocationData, 'id'>): Promise<IDBValidKey> {
+  //   const db = await dbPromise
+  //   const result = await db.add(STORE_NAME, entry)
+  //   locationDBChannel.postMessage('change')
+  //   return result
+  // }
 
   async function getById(id: number): Promise<LocationData | undefined> {
     const db = await dbPromise
     return db.get(STORE_NAME, id)
+  }
+
+  async function getByUrl(url: string): Promise<LocationData | undefined> {
+    if (url.startsWith('data')) return undefined
+    const db = await dbPromise
+    return db.getFromIndex(STORE_NAME, 'url', url)
   }
 
   async function getAllLocations(): Promise<LocationData[]> {
@@ -67,51 +93,54 @@ export function useLocationsDB() {
     return db.getAll(STORE_NAME)
   }
 
-  async function getByCity(city: string): Promise<LocationData[]> {
-    const db = await dbPromise
-    return db.getAllFromIndex(STORE_NAME, 'city', city)
-  }
+  // async function getByCity(city: string): Promise<LocationData[]> {
+  //   const db = await dbPromise
+  //   return db.getAllFromIndex(STORE_NAME, 'city', city)
+  // }
 
-  async function getByState(state: string): Promise<LocationData[]> {
-    const db = await dbPromise
-    return db.getAllFromIndex(STORE_NAME, 'state', state)
-  }
+  // async function getByState(state: string): Promise<LocationData[]> {
+  //   const db = await dbPromise
+  //   return db.getAllFromIndex(STORE_NAME, 'state', state)
+  // }
 
-  async function getByCountry(country: string): Promise<LocationData[]> {
-    const db = await dbPromise
-    return db.getAllFromIndex(STORE_NAME, 'country', country)
-  }
+  // async function getByCountry(country: string): Promise<LocationData[]> {
+  //   const db = await dbPromise
+  //   return db.getAllFromIndex(STORE_NAME, 'country', country)
+  // }
 
-  async function getByLocation(location: string): Promise<LocationData[]> {
-    const db = await dbPromise
-    return db.getAllFromIndex(STORE_NAME, 'location', location)
-  }
+  // async function getByLocation(location: string): Promise<LocationData[]> {
+  //   const db = await dbPromise
+  //   return db.getAllFromIndex(STORE_NAME, 'location', location)
+  // }
 
   async function deleteLocation(id: number): Promise<void> {
     const db = await dbPromise
-    const result = db.delete(STORE_NAME, id)
+    const result = await db.delete(STORE_NAME, id)
     locationDBChannel.postMessage('change')
     return result
   }
 
-  async function updateLocation(entry: LocationData): Promise<IDBValidKey> {
-    const db = await dbPromise
-    const result = db.put(STORE_NAME, entry)
-    locationDBChannel.postMessage('change')
-    return result
-  }
+  // async function updateLocation(entry: LocationData): Promise<IDBValidKey> {
+  //   const db = await dbPromise
+  //   const result = await db.put(STORE_NAME, entry)
+  //   locationDBChannel.postMessage('change')
+  //   return result
+  // }
 
   return {
-    addLocation,
-    getById,
-    getAllLocations,
-    getByCity,
-    getByUrl,
-    getByState,
-    getByCountry,
-    getByLocation,
-    deleteLocation,
-    updateLocation,
     locationDBChannel,
+    newLocation,
+    addBlobById,
+    updateById,
+    // addLocation,
+    getById,
+    getByUrl,
+    getAllLocations,
+    // getByCity,
+    // getByState,
+    // getByCountry,
+    // getByLocation,
+    deleteLocation,
+    // updateLocation,
   }
 }

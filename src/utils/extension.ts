@@ -135,17 +135,9 @@ export function clickOpen(e: Event, close = false) {
     .catch(console.warn)
 }
 
-export function openPageUrl(srcUrl: string, open = false) {
-  const encoded = encodeURIComponent(srcUrl)
-  const url = chrome.runtime.getURL(`page.html?url=${encoded}`)
-  debug('openPageUrl - url:', url)
-  if (open) return chrome.tabs.create({ active: true, url })
-  return activateOrOpen(url)
-}
-
-// NOTE: This is a WIP method to open an existing page...
-export async function openResult(srcUrl: string) {
-  debug('openResult - srcUrl:', srcUrl)
+// NOTE: This is ONLY used in ResultsTable.vue
+export async function openResult(id: number) {
+  debug('openResult - id:', id)
   const pageUrl = chrome.runtime.getURL('page.html')
   // debug('pageUrl:', pageUrl)
   // const contexts = await chrome.runtime.getContexts({
@@ -165,14 +157,16 @@ export async function openResult(srcUrl: string) {
       debug('isInFiltered:', isInFiltered)
       if (isInFiltered) {
         await chrome.tabs.update(tab.id, { active: true })
-        await chrome.runtime.sendMessage({ srcUrl, tabId: tab.id })
+        debug('%c --- SEND MESSAGE ---', 'color: Lime')
+        await chrome.runtime.sendMessage({ id, tabId: tab.id })
         return
       }
     }
 
     const context = filtered[0]
     await chrome.tabs.update(context.tabId, { active: true })
-    await chrome.runtime.sendMessage({ srcUrl, tabId: context.tabId })
+    debug('%c --- SEND MESSAGE ---', 'color: Lime')
+    await chrome.runtime.sendMessage({ id, tabId: context.tabId })
     return
 
     // for (const context of filtered) {
@@ -189,7 +183,16 @@ export async function openResult(srcUrl: string) {
   }
 
   debug('%cTab NOT found... await openPageUrl()', 'color: Tomato')
-  await openPageUrl(srcUrl, true)
+  // pageArgs.open = true
+  await openPage(id, true)
+}
+
+export function openPage(id: number, open = false) {
+  const encoded = encodeURIComponent(id)
+  const url = chrome.runtime.getURL(`page.html?id=${encoded}`)
+  debug('openPage - url:', url)
+  if (open) return chrome.tabs.create({ active: true, url })
+  return activateOrOpen(url)
 }
 
 // export async function openResult(srcUrl: string) {

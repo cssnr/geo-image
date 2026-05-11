@@ -106,7 +106,6 @@ page:
   processingMsg: 画像を処理中...
   error: エラー
   errorMsg: GeoImage 分析エラー
-  errorTip: "ヒント: エラーが解決したら、このページを更新してください..."
   noImageData: 画像データがありません
   localNotSupported: ローカル分析はまだサポートされていません！
   imageAlt: 画像
