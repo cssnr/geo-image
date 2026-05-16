@@ -87,7 +87,7 @@ jobs:
         uses: cssnr/webstore-publish-action@v1
         with:
           extension_id: ${{ env.CHROME_ID }}
-          publisher_id: ${{env.PUBLISHER_ID}}
+          publisher_id: ${{ env.PUBLISHER_ID }}
           json_data: ${{ secrets.WEBSTORE_JSON }}
           zip_file: "${{ env.PACKAGE_NAME }}-${{ github.event.release.tag_name }}-chrome.zip"
           submit: false
@@ -116,6 +116,7 @@ jobs:
           name: artifacts
 
       - name: "Generate Release Notes"
+        # https://github.com/mozilla/addons-server/blob/master/src/olympia/core/languages.py
         env:
           RELEASE_NOTES: ${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ github.event.release.tag_name }}
         run: |
@@ -232,7 +233,7 @@ jobs:
   check:
     name: "Check"
     if: ${{ always() }}
-    runs-on: Ubuntu-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 5
     needs: [build, release, publish-chrome, publish-mozilla, update-mozilla]
 

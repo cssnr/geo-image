@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, onUnmounted, useTemplateRef } from 'vue'
 import { debounce } from '@/utils/index.ts'
 
 withDefaults(
@@ -11,7 +11,7 @@ withDefaults(
   },
 )
 
-const backToTop = ref<HTMLElement | null>(null)
+const backToTop = useTemplateRef('backToTop')
 
 const onScroll = () => {
   if (!backToTop.value) return
